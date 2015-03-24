@@ -7,7 +7,7 @@ public class Main {
 		//Test
 		System.out.println("change");
 		System.out.println("unchange");
-
+		new GameRoom();
 	}
 
 }
