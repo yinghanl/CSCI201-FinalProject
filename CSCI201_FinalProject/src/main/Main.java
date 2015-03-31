@@ -10,7 +10,7 @@ public class Main {
 		//System.out.println("unchange");
 		Player p1 = new Player("host");
 		new GameRoomGUI(p1);
-		
+		new PostGameGUI();
 		//new GameScreenGUI();
 		
 	}

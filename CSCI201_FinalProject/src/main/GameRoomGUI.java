@@ -62,7 +62,6 @@ public class GameRoomGUI extends JFrame{
 		//test players
 		for(int i=1; i<4; i++){
 			players_array[i] = new Player("p"+i);
-			System.out.println(players_array[i].getName());	
 		}
 		
 		players_ready_array = new boolean[]{true, false, false, false};
