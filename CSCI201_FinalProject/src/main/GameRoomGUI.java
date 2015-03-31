@@ -81,6 +81,7 @@ public class GameRoomGUI extends JFrame{
 		createButton();	
 		
 		add(centerPanel, BorderLayout.CENTER);
+		getRootPane().setDefaultButton(sendButton);
 		setVisible(true);
 	}//end of constructor
 	
@@ -100,7 +101,6 @@ public class GameRoomGUI extends JFrame{
 				chatbox.append(temp+"\n");
 			}
 		});
-		
 		buttonPanel.add(typefield);
 		buttonPanel.add(sendButton);
 		buttonPanel.add(startGameButton);
@@ -111,24 +111,27 @@ public class GameRoomGUI extends JFrame{
 	public void createPicturePanel(){
 		picture_of_mapPanel = new JPanel();
 		picture_of_mapPanel.setLayout(new BorderLayout());
+		//====================DISPLAYING MAP PREVIEW
 		ImageIcon io = new ImageIcon("TowerDefense.png");
-		picture_of_mapPanel.add(new JPanel(){public void paintComponent(Graphics g) {
-			super.paintComponent(g); //call super! super is super important
-			g.drawImage(io.getImage(), 0, 0, this.getSize().width, this.getSize().height,null);
-			//0,0 means draw at the top left corner
-			//getSize().width getSize().height means to make the image that size of (this), in which (this) is
-			//the panel that contains the image. (Effectively making the image the size of the panel)
-			//If we resize the window, the panel will resize, and the image will rescale as well
-			}
+		picture_of_mapPanel.add(new JPanel(){
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g); //call super! super is super important
+				g.drawImage(io.getImage(), 0, 0, this.getSize().width, this.getSize().height,null);
+				}
 		}, BorderLayout.CENTER);
+		//0,0 means draw at the top left corner
+		//getSize().width getSize().height means to make the image that size of (this), in which (this) is
+		//the panel that contains the image. (Effectively making the image the size of the panel)
+		//If we resize the window, the panel will resize, and the image will rescale as well
+		
 		centerTopPanel.add(picture_of_mapPanel);
 	}//end of createpicturepanel
 	
 	public void createChatbox(){
 		chatboxPanel = new JPanel();
 		chatboxPanel.setLayout(new BoxLayout(chatboxPanel, BoxLayout.X_AXIS));
-
 		chatbox = new JTextArea(3,50);
+		chatbox.setEditable(false);
 		JScrollPane scroll = new JScrollPane(chatbox, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		chatbox.setLineWrap(true);
 		chatbox.setWrapStyleWord(true);
