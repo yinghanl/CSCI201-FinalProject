@@ -8,10 +8,10 @@ public class Main {
 		//Ted's test
 		//System.out.println("change");
 		//System.out.println("unchange");
-		//Player p1 = new Player("host");
-		//new GameRoom(p1);
+		Player p1 = new Player("host");
+		new GameRoomGUI(p1);
 		
-		new GameScreenGUI();
+		//new GameScreenGUI();
 		
 	}
 
