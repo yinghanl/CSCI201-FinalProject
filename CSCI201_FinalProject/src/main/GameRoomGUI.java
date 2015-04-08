@@ -168,8 +168,5 @@ public class GameRoomGUI extends JFrame{
 		centerTopPanel.add(jp);
 	}//end of creating the panel that holds a table of players
 	
-//	public void setVisible(boolean b){
-//		setVisible(b);
-//	}//end of setVisible
 	
 }//end of class

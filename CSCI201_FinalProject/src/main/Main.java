@@ -9,9 +9,11 @@ public class Main {
 		//System.out.println("change");
 		//System.out.println("unchange");
 		Player p1 = new Player("host");
+		GameLobbyGUI glg = new GameLobbyGUI(p1);
+		glg.show(true);
 		new GameRoomGUI(p1);
 		new PostGameGUI();
-		//new GameScreenGUI();
+		new GameScreenGUI();
 		
 	}
 
