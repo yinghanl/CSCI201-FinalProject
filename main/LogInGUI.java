@@ -64,8 +64,8 @@ public class LogInGUI extends JFrame
 		northPanel.add(tdLabel);
 		
 		JPanel centerPanel = new JPanel();
-		centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
-		centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
+		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
+		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
 		
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
@@ -111,9 +111,13 @@ public class LogInGUI extends JFrame
 			{
 				String username = usernameJTF.getText();
 				char [] password = passwordJPF.getPassword();
-				//calls DatabaseUtils.authenticate
-				//if true, creates new user and logs in
-				//else makes warning label appear
+				User newUser;
+				if(DataBaseUtils.verifyUser(username, password))
+				{
+					int userID = DataBaseUtils.getUserID(username);
+					newUser = DataBaseUtils.createUser(userID);
+					//new Homescreen(newUser);
+				}
 			}
 		});
 		guestLogInButton.addActionListener(new ActionListener()
@@ -121,6 +125,9 @@ public class LogInGUI extends JFrame
 			public void actionPerformed(ActionEvent ae)
 			{
 				//creates guest user and logs in
+				//User newUser = DataBaseUtils.createGuest();
+				//new Homescreen(newUser);
+				
 			}
 		});
 		createUserButton.addActionListener(new ActionListener()
