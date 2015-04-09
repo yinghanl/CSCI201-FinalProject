@@ -84,12 +84,74 @@ public class DataBaseUtils {
 		return userID;
 	}
 	
+	public static int createNewUser(String username, char [] password)
+	{
+		int userID = -1;
+		String pass = cArrayToString(password);
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(getConnectionString());
+			Statement st = conn.createStatement();
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO user (username, password) VALUES(?, ?) ");
+			ps.setString(1, username); // set first variable in prepared statement
+			ps.setString(2, pass);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next())
+			{
+				userID = rs.getInt("userID");
+			}
+			else
+			{
+				userID = -1;
+			}
+			rs.close();
+			st.close();
+			conn.close();
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+		}
+		return userID;
+	}
+	
+	public static boolean changePassword(int userID, String password)
+	// Takes in a userID and a password,
+	// Changes the value of the password in the database
+	// Returns true if it worked, returned false if the userID wasn't found
+	{
+		boolean userExists = false;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(getConnectionString());
+			Statement st = conn.createStatement();
+			PreparedStatement ps = conn.prepareStatement("UPDATE towerdefense SET password=? WHERE userID=?");
+			ps.setString(1, password);
+			ps.setInt(1, userID); // set first variable in prepared statement
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				userExists = true;
+			}
+			
+			rs.close();
+			st.close();
+			conn.close();
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+		}
+		return userExists;
+	}
+	
 	public static User createUser(int userID)
 	//Creates user from userID
 	//returns null if userID is not in the database
 	{
 		User newUser = null;
-		int date;
+		
 		String username;
 		int creepsKilled;
 		int gamesPlayed;
@@ -106,7 +168,6 @@ public class DataBaseUtils {
 			if(rs.next())
 			{
 				username = rs.getString("username");
-				date = rs.getInt("date_created");
 				creepsKilled = rs.getInt("creeps_killed");
 				gamesPlayed = rs.getInt("games_played");
 				gamesWon = rs.getInt("games_won");
@@ -122,7 +183,7 @@ public class DataBaseUtils {
 			userData[1] = gamesPlayed;
 			userData[2] = gamesWon;
 			userData[3] = gamesLost;
-			newUser = new User(userID, username, date, userData);
+			newUser = new User(userID, username, userData);
 			rs.close();
 			st.close();
 			conn.close();
