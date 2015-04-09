@@ -1,9 +1,12 @@
-package main;
+//package main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -15,6 +18,7 @@ public class GameLobbyGUI extends JFrame {
 	private TabPanel easyPanel;
 	private TabPanel mediumPanel;
 	private TabPanel hardPanel;
+	private JButton profileButton;
 	
 	public GameLobbyGUI(Player currPlayer){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -40,10 +44,20 @@ public class GameLobbyGUI extends JFrame {
 	private void createGUI(){
 		setLayout(new BorderLayout());
 		
+		this.profileButton = new JButton("Profile");
+		profileButton.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				ProfileScreen ps = new ProfileScreen();
+			}
+			
+		});
+		
 		getContentPane().add(mainPane);
 		mainPane.add("EASY",easyPanel);
 		mainPane.add("MEDIUM", mediumPanel);
 		mainPane.add("HARD", hardPanel);
+		add(profileButton, BorderLayout.SOUTH);
 		
 	}
 	
