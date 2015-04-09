@@ -35,8 +35,8 @@ public class TabPanel extends JPanel {
 		returnButton = new JButton("Return Button");
 		
 		
-		String [] columnNames = {"Host Name, Difficulty, Player in Room"};
-		tableData = new Object[100][100][100];
+		//String [] columnNames = {"Host Name, Difficulty, Player in Room"};
+		//tableData = new Object[50][50][50];
 		gameListTable = new JTable(30,3);
 	}
 	
