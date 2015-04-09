@@ -10,8 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+
+// TabPanel is used to store the information for each difficulty
+//The table and buttons for the gamelobby are stored here
 public class TabPanel extends JPanel {
 	JTable gameListTable;
+	Object tableData[][][];
 	
 	JPanel buttonPanel;
 	JButton createButton;
@@ -30,6 +34,9 @@ public class TabPanel extends JPanel {
 		joinButton = new JButton("Join Game");
 		returnButton = new JButton("Return Button");
 		
+		
+		String [] columnNames = {"Host Name, Difficulty, Player in Room"};
+		tableData = new Object[100][100][100];
 		gameListTable = new JTable(30,3);
 	}
 	
