@@ -10,12 +10,13 @@ import javax.swing.JTabbedPane;
 
 
 public class GameLobbyGUI extends JFrame {
+	private Player currPlayer;
 	private JTabbedPane mainPane;
 	private TabPanel easyPanel;
 	private TabPanel mediumPanel;
 	private TabPanel hardPanel;
 	
-	public GameLobbyGUI(){
+	public GameLobbyGUI(Player currPlayer){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -23,6 +24,7 @@ public class GameLobbyGUI extends JFrame {
 		setLocation (0, 0);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		this.currPlayer = currPlayer;
 		initializeComponents();
 		createGUI();
 		setVisible(true);
@@ -46,6 +48,9 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	public static void main(String [] args){
-		new GameLobbyGUI();
+		Player p = new Player("aweesome");
+		new GameLobbyGUI(p);
 	}
+	
+	
 }
