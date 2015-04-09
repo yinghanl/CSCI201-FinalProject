@@ -1,10 +1,10 @@
 package main;
 
 public class Tower {
-	private Coordinate location;
+	private Space location;
 	private int cost, salvage, damage, direction;
 	
 	public void shoot(){
-		Bullet b = new Bullet(location, direction);
+		Bullet b = new Bullet(location, direction, damage);
 	}
 }
