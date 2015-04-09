@@ -4,7 +4,7 @@ public class Creep extends Moveable{
 	
 	private int health;
 	
-	public Creep(Coordinate loc){
+	public Creep(Space loc){
 		super(loc);
 	}
 	

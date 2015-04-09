@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Board {
 	private Space [][] map;
+//<<<<<<< HEAD
 	private ArrayList<PathSpace> creepPath;
 	
 	public Board()
@@ -91,4 +92,9 @@ public class Board {
 		creepPath.add(new PathSpace(10,31));
 	}
 	
+
+	public Space getSpace(int x, int y){
+		return map[x][y];
+	}
+//>>>>>>> tedMoveable
 }
