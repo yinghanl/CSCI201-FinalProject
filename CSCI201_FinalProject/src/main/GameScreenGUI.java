@@ -36,6 +36,8 @@ public class GameScreenGUI extends JFrame{
 		chatBox = this.getChatBox();
 		
 		this.add(chatBox, BorderLayout.EAST);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		
 		this.setVisible(true);
 		
@@ -49,12 +51,12 @@ public class GameScreenGUI extends JFrame{
 		toReturn.setSize(600,400);
 		toReturn.setPreferredSize(toReturn.getSize());
 		
-		toReturn.setLayout(new GridLayout(10,16));
-		spaces = new JLabel[12][16];
+		toReturn.setLayout(new GridLayout(20,32));
+		spaces = new JLabel[20][32];
 		
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < 20; i++)
 		{
-			for(int j = 0; j < 16; j++)
+			for(int j = 0; j < 32; j++)
 			{
 				spaces[i][j] = new JLabel("");
 				spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
