@@ -30,7 +30,7 @@ public class ProfileScreen extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 			//allows user to change their password
 			
-				changePasswordWindow cpw = new changePasswordWindow(p);
+				changePasswordWindow cpw = new changePasswordWindow(u);
 				
 			}
 		});
