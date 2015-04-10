@@ -22,8 +22,6 @@ public class changePasswordWindow extends JFrame
 	private JButton submit = new JButton ("Submit");
 	private User u;
 	
-	
-	
 	public changePasswordWindow(User u)
 	{
 		super ("Change your password");
@@ -45,7 +43,7 @@ public class changePasswordWindow extends JFrame
 			public void actionPerformed(ActionEvent e) {
 				
 				//verify the user entered the correct current password
-				if (!DatabaseUtils.verifyUser(u.getName(), oldPass.getText()) )
+				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPass.getText().toCharArray()) )
 				{
 					//if the name/password can't be verified
 				}
@@ -58,8 +56,8 @@ public class changePasswordWindow extends JFrame
 				else
 				{
 					//if the user is verified and the passwords match, set the new password
-					int userID = DatabaseUtils.getUserID(u.getName());
-					DatabaseUtils.changePassword(userID, newPass.getText());
+					int userID = DataBaseUtils.getUserID(u.getUsername());
+					DataBaseUtils.changePassword(userID, newPass.getText());
 				}
 				
 			}
