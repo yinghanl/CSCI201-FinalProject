@@ -48,6 +48,7 @@ public class ProfileScreen extends JFrame{
 		};
 		userStats = new JTable(tableData, columnNames);
 		user_stats_panel.add(userStats);
+		
 		add(change_pass, BorderLayout.NORTH);
 		add(user_stats_panel, BorderLayout.CENTER);
 		
