@@ -10,6 +10,8 @@ public class Board {
 	public Board()
 	{
 		this.getCreepPath();
+		this.getMap();
+		this.setAdjacencies();
 	}
 	
 	private void getMap()
@@ -20,6 +22,32 @@ public class Board {
 			for(int j = 0; j < 32;j++)
 			{
 				map[i][j] = new BlankSpace(i,j);
+			}
+		}
+	}
+	
+	private void setAdjacencies(){
+		for(int i = 0; i<20; i++){
+			for(int j = 0; j<32; j++){
+				if(i != 0)
+					map[i][j].setNorth(map[i-1][j]);
+				else
+					map[i][j].setNorth(null);
+				
+				if(i != 19)
+					map[i][j].setSouth(map[i+1][j]);
+				else
+					map[i][j].setSouth(null);
+				
+				if(j != 0)
+					map[i][j].setWest(map[i][j-1]);
+				else
+					map[i][j].setWest(null);
+				
+				if(j != 31)
+					map[i][j].setEast(map[i][j+1]);
+				else
+					map[i][j].setEast(null);
 			}
 		}
 	}
