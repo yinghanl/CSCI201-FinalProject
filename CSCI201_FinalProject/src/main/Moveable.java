@@ -1,15 +1,17 @@
 package main;
 
 abstract class Moveable extends Thread{
-	protected Space currentLocation;
+	protected Space currentLocation, previousLocation;
 	
 	public Moveable(Space loc){
 		currentLocation = loc;
+		previousLocation = null;
 	}
 	
 	//max x = 20
 	//max y = 32
 	public void move(int direction) throws BoundaryException{
+		previousLocation = currentLocation;
 		switch(direction){
 			//0 = up
 			case 0:
@@ -34,6 +36,10 @@ abstract class Moveable extends Thread{
 	
 	public Space getLocation(){
 		return currentLocation;
+	}
+	
+	public Space getPrevious(){
+		return previousLocation;
 	}
 	
 }

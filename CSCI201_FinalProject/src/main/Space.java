@@ -2,6 +2,7 @@ package main;
 
 abstract class Space {
 	private Moveable occupant;
+	private Space north, south, east, west;
 	
 	private int x, y;
 	
@@ -35,34 +36,50 @@ abstract class Space {
 		return (occupant != null);
 	}
 	
+	public void setNorth(Space s){
+		north = s;
+	}
+	
+	public void setSouth(Space s){
+		south = s;
+	}
+	
+	public void setEast(Space s){
+		east = s;
+	}
+	
+	public void setWest(Space s){
+		west = s;
+	}
+	
 	public Space getNorth() throws BoundaryException{
-		if(x == 0)
+		if(north == null)
 			throw new BoundaryException();
 		else
-			return board.getSpace(x-1, y);
+			return north;
 	}
 	
-	public Space getSouth(){
-		if(x==19)
+	public Space getSouth() throws BoundaryException{
+		if(south == null)
 			throw new BoundaryException();
 		else
-			return board.getSpace(x+1, y);
+			return south;
 		
 	}
 	
-	public Space getWest(){
-		if(y==0)
+	public Space getWest() throws BoundaryException{
+		if(west == null)
 			throw new BoundaryException();
 		else
-			return board.getSpace(x, y-1);
+			return west;
 		
 	}
 	
-	public Space getEast(){
-		if(y==31)
+	public Space getEast() throws BoundaryException{
+		if(east == null)
 			throw new BoundaryException();
 		else
-			return board.getSpace(x, y+1);
+			return east;
 		
 	}
 	
