@@ -116,15 +116,18 @@ public class LogInGUI extends JFrame
 				{
 					int userID = DataBaseUtils.getUserID(username);
 					newUser = DataBaseUtils.createUser(userID);
-					//new Homescreen(newUser);
+					new GameLobbyGUI(newUser);
 				}
 			}
 		});
 		guestLogInButton.addActionListener(new ActionListener()
 		{
+			//creates guest user and logs in
 			public void actionPerformed(ActionEvent ae)
 			{
-				//creates guest user and logs in
+				Guest newGuest = DataBaseUtils.createGuest();
+				new GameLobbyGUI(newGuest);
+				
 				//User newUser = DataBaseUtils.createGuest();
 				//new Homescreen(newUser);
 				
@@ -136,6 +139,12 @@ public class LogInGUI extends JFrame
 			{
 				String username = usernameJTF.getText();
 				char [] password = passwordJPF.getPassword();
+				if(!DataBaseUtils.verifyUser(username, password))
+				{
+					int userID = DataBaseUtils.createNewUser(username, password);
+					User newUser = DataBaseUtils.createUser(userID);
+					new GameLobbyGUI(newUser);
+				}
 				//calls DatabaseUtils.createNewUser
 				//if true, creates new user and logs in
 				//else makes warning label appear
