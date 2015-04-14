@@ -21,7 +21,7 @@ public class GameLobbyGUI extends JFrame {
 	private JButton profileButton;
 
 	
-	public GameLobbyGUI(Player currPlayer){
+	public GameLobbyGUI(User u){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -63,8 +63,8 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	public static void main(String [] args){
-		Player p = new Player("aweesome");
-		new GameLobbyGUI(p);
+		Player p = new Player("awesome");
+		new GameLobbyGUI(user);
 	}
 	
 	

@@ -16,7 +16,7 @@ public class DataBaseUtils {
 
 	private static String getConnectionString()
 	{
-		return("jdbc:mysql://localhost/towerdefense?user=root&password=Hyvesolutions2014");
+		return("jdbc:mysql://localhost/towerdefense?user=root&password=zorrozal18");
 	}
 	
 	public static boolean verifyUser(String username, char [] password)
@@ -95,8 +95,10 @@ public class DataBaseUtils {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO user (username, password) VALUES(?, ?) ");
 			ps.setString(1, username); // set first variable in prepared statement
 			ps.setString(2, pass);
-			ResultSet rs = ps.executeQuery();
-			
+			ps.executeQuery();
+			PreparedStatement getIDps = conn.prepareStatement("SELECT userID FROM user WHERE username=?");
+			getIDps.setString(1, username);
+			ResultSet rs = getIDps.executeQuery();
 			if(rs.next())
 			{
 				userID = rs.getInt("userID");
