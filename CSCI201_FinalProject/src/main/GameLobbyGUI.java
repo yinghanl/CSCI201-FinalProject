@@ -13,7 +13,7 @@ import javax.swing.JTabbedPane;
 
 
 public class GameLobbyGUI extends JFrame {
-	private User user;
+	private AbstractUser user;
 	private JTabbedPane mainPane;
 	private TabPanel easyPanel;
 	private TabPanel mediumPanel;
@@ -21,7 +21,7 @@ public class GameLobbyGUI extends JFrame {
 	private JButton profileButton;
 
 	
-	public GameLobbyGUI(User u){
+	public GameLobbyGUI(AbstractUser u){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -29,7 +29,7 @@ public class GameLobbyGUI extends JFrame {
 		setLocation (0, 0);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.user = user;
+		this.user = u;
 		initializeComponents();
 		createGUI();
 		setVisible(true);
@@ -46,10 +46,14 @@ public class GameLobbyGUI extends JFrame {
 		setLayout(new BorderLayout());
 		
 		this.profileButton = new JButton("Profile");
+		if(!user.isUser())
+		{
+			profileButton.setVisible(false);
+		}
 		profileButton.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent e) {
-				ProfileScreen ps = new ProfileScreen(user);
+				ProfileScreen ps = new ProfileScreen((User)user);
 			}
 			
 		});
@@ -64,7 +68,7 @@ public class GameLobbyGUI extends JFrame {
 	
 	public static void main(String [] args){
 		Player p = new Player("awesome");
-		new GameLobbyGUI(user);
+		//new GameLobbyGUI(user);
 	}
 	
 	

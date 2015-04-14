@@ -14,5 +14,9 @@ public class Guest extends AbstractUser
 		return username;
 	}
 	
+	public boolean isUser()
+	{
+		return false;
+	}
 	
 }

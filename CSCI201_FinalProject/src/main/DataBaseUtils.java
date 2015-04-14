@@ -16,7 +16,7 @@ public class DataBaseUtils {
 
 	private static String getConnectionString()
 	{
-		return("jdbc:mysql://localhost/towerdefense?user=root&password=zorrozal18");
+		return("jdbc:mysql://localhost/towerdefense?user=root&password=Hyvesolutions2014");
 	}
 	
 	public static boolean verifyUser(String username, char [] password)
@@ -156,10 +156,11 @@ public class DataBaseUtils {
 		
 		String username;
 		int creepsKilled;
+		int goldEarned;
 		int gamesPlayed;
 		int gamesWon;
 		int gamesLost;
-		int [] userData = new int[4];
+		int [] userData = new int[5];
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(getConnectionString());
@@ -171,9 +172,10 @@ public class DataBaseUtils {
 			{
 				username = rs.getString("username");
 				creepsKilled = rs.getInt("creeps_killed");
+				goldEarned = rs.getInt("gold_earned");
 				gamesPlayed = rs.getInt("games_played");
 				gamesWon = rs.getInt("games_won");
-				gamesLost = rs.getInt("games_lost");
+				gamesLost = rs.getInt("game_lost");
 				
 			}
 			else
@@ -182,9 +184,10 @@ public class DataBaseUtils {
 				return null;
 			}
 			userData[0] = creepsKilled;
-			userData[1] = gamesPlayed;
-			userData[2] = gamesWon;
-			userData[3] = gamesLost;
+			userData[1] = goldEarned;
+			userData[2] = gamesPlayed;
+			userData[3] = gamesWon;
+			userData[4] = gamesLost;
 			newUser = new User(userID, username, userData);
 			rs.close();
 			st.close();
