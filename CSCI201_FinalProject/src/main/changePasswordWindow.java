@@ -46,18 +46,21 @@ public class changePasswordWindow extends JFrame
 				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPass.getText().toCharArray()) )
 				{
 					//if the name/password can't be verified
+					System.out.println("Username / Password can't be verified");
 				}
 				
 				//verify that the two new passwords are the same
 				else if (! newPass.getText().equals(confirm.getText()))
 				{
 					//if the two passwords don't match
+					System.out.println("Passwords don't match");
 				}
 				else
 				{
 					//if the user is verified and the passwords match, set the new password
 					int userID = DataBaseUtils.getUserID(u.getUsername());
 					DataBaseUtils.changePassword(userID, newPass.getText());
+					System.out.println("Password reset");
 				}
 				
 			}
