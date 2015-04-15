@@ -12,6 +12,7 @@ abstract class Moveable extends Thread{
 	//max y = 32
 	public void move(int direction) throws BoundaryException{
 		previousLocation = currentLocation;
+		currentLocation.removeOccupant();
 		switch(direction){
 			//0 = up
 			case 0:
@@ -30,6 +31,7 @@ abstract class Moveable extends Thread{
 				currentLocation = currentLocation.getWest();
 				break;
 		}
+		currentLocation.setOccupant(this);
 		
 		
 	}
