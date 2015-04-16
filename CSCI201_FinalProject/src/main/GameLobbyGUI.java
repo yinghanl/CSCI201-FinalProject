@@ -13,6 +13,8 @@ import javax.swing.JTabbedPane;
 
 
 public class GameLobbyGUI extends JFrame {
+
+	private static final long serialVersionUID = 1;
 	private AbstractUser user;
 	private JTabbedPane mainPane;
 	private TabPanel easyPanel;

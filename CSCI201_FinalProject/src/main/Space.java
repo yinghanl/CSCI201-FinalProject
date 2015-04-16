@@ -1,9 +1,11 @@
 package main;
 
-abstract class Space {
+import java.io.Serializable;
+
+abstract class Space implements Serializable{
+	private static final long serialVersionUID = 1;
 	private Moveable occupant;
 	private Space north, south, east, west;
-	
 	private int x, y;
 	
 	public Space(int x, int y){

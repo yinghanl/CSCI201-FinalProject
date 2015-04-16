@@ -1,6 +1,9 @@
 package main;
 
-public class BlankSpace extends ClickableSpace{
+import java.io.Serializable;
+
+public class BlankSpace extends ClickableSpace implements Serializable{
+	private static final long serialVersionUID = 1;
 	
 	public BlankSpace(int x, int y){
 		super(x, y);

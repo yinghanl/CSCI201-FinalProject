@@ -1,6 +1,9 @@
 package main;
 
-abstract class Moveable extends Thread{
+import java.io.Serializable;
+
+abstract class Moveable extends Thread implements Serializable{
+	private static final long serialVersionUID = 1;
 	protected Space currentLocation, previousLocation;
 	
 	public Moveable(Space loc){

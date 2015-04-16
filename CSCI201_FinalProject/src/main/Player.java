@@ -10,7 +10,6 @@ public class Player extends Moveable implements Serializable{
 	
 	public Player(String name){
 		super(new BlankSpace(0, 0));
-		System.out.println("Player name given: "+ name);
 		this.name = name;
 	}//end of constructor
 	
@@ -20,7 +19,6 @@ public class Player extends Moveable implements Serializable{
 	}//end of default constructor
 	
 	public String getPlayerName(){
-		System.out.println("getplayername(): "+name);
 		return name;
 	}//end of getting the name of player
 }//end of class
