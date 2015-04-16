@@ -2,6 +2,7 @@ package main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -9,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class changePasswordWindow extends JFrame
@@ -16,9 +18,9 @@ public class changePasswordWindow extends JFrame
 	private JLabel oldPass = new JLabel("Enter current password");
 	private JLabel newPass = new JLabel("Enter a new password");
 	private JLabel confirm = new JLabel("Confirm new password");
-	private JTextField oldPassField = new JTextField(20);
-	private JTextField newPassField = new JTextField(20);
-	private JTextField confirmField = new JTextField(20);
+	private JPasswordField oldPassField = new JPasswordField(20);
+	private JPasswordField newPassField = new JPasswordField(20);
+	private JPasswordField confirmField = new JPasswordField(20);
 	private JButton submit = new JButton ("Submit");
 	private User u;
 	
@@ -43,14 +45,14 @@ public class changePasswordWindow extends JFrame
 			public void actionPerformed(ActionEvent e) {
 				
 				//verify the user entered the correct current password
-				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getText().toCharArray()) )
+				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getPassword() ))
 				{
 					//if the name/password can't be verified
 					System.out.println("Username / Password can't be verified");
 				}
 				
 				//verify that the two new passwords are the same
-				else if (! newPassField.getText().equals(confirmField.getText()))
+				else if (! Arrays.equals(newPassField.getPassword(), confirmField.getPassword()))
 				{
 					//if the two passwords don't match
 					System.out.println("Passwords don't match");
@@ -59,7 +61,7 @@ public class changePasswordWindow extends JFrame
 				{
 					//if the user is verified and the passwords match, set the new password
 					int userID = DataBaseUtils.getUserID(u.getUsername());
-					DataBaseUtils.changePassword(userID, newPassField.getText());
+					DataBaseUtils.changePassword(userID, newPassField.getPassword());
 					System.out.println("Password reset");
 				}
 				

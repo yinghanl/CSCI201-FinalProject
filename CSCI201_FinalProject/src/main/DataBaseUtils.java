@@ -118,18 +118,19 @@ public class DataBaseUtils {
 		return userID;
 	}
 	
-	public static boolean changePassword(int userID, String password)
+	public static boolean changePassword(int userID, char [] password)
 	// Takes in a userID and a password,
 	// Changes the value of the password in the database
 	// Returns true if it worked, returned false if the userID wasn't found
 	{
+		String pass = cArrayToString(password);
 		boolean userExists = false;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(getConnectionString());
 			Statement st = conn.createStatement();
 			PreparedStatement ps = conn.prepareStatement("UPDATE user SET password=? WHERE userID=?");
-			ps.setString(1, password);
+			ps.setString(1, pass);
 			ps.setInt(2, userID); // set first variable in prepared statement
 			int rowsAffected = ps.executeUpdate();
 			

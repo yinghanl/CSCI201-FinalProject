@@ -117,6 +117,7 @@ public class LogInGUI extends JFrame
 					int userID = DataBaseUtils.getUserID(username);
 					newUser = DataBaseUtils.createUser(userID);
 					new GameLobbyGUI(newUser);
+					setVisible(false);
 				}
 			}
 		});
@@ -127,6 +128,7 @@ public class LogInGUI extends JFrame
 			{
 				Guest newGuest = DataBaseUtils.createGuest();
 				new GameLobbyGUI(newGuest);
+				setVisible(false);
 				
 				//User newUser = DataBaseUtils.createGuest();
 				//new Homescreen(newUser);
@@ -144,6 +146,7 @@ public class LogInGUI extends JFrame
 					int userID = DataBaseUtils.createNewUser(username, password);
 					User newUser = DataBaseUtils.createUser(userID);
 					new GameLobbyGUI(newUser);
+					setVisible(false);
 				}
 				//calls DatabaseUtils.createNewUser
 				//if true, creates new user and logs in
