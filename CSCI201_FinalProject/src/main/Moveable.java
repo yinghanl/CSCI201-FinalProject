@@ -1,7 +1,11 @@
 package main;
 
+import java.awt.image.BufferedImage;
+
+//add images to each of the child classes
 abstract class Moveable extends Thread{
 	protected Space currentLocation, previousLocation;
+	protected BufferedImage img;
 	
 	public Moveable(Space loc){
 		currentLocation = loc;
@@ -42,6 +46,10 @@ abstract class Moveable extends Thread{
 	
 	public Space getPrevious(){
 		return previousLocation;
+	}
+	
+	public BufferedImage getMoveableImage(){
+		return img;
 	}
 	
 }
