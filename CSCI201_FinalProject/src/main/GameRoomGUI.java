@@ -92,8 +92,9 @@ public class GameRoomGUI extends JFrame{
 		message = null;
 		msgSent = false;
 		players_ready_array = new boolean[]{true, false, false, false};
-		players_in_room = 1;
+		players_in_room = 0;
 		playerIPAddresses = new String[4];
+		playersConnected = new Player[4];
 		
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(2,1));
@@ -133,13 +134,13 @@ public class GameRoomGUI extends JFrame{
 	}
 	
 	public void playerConnected(Player p){
-		players_in_room++;
 		playersConnected[players_in_room] = p;
+		players_in_room++;
 		chatbox.append("\n" + p.getPlayerName()+" connected!");
 	}//end of player connected to host game room
 	
 	public void setupHost(){
-		playersConnected = new Player[4];
+		players_in_room++;
 		playersConnected[0] = player;
 		IPAddress = "localhost";
 		new Chatserver(port).start();
@@ -222,20 +223,61 @@ public class GameRoomGUI extends JFrame{
 		jl = new JLabel("   "+player.getPlayerName());
 		jl.setBorder(border);
 		jp.add(jl);
+		playerLabels[0][0] = jl;
 		jl = new JLabel("   Ready");
 		jl.setBorder(border);
 		jp.add(jl);
+		playerLabels[0][1] = jl;
+		
 		for(int i=1; i<4; i++){
-			jl = new JLabel("   player"+i);
-			jl.setBorder(border);
-			jp.add(jl);
-			jl = new JLabel("   Not Ready");
-			jl.setBorder(border);
-			jp.add(jl);
+			if(i <= players_in_room-1){
+				jl = new JLabel("   "+playersConnected[i-1].getPlayerName());
+				jl.setBorder(border);
+				jp.add(jl);
+				playerLabels[i][0] = jl;
+				if(playersConnected[i-1].getReadyStatus()){
+					jl = new JLabel("   Ready");
+				}
+				else{
+					jl = new JLabel("   Not Ready");
+				}
+				jl.setBorder(border);
+				jp.add(jl);
+				playerLabels[i][1] = jl;
+			}
+			else{
+				jl = new JLabel("   -------");
+				jl.setBorder(border);
+				jp.add(jl);
+				playerLabels[i][0] = jl;
+				jl = new JLabel("   ---------");
+				jl.setBorder(border);
+				jp.add(jl);
+				playerLabels[i][1] = jl;
+			}//end of else	
 		}//end of for
+//		System.out.println("checking playerlabels");
+//		for(int i=0; i < 4; i++){
+//			System.out.print(playerLabels[i][0].getText());
+//			System.out.println("   "+playerLabels[i][1].getText());
+//		}
 		centerTopPanel.add(jp);
 	}//end of creating the panel that holds a table of player
 	
+	public void updatePlayerLabels(){
+		System.out.println("players in room: " +players_in_room);
+		for(int i=1; i<4; i++){
+			if(i < players_in_room){
+				playerLabels[i][0].setText(playersConnected[i].getPlayerName());
+				if(playersConnected[i].getReadyStatus()){
+					playerLabels[i][1].setText("   Ready");
+				}//end of if ready
+				else{
+					playerLabels[i][1].setText("   Not Ready");
+				}//end of else not ready
+			}//end of if
+		}//end of for
+	}//end of updating the labels
 	
 	public class Chatserver extends Thread{
 		private ServerSocket ss;
@@ -256,7 +298,6 @@ public class GameRoomGUI extends JFrame{
 				ss = new ServerSocket(port);
 				chatbox.append("\nWaiting for players to connect...");
 				s = ss.accept();   //blocking line waits till accepted to proceed to next lines of code
-				players_in_room++;
 				chatbox.append("\nConnection established!");
 				br = new BufferedReader( new InputStreamReader(s.getInputStream()));
 				ois = new ObjectInputStream(s.getInputStream());
@@ -267,6 +308,7 @@ public class GameRoomGUI extends JFrame{
 				while(obj != null){
 					if(obj instanceof Player){
 						playerConnected((Player)obj);
+						updatePlayerLabels();
 						player = (Player)obj;
 					}//end of if player object
 					else if(obj instanceof String){
