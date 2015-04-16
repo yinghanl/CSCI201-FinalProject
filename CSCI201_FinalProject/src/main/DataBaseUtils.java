@@ -204,32 +204,8 @@ public class DataBaseUtils {
 	
 	public static Guest createGuest()
 	{
-		Guest newGuest = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = DriverManager.getConnection(getConnectionString());
-			Statement st = conn.createStatement();
-			PreparedStatement ps = conn.prepareStatement("SELECT LAST_INSERT_ID");
-			ResultSet rs = ps.executeQuery();
-			int guestID = -1;
-			if(rs.next())
-			{
-				guestID = rs.getInt("LAST_INSERT_INTO");
-				
-			}
-			else
-			{
-				return null;
-			}
-			newGuest = new Guest(guestID);
-			rs.close();
-			st.close();
-			conn.close();
-		} catch (SQLException sqle) {
-			System.out.println ("SQLException: " + sqle.getMessage());
-		} catch (ClassNotFoundException cnfe) {
-			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
-		}
+		int guestID = createNewUser("N/A", "N/A".toCharArray());
+		Guest newGuest = new Guest(guestID);
 		return newGuest;
 	}
 	
