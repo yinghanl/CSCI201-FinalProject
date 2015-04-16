@@ -95,7 +95,7 @@ public class DataBaseUtils {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO user (username, password) VALUES(?, ?) ");
 			ps.setString(1, username); // set first variable in prepared statement
 			ps.setString(2, pass);
-			ps.executeQuery();
+			ps.executeUpdate();
 			PreparedStatement getIDps = conn.prepareStatement("SELECT userID FROM user WHERE username=?");
 			getIDps.setString(1, username);
 			ResultSet rs = getIDps.executeQuery();
@@ -128,16 +128,16 @@ public class DataBaseUtils {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(getConnectionString());
 			Statement st = conn.createStatement();
-			PreparedStatement ps = conn.prepareStatement("UPDATE towerdefense SET password=? WHERE userID=?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE user SET password=? WHERE userID=?");
 			ps.setString(1, password);
-			ps.setInt(1, userID); // set first variable in prepared statement
-			ResultSet rs = ps.executeQuery();
-			if(rs.next())
+			ps.setInt(2, userID); // set first variable in prepared statement
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected > 0)
 			{
 				userExists = true;
 			}
 			
-			rs.close();
 			st.close();
 			conn.close();
 		} catch (SQLException sqle) {
