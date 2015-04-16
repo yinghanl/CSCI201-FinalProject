@@ -1,10 +1,18 @@
 package main;
 
+<<<<<<< HEAD
 import java.io.Serializable;
 
 abstract class Moveable extends Thread implements Serializable{
 	private static final long serialVersionUID = 1;
+=======
+import java.awt.image.BufferedImage;
+
+//add images to each of the child classes
+abstract class Moveable extends Thread{
+>>>>>>> 77d4b79c23475c6333cc7415e28396f0322c098b
 	protected Space currentLocation, previousLocation;
+	protected BufferedImage img;
 	
 	public Moveable(Space loc){
 		currentLocation = loc;
@@ -45,6 +53,10 @@ abstract class Moveable extends Thread implements Serializable{
 	
 	public Space getPrevious(){
 		return previousLocation;
+	}
+	
+	public BufferedImage getMoveableImage(){
+		return img;
 	}
 	
 }
