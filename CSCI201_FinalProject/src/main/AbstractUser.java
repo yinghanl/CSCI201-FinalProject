@@ -16,5 +16,7 @@ public abstract class AbstractUser {
 		return userID;
 	}
 	
+	abstract public boolean isUser();
+	
 	abstract public String getUsername();
 }

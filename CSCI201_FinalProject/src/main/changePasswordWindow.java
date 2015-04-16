@@ -43,21 +43,24 @@ public class changePasswordWindow extends JFrame
 			public void actionPerformed(ActionEvent e) {
 				
 				//verify the user entered the correct current password
-				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPass.getText().toCharArray()) )
+				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getText().toCharArray()) )
 				{
 					//if the name/password can't be verified
+					System.out.println("Username / Password can't be verified");
 				}
 				
 				//verify that the two new passwords are the same
-				else if (! newPass.getText().equals(confirm.getText()))
+				else if (! newPassField.getText().equals(confirmField.getText()))
 				{
 					//if the two passwords don't match
+					System.out.println("Passwords don't match");
 				}
 				else
 				{
 					//if the user is verified and the passwords match, set the new password
 					int userID = DataBaseUtils.getUserID(u.getUsername());
-					DataBaseUtils.changePassword(userID, newPass.getText());
+					DataBaseUtils.changePassword(userID, newPassField.getText());
+					System.out.println("Password reset");
 				}
 				
 			}

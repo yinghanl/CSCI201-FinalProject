@@ -41,4 +41,9 @@ public class User extends AbstractUser
 		else
 			gamesLost++;
 	}
+	
+	public boolean isUser()
+	{
+		return true;
+	}
 }
