@@ -42,10 +42,11 @@ import javax.swing.table.DefaultTableModel;
 import com.sun.prism.paint.Color;
 
 public class GameRoomGUI extends JFrame{
-	private JPanel windowPanel;
+	private static final long serialVersionUID = 1L;
+	//private JPanel windowPanel;
 	private JPanel picture_of_mapPanel;
 	private JPanel chatboxPanel;
-	private JPanel listof_playersPanel;
+	//private JPanel listof_playersPanel;
 	private JPanel centerPanel;
 	private JPanel centerTopPanel;
 	private JTextArea chatbox;
@@ -55,7 +56,7 @@ public class GameRoomGUI extends JFrame{
 	private JButton readyButton;
 	private boolean players_ready_array[];
 	private int players_in_room;
-	private JTable playersJT;
+	//private JTable playersJT;
 	private JLabel playerLabels[][];
 	private Player playersConnected[];
 	private Player player;
@@ -63,20 +64,23 @@ public class GameRoomGUI extends JFrame{
 	private boolean msgSent;
 	private String message;
 	private String IPAddress;
-	private String playerIPAddresses[];
+	private String roomTitle;
+	//private String playerIPAddresses[];
 	private int port;
 	private Chatserver chatserver;
 	private Chatclient chatclient;
 	
-	public GameRoomGUI(Player player, boolean isHost, String IPAddress, int port){
-		super("Game Room");
+	public GameRoomGUI(Player player, boolean isHost, String IPAddress, int port, String title){
+		this.player = player;
+		this.isHost = isHost;
+		this.port = port;
+		this.roomTitle = title;
+		setTitle(title);
 		setSize(700, 500);
 		setLocation(300, 50);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
-		this.player = player;
-		this.isHost = isHost;
-		this.port = port;
+		
 	
 		/*
 		 * User who creates the room will have the ready button disabled because they have the start button
@@ -93,7 +97,7 @@ public class GameRoomGUI extends JFrame{
 		msgSent = false;
 		players_ready_array = new boolean[]{true, false, false, false};
 		players_in_room = 0;
-		playerIPAddresses = new String[4];
+		//playerIPAddresses = new String[4];
 		playersConnected = new Player[4];
 		
 		centerPanel = new JPanel();
@@ -124,7 +128,6 @@ public class GameRoomGUI extends JFrame{
 		
 	}//end of constructor
 	
-	//setup chat server here
 	
 	public int getPort(){
 		return port;
@@ -150,6 +153,14 @@ public class GameRoomGUI extends JFrame{
 		chatclient = new Chatclient(IPAddress, player, port);
 	}//end of setting up the chat client
 	
+	public String getTitle(){
+		return roomTitle;
+	}//end of returning title of the room
+	
+	public int getNumOfPlayers(){
+		return players_in_room;
+	}//end of returning amount of players in the room
+	
 	public void createJTextField(){
 		typefield = new JTextField("Press Enter to Send", 30);
 	}//end of creating the textfield
@@ -167,6 +178,17 @@ public class GameRoomGUI extends JFrame{
 				typefield.setText("");
 				chatbox.append("\n"+player.getPlayerName()+": "+temp);
 				msgSent = true;
+			}
+		});
+		
+		readyButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				if(readyButton.getText() == "Ready Up"){
+					readyButton.setText("Unready");
+				}
+				else{
+					readyButton.setText("Ready Up");
+				}
 			}
 		});
 		buttonPanel.add(typefield);
@@ -224,7 +246,12 @@ public class GameRoomGUI extends JFrame{
 		jl.setBorder(border);
 		jp.add(jl);
 		playerLabels[0][0] = jl;
-		jl = new JLabel("   Ready");
+		if(isHost){
+			jl = new JLabel("   Ready");
+		}
+		else{
+			jl = new JLabel("   Not Ready");
+		}
 		jl.setBorder(border);
 		jp.add(jl);
 		playerLabels[0][1] = jl;
@@ -305,7 +332,8 @@ public class GameRoomGUI extends JFrame{
 				oos.writeObject(new String("Connected to Game Room!"));
 				oos.flush();
 				Object obj = ois.readObject();
-				while(obj != null){
+				String line = "";
+				while(obj != null || msgSent){
 					if(obj instanceof Player){
 						playerConnected((Player)obj);
 						updatePlayerLabels();
@@ -314,6 +342,18 @@ public class GameRoomGUI extends JFrame{
 					else if(obj instanceof String){
 						chatbox.append("\n" + ((String)obj));
 					}//end of else if obj is a string
+					if(msgSent){
+						line = player.getPlayerName() + ": " + message;
+						try {
+							//System.out.println("sent string object: "+line);
+							oos.writeObject(line);
+							oos.flush();
+						} catch (IOException e) {
+							System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
+							//System.exit(0);
+						}//end of try-catch
+						msgSent = false;
+					}//end of if acceptable text	
 					obj = ois.readObject();
 				}//end of while
 				
@@ -355,7 +395,8 @@ public class GameRoomGUI extends JFrame{
 				Object ob = ois.readObject();
 				while(ob != null){
 					if(ob instanceof String){
-						chatbox.append(((String)ob));
+						System.out.println("got string: "+(String)ob);
+						chatbox.append("\n"+((String)ob));
 					}//end of if ob is String	
 					ob = ois.readObject();
 				}//end of while	
@@ -383,6 +424,7 @@ public class GameRoomGUI extends JFrame{
 					try {
 						//System.out.println("sent string object: "+line);
 						oos.writeObject(line);
+						oos.flush();
 					} catch (IOException e) {
 						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
 						//System.exit(0);
