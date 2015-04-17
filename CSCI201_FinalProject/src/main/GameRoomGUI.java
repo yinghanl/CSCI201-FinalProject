@@ -313,6 +313,7 @@ public class GameRoomGUI extends JFrame{
 		private ObjectInputStream ois;
 		private ObjectOutputStream oos;
 		private int port;
+		private Object obj;
 		public Chatserver(int port){
 			this.port = port;
 			
@@ -331,20 +332,14 @@ public class GameRoomGUI extends JFrame{
 				oos.writeObject(new String("Connected to Game Room!"));
 				oos.flush();
 				
-				Object obj = new Object();
-				String line = "";
-				while(obj != null || msgSent){
-					if(obj instanceof Player){
-						playerConnected((Player)obj);
-						updatePlayerLabels();
-					}//end of if player object
-					if(obj instanceof String){
-						chatbox.append("\n" + ((String)obj));
-					}//end of else if obj is a string
+				obj = new Object();
+				new ReadObject().start();
+				String line = typefield.getText();
+				while(true){
 					if(msgSent){
 						line = player.getPlayerName() + ": " + message;
 						try {
-							System.out.println("sent string object: "+line);
+							//System.out.println("sent string object: "+line);
 							oos.writeObject(line);
 							oos.flush();
 						} catch (IOException e) {
@@ -353,19 +348,45 @@ public class GameRoomGUI extends JFrame{
 						}//end of try-catch
 						msgSent = false;
 					}//end of if acceptable text	
-					obj = ois.readObject(); //BLOCKING LINE OF CODE
-				}//end of while
+					line = typefield.getText();
+				}//end of while loop
 				
-				br.close();
-				s.close();
-				ss.close();
 			}catch(IOException ioe){
 				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
-			} catch(ClassNotFoundException cnfe){
-				System.out.println("CNFE in chatserver constructor: " + cnfe.getMessage());
+			} finally{
+				try {
+					br.close();
+					s.close();
+					ss.close();
+				} catch (IOException e) {
+					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
+				}
+			}//end of finally block
+		}//end of run
+		class ReadObject extends Thread{
+			ReadObject(){
 			}
 			
-		}//end of run
+			public synchronized void run(){
+				try {
+					obj = ois.readObject();
+					while(obj != null){
+						if(obj instanceof Player){
+							playerConnected((Player)obj);
+							updatePlayerLabels();
+						}//end of if player object
+						if(obj instanceof String){
+							chatbox.append("\n" + ((String)obj));
+						}//end of else if obj is a string
+						obj = ois.readObject();
+					}//end of while	
+				}catch(IOException ioe){
+					System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+				} catch(ClassNotFoundException cnfe){
+					System.out.println("CNFE in chatserver constructor: " + cnfe.getMessage());
+				}
+			}//end of run
+		}//end of inner class read object
 	}//end of chat server class
 	
 	public class Chatclient extends Thread{
