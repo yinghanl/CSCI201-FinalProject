@@ -22,4 +22,8 @@ public class Player extends Moveable implements Serializable{
 	public boolean getReadyStatus(){
 		return readyStatus;
 	}//end of returning status
+	
+	public void setReadyStatus(boolean b){
+		readyStatus = b;
+	}
 }//end of class

@@ -62,11 +62,14 @@ public class GameRoomGUI extends JFrame{
 	private Player player;
 	private boolean isHost;
 	private boolean msgSent;
+	private boolean updated;
+	private boolean labelChange;
 	private String message;
 	private String IPAddress;
 	private String roomTitle;
 	//private String playerIPAddresses[];
 	private int port;
+	private int playerLabelIndex;
 	private Chatserver chatserver;
 	private Chatclient chatclient;
 	
@@ -95,6 +98,7 @@ public class GameRoomGUI extends JFrame{
 //		
 		message = null;
 		msgSent = false;
+		updated = false;
 		players_ready_array = new boolean[]{true, false, false, false};
 		players_in_room = 0;
 		//playerIPAddresses = new String[4];
@@ -116,16 +120,15 @@ public class GameRoomGUI extends JFrame{
 		getRootPane().setDefaultButton(sendButton);
 		
 		setVisible(true);
-		
-		
+			
 		if(isHost){
+			playerLabelIndex = 0;
 			setupHost();
 			//connectToRoom(player);
 		}
 		else{
 			connectToRoom(player);
-		}
-		
+		}	
 	}//end of constructor
 	
 	
@@ -184,10 +187,17 @@ public class GameRoomGUI extends JFrame{
 		readyButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				if(readyButton.getText() == "Ready Up"){
-					readyButton.setText("Unready");
+					//readyButton.setText("Unready");
+					playerLabels[playerLabelIndex][1].setText("   Ready");
+					player.setReadyStatus(true);
+					labelChange = true;
+					readyButton.setEnabled(false);
 				}
 				else{
 					readyButton.setText("Ready Up");
+					playerLabels[playerLabelIndex][1].setText("   Not Ready");
+					player.setReadyStatus(false);
+					labelChange = true;
 				}
 			}
 		});
@@ -283,19 +293,13 @@ public class GameRoomGUI extends JFrame{
 				playerLabels[i][1] = jl;
 			}//end of else	
 		}//end of for
-//		System.out.println("checking playerlabels");
-//		for(int i=0; i < 4; i++){
-//			System.out.print(playerLabels[i][0].getText());
-//			System.out.println("   "+playerLabels[i][1].getText());
-//		}
 		centerTopPanel.add(jp);
 	}//end of creating the panel that holds a table of player
 	
 	public void updatePlayerLabels(){
-		System.out.println("players in room: " +players_in_room);
 		for(int i=1; i<4; i++){
 			if(i < players_in_room){
-				playerLabels[i][0].setText(playersConnected[i].getPlayerName());
+				playerLabels[i][0].setText("   "+playersConnected[i].getPlayerName());
 				if(playersConnected[i].getReadyStatus()){
 					playerLabels[i][1].setText("   Ready");
 				}//end of if ready
@@ -304,6 +308,7 @@ public class GameRoomGUI extends JFrame{
 				}//end of else not ready
 			}//end of if
 		}//end of for
+		updated = true;
 	}//end of updating the labels
 	
 	public class Chatserver extends Thread{
@@ -374,10 +379,21 @@ public class GameRoomGUI extends JFrame{
 						if(obj instanceof Player){
 							playerConnected((Player)obj);
 							updatePlayerLabels();
+							while(!updated){}
+							oos.writeObject(playerLabels);
+							oos.flush();
+							oos.writeObject(new Integer(players_in_room-1));
+							oos.flush();
 						}//end of if player object
-						if(obj instanceof String){
+						else if(obj instanceof String){
 							chatbox.append("\n" + ((String)obj));
 						}//end of else if obj is a string
+						else if(obj instanceof JLabel[][]){
+							for(int i=0; i < 4; i++){
+								playerLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
+								playerLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
+							}//end of for
+						}//end of updating labels
 						obj = ois.readObject();
 					}//end of while	
 				}catch(IOException ioe){
@@ -415,9 +431,17 @@ public class GameRoomGUI extends JFrame{
 				Object ob = ois.readObject();
 				while(ob != null){
 					if(ob instanceof String){
-						System.out.println("got string: "+(String)ob);
 						chatbox.append("\n"+((String)ob));
 					}//end of if ob is String
+					else if(ob instanceof JLabel[][]){
+						for(int i=0; i < 4; i++){
+							playerLabels[i][0].setText(((JLabel[][])ob)[i][0].getText());
+							playerLabels[i][1].setText(((JLabel[][])ob)[i][1].getText());
+						}//end of forloop updating playerLabels
+					}
+					else if(ob instanceof Integer){
+						playerLabelIndex = (Integer)ob;
+					}
 					else{
 						System.out.println(ob.getClass());
 					}
@@ -428,15 +452,7 @@ public class GameRoomGUI extends JFrame{
 				System.out.println("IOE in chatclient constructor: " + ioe.getMessage());
 			} catch (ClassNotFoundException e) {
 				System.out.println("CNFE in chatclient reading object: "+e.getMessage());
-			} finally{
-//				try{
-//					br.close();
-//					s.close();
-//				}catch(IOException ioe){
-//					System.out.println("IOE in chatclient finally block: " + ioe.getMessage());
-//				}
-			}//end of finally block
-		
+			}
 		}//end of constructor
 		
 		public synchronized void run(){
@@ -445,15 +461,26 @@ public class GameRoomGUI extends JFrame{
 				if(msgSent){
 					line = player.getPlayerName() + ": " + message;
 					try {
-						//System.out.println("sent string object: "+line);
 						oos.writeObject(line);
 						oos.flush();
 					} catch (IOException e) {
 						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
-						//System.exit(0);
 					}//end of try-catch
 					msgSent = false;
-				}//end of if acceptable text	
+				}//end of if acceptable text
+				if(labelChange){
+					try {
+//						for(int i=0; i<4; i++){
+//							System.out.print(playerLabels[i][0].getText()+"    ");
+//							System.out.println(playerLabels[i][1].getText());
+//						}
+						oos.writeObject(playerLabels);
+						oos.flush();
+					} catch (IOException e) {
+						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
+					}//end of try-catch
+					labelChange = false;
+				}//end of if ready status changed
 				line = typefield.getText();
 			}//end of while loop
 		}//end of run()
