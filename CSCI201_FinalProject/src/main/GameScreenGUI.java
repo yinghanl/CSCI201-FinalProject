@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class GameScreenGUI extends JFrame{
 
@@ -29,6 +30,7 @@ public class GameScreenGUI extends JFrame{
 	JButton previous = new JButton("<-");
 	JButton next = new JButton("->");
 	JPanel buttonsPanel;
+	Timer timer;
 	
 	Board backendBoard;
 	
@@ -63,7 +65,14 @@ public class GameScreenGUI extends JFrame{
 		
 		this.setVisible(true);
 		
-		
+		Timer time = new Timer(100, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent ae) {
+				updateBoard();
+				
+			}
+		});
+		time.start();
 	}
 	
 	private ImagePanel createBoard()
