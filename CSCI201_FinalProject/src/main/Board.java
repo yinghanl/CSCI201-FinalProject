@@ -24,6 +24,7 @@ public class Board {
 				map[i][j] = new BlankSpace(i,j);
 			}
 		}
+		
 	}
 	
 	private void setAdjacencies(){
@@ -54,6 +55,7 @@ public class Board {
 	
 	private void getCreepPath()
 	{
+		creepPath = new ArrayList<PathSpace>();
 		creepPath.add(new PathSpace(14,0));
 		creepPath.add(new PathSpace(14,1));
 		creepPath.add(new PathSpace(14,2));

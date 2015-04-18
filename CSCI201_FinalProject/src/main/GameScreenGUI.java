@@ -30,16 +30,20 @@ public class GameScreenGUI extends JFrame{
 	JButton next = new JButton("->");
 	JPanel buttonsPanel;
 	
+	Board backendBoard;
+	
 	int nextIndex = 0;
 	int previousIndex = 0;
 	
-	public GameScreenGUI()
+	public GameScreenGUI(Board b)
 	{
 		this.setSize(800,400);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		this.setLayout(new BorderLayout());
+		
+		this.backendBoard = b;
 		
 		board = this.createBoard();
 		
@@ -244,4 +248,20 @@ public class GameScreenGUI extends JFrame{
 		
 	}
 	
+	public void updateBoard()
+	{
+		for(int i = 0; i < 20; i++)
+		{
+			for(int j = 0; j < 32; j++)
+			{
+				if(backendBoard.getSpace(i, j).isOccupied())
+				{
+					ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
+					
+					spaces[i][j].setIcon(icon);
+					
+				}
+			}
+		}
+	}
 }
