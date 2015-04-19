@@ -29,13 +29,12 @@ public class TabPanel extends JPanel {
 	JButton joinButton;
 	JButton returnButton;
 	AbstractUser u;
-	ArrayList<Game> gamesOpen;
+	
 	
 	public TabPanel(AbstractUser user){
 		initializeComponents();
 		createGUI();
 		this.u = user;
-		gamesOpen = new ArrayList<Game>();
 	}
 	
 	public void initializeComponents(){
@@ -46,8 +45,25 @@ public class TabPanel extends JPanel {
 		
 		
 		String [] columnNames = {"Host Name", "Players in Room"};
-		tableData = new Object[20][20];
+		
+		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
+		
 		gameListTable = new JTable(new DefaultTableModel(tableData, columnNames));
+		System.out.println(GameLobbyGUI.gamesOpen.size());
+		
+		//populate with games already open
+		for (int i = 0; i < GameLobbyGUI.gamesOpen.size(); i++){
+					
+					String creator = GameLobbyGUI.gamesOpen.get(i).getGameCreator();
+					int playersJoined = GameLobbyGUI.gamesOpen.get(i).getNumJoined();
+					
+					DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
+					tableModel.addRow(new Object[] { creator, playersJoined });
+					
+					//recreate table to update
+					gameListTable = new JTable(tableModel);
+					
+		}
 		
 		
 		gameListTable.setSelectionForeground(Color.WHITE);
@@ -74,11 +90,11 @@ public class TabPanel extends JPanel {
 					String gameToJoincreator = (String) gameListTable.getValueAt(row, 0);
 					//find the game in the vector of games to join the right one
 					Game toJoin = null;
-					for (int i = 0; i < gamesOpen.size(); i++)
+					for (int i = 0; i < GameLobbyGUI.gamesOpen.size(); i++)
 					{
-						if (gamesOpen.get(i).getGameCreator().equals(gameToJoincreator))
+						if (GameLobbyGUI.gamesOpen.get(i).getGameCreator().equals(gameToJoincreator))
 						{
-							toJoin = gamesOpen.get(i);
+							toJoin = GameLobbyGUI.gamesOpen.get(i);
 							
 							//join game
 							toJoin.joinGame(u.getUsername());
@@ -102,18 +118,15 @@ public class TabPanel extends JPanel {
 						
 				//create new game and add it to the table's model
 				Game newgame = new Game(u);
-				gamesOpen.add(newgame);
-				
+				GameLobbyGUI.gamesOpen.add(newgame);
+				System.out.println(GameLobbyGUI.gamesOpen.size());
 				
 				DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
 				tableModel.addRow(new Object[] { newgame.getGameCreator(), newgame.getNumJoined() });
+				
 				//recreate table to update
 				gameListTable = new JTable(tableModel);
-				
-				System.out.println("HERE!!");
-				
-			}
-			
+			}	
 		});
 		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
 		buttonPanel.add(joinButton);
