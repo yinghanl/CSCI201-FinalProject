@@ -121,7 +121,10 @@ public class GameScreenGUI extends JFrame{
 		{
 			new Chatserver(1200);
 		}
-		
+		else
+		{
+			new Chatclient("localhost", currentPlayer, 1200);
+		}
 		this.placeTower(0,1);
 	}
 	
@@ -391,6 +394,11 @@ public class GameScreenGUI extends JFrame{
 				if(key == ke.VK_ENTER && chatEdit.getText() != null)
 				{
 					msgSent = true;
+					
+					String toAppend = currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
+					
+					chat.setText(chat.getText() + toAppend);
+					chatEdit.setText(null);
 				}
 				
 			}
@@ -551,6 +559,9 @@ public class GameScreenGUI extends JFrame{
 				Object ob = ois.readObject();
 				while(ob != null){
 					ob = ois.readObject();
+					if(ob instanceof String){
+						chat.append("\n"+((String)ob));
+					}//end of if ob is String
 				}//end of while	
 				
 			}catch(IOException ioe){
@@ -561,10 +572,20 @@ public class GameScreenGUI extends JFrame{
 		}//end of constructor
 		
 		public synchronized void run(){
+			String line = chatEdit.getText();
 			while(true){
-				
+				if(msgSent){
+					line = currentPlayer.getPlayerName() + ": " + chatEdit.getText();
+					try {
+						oos.writeObject(line);
+						oos.flush();
+					} catch (IOException e) {
+						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
+					}//end of try-catch
+					msgSent = false;
 				}//end of if acceptable text
 				
 			}//end of while loop
 		}//end of run()
+	}
 }//end of class

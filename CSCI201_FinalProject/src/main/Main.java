@@ -15,7 +15,7 @@ public class Main {
 //		grg2.connectToRoom(p2);
 		
 		Board b = new Board();
-		new GameScreenGUI(b, p1, true);
+		new GameScreenGUI(b, p1, false);
 		
 	}
 }
