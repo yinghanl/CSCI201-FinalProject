@@ -355,9 +355,9 @@ public class GameRoomGUI extends JFrame {
 						oos.writeObject(new Integer(-1));
 						oos.flush();
 						Board b = new Board();
-						b.setPlayer(0, 0, player.getName());
 						new GameScreenGUI(b, player, true);
 						setVisible(false);
+						loadGameScreen = false;
 					}
 					if(msgSent){
 						line = player.getPlayerName() + ": " + message;
@@ -412,11 +412,16 @@ public class GameRoomGUI extends JFrame {
 							chatbox.append("\n" + ((String)obj));
 						}//end of else if obj is a string
 						else if(obj instanceof JLabel[][]){
-							for(int i=0; i < 4; i++){
+							for(int i=1; i < 4; i++){
 								playerLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 								playerLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
 							}//end of for
 						}//end of updating labels
+						else if(obj instanceof Integer){
+							if((Integer)obj == -2){
+								playersReady++;
+							}
+						}
 						obj = ois.readObject();
 					}//end of while	
 				}catch(IOException ioe){
@@ -465,9 +470,9 @@ public class GameRoomGUI extends JFrame {
 					else if(ob instanceof Integer){
 						if((Integer)ob == -1){
 							Board b = new Board();
-							b.setPlayer(0, 0, player.getName());
 							new GameScreenGUI(b, player, false);
 							setVisible(false);
+							loadGameScreen = false;
 						}
 						else{
 							playerLabelIndex = (Integer)ob;
@@ -502,6 +507,8 @@ public class GameRoomGUI extends JFrame {
 				if(labelChange){
 					try {
 						oos.writeObject(playerLabels);
+						oos.flush();
+						oos.writeObject(new Integer(-2));
 						oos.flush();
 					} catch (IOException e) {
 						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
