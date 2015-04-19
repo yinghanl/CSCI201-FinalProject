@@ -328,12 +328,22 @@ public class GameScreenGUI extends JFrame{
 			public void keyPressed(KeyEvent ke) {
 
 				int key = ke.getKeyCode();
+				System.out.println(key);
 				int playerx = currentPlayer.getLocation().getX();
 				int playery = currentPlayer.getLocation().getY();
 				
 				System.out.println(playerx + " " + playery);
 				
-				if(key == ke.VK_S)
+				if(key == ke.VK_UP)
+				{
+					try {
+						currentPlayer.move(0);
+					} catch (BoundaryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else if(key == ke.VK_DOWN)
 				{
 					try {
 						currentPlayer.move(1);
@@ -342,6 +352,24 @@ public class GameScreenGUI extends JFrame{
 						e.printStackTrace();
 					}
 
+				}
+				else if(key == ke.VK_RIGHT)
+				{
+					try {
+						currentPlayer.move(2);
+					} 
+					catch (BoundaryException e) {
+						e.printStackTrace();
+					}
+				}
+				else if(key == ke.VK_LEFT)
+				{
+					try {
+						currentPlayer.move(3);
+					} catch (BoundaryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 			}
