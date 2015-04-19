@@ -69,7 +69,7 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	public static void main(String [] args){
-		Player p = new Player("awesome");
+		//Player p = new Player("awesome");
 		//new GameLobbyGUI(user);
 	}
 	

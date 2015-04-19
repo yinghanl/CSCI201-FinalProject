@@ -68,6 +68,8 @@ public class GameScreenGUI extends JFrame{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		this.setLayout(new BorderLayout());
+		this.setResizable(false);
+
 		
 		this.backendBoard = b;
 		
@@ -119,13 +121,15 @@ public class GameScreenGUI extends JFrame{
 		
 		if(isHost == true)
 		{
-			new Chatserver(1200);
+			new Chatserver(1200).start();
 		}
 		else
 		{
 			new Chatclient("localhost", currentPlayer, 1200);
 		}
+		
 		this.placeTower(0,1);
+		
 	}
 	
 	private JPanel getTopPanel()
@@ -382,7 +386,38 @@ public class GameScreenGUI extends JFrame{
 						e.printStackTrace();
 					}
 				}
-				
+				else if(key == ke.VK_1)
+				{
+					if(currentPlayer.getPlayerDirection() == "SOUTH")
+					{
+						if(playerx+1 < 20)
+						{
+							placeTower(playerx+1, playery);
+						}
+					}
+					else if(currentPlayer.getPlayerDirection() == "NORTH")
+					{
+						if(playerx-1 > 0)
+						{
+							placeTower(playerx-1, playery);
+						}
+					}
+					
+					else if(currentPlayer.getPlayerDirection() == "WEST")
+					{
+						if(playery-1 > 0)
+						{
+							placeTower(playerx, playery-1);
+						}
+					}
+					else if(currentPlayer.getPlayerDirection() == "EAST")
+					{
+						if(playery+1 < 32)
+						{
+							placeTower(playerx, playery+1);
+						}
+					}
+				}
 			}
 		});
 		chatEdit.addKeyListener(new KeyAdapter()
@@ -524,7 +559,6 @@ public class GameScreenGUI extends JFrame{
 				try {
 					obj = ois.readObject();
 					while(obj != null){
-					
 						obj = ois.readObject();
 					}//end of while	
 				}catch(IOException ioe){

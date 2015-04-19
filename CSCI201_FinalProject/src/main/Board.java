@@ -11,7 +11,6 @@ public class Board {
 		//this.getCreepPath();
 		creepPath = new ArrayList<PathSpace>();
 		this.getMap();
-		this.setPlayer(0, 0, "Host");
 		this.setAdjacencies();
 		this.setPathSpaces();
 	}
@@ -180,8 +179,8 @@ public class Board {
 		return map[x][y];
 	}
 	
-	public void setPlayer(int x, int y, String playerName)
+	public void setPlayer(Player p)
 	{
-		map[x][y].setOccupant(new Player(playerName));
+		map[p.getLocation().getX()][p.getLocation().getY()].setOccupant(p);
 	}
 }
