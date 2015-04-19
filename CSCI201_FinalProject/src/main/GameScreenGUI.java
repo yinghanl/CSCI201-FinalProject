@@ -3,10 +3,17 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,26 +27,33 @@ import javax.swing.Timer;
 
 public class GameScreenGUI extends JFrame{
 
-	ImagePanel board;
-	JPanel chatBox;
-	JPanel optionsPanel;
-	JTextArea chat;
-	JTextField chatEdit;
-	JLabel[][] spaces;
-	JButton[] options;
-	JButton previous = new JButton("<-");
-	JButton next = new JButton("->");
-	JPanel buttonsPanel;
-	Timer timer;
+	private static final long serialVersionUID = 1L;
+	private ImagePanel board;
+	private JPanel chatBox;
+	private JPanel optionsPanel;
+	private JTextArea chat;
+	private JTextField chatEdit;
+	private JLabel[][] spaces;
+	private JButton[] options;
+	private JButton previous = new JButton("<-");
+	private JButton next = new JButton("->");
+	private JPanel buttonsPanel;
+	private Timer timer;
+	private JLabel levelTimer;
+	private JLabel teamGold;
+	private int timerInt = 60;
+	private int goldEarned = 0;
 	
-	Board backendBoard;
+	private Timer lvlTimer;
 	
-	int nextIndex = 0;
-	int previousIndex = 0;
+	private Board backendBoard;
+	
+	private int nextIndex = 0;
+	private int previousIndex = 0;
 	
 	public GameScreenGUI(Board b)
 	{
-		this.setSize(800,400);
+		this.setSize(825,510);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -61,6 +75,8 @@ public class GameScreenGUI extends JFrame{
 				
 		this.add(optionsPanel, BorderLayout.SOUTH);
 		
+		this.add(getTopPanel(), BorderLayout.NORTH);
+		
 		this.createActions();
 		
 		this.setVisible(true);
@@ -73,13 +89,54 @@ public class GameScreenGUI extends JFrame{
 			}
 		});
 		time.start();
+		
+		lvlTimer = new Timer(1000, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent ae) {
+				timerInt--;
+				levelTimer.setText("" + timerInt);
+			}
+			
+			
+		});
+		
+		lvlTimer.start();
+		
+		//setKeys();
+		
+		this.placeTower(0,1);
+	}
+	
+	private JPanel getTopPanel()
+	{
+		JPanel toReturn = new JPanel();
+		
+		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.X_AXIS));
+		
+		levelTimer = new JLabel("" + timerInt);
+		
+		teamGold = new JLabel("Gold: " + goldEarned);
+		
+		toReturn.add(Box.createGlue());
+		toReturn.add(Box.createGlue());
+
+		
+		toReturn.add(levelTimer);
+		
+		toReturn.add(Box.createGlue());
+		
+		toReturn.add(Box.createGlue());
+		
+		toReturn.add(teamGold);
+		
+		return toReturn;
 	}
 	
 	private ImagePanel createBoard()
 	{		
 		ImagePanel toReturn = new ImagePanel(new ImageIcon("TowerDefense.png").getImage());
 		
-		toReturn.setSize(600,400);
+		toReturn.setSize(600,700);
 		toReturn.setPreferredSize(toReturn.getSize());
 		
 		toReturn.setLayout(new GridLayout(20,32));
@@ -221,7 +278,6 @@ public class GameScreenGUI extends JFrame{
 		return toReturn;
 	}
 	
-	
 	private void createActions()
 	{
 		next.addActionListener(new ActionListener()
@@ -272,5 +328,88 @@ public class GameScreenGUI extends JFrame{
 				}
 			}
 		}
+	}
+	
+	public void placeTower(int x, int y)
+	{
+		BasicTower b = new BasicTower();
+		BufferedImage img[] = b.getTowerImages();
+		int count = 0;
+		
+		for(int i = 0; i < 2; i++)
+		{
+			for(int j = 0; j < 2; j++)
+			{				
+				Image resizedImage = img[count].getScaledInstance(spaces[i][j].getWidth(), spaces[i][j].getHeight(), Image.SCALE_SMOOTH);
+				
+				spaces[x+i][y+j].setIcon(new ImageIcon(resizedImage));
+				
+				count++;
+			}
+		}
+	}
+	
+	public void restartLevelTimer()
+	{
+		
+
+		
+	}
+
+	public void setKeys()
+	{
+		this.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyPressed(KeyEvent ke) {
+				int key = ke.getKeyCode();
+				
+				if(key == KeyEvent.VK_1)
+				{
+					System.out.println("1 clicked");
+
+					options[1].doClick();
+				}				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent ke) {
+				
+				int key = ke.getKeyCode();
+				
+				if(key == KeyEvent.VK_A)
+				{
+					System.out.println("1 clicked");
+
+					options[1].doClick();
+				}
+				else if(ke.getKeyChar() == '2')
+				{
+					options[2].doClick();
+				}
+				else if(ke.getKeyChar() == '3')
+				{
+					options[3].doClick();
+				}
+				else if(ke.getKeyChar() == '4')
+				{
+					options[4].doClick();
+				}
+				else if(ke.getKeyChar() == '5')
+				{
+					options[5].doClick();
+				}
+				
+			}
+			
+			
+		});
 	}
 }
