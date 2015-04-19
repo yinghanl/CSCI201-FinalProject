@@ -8,9 +8,11 @@ public class Board {
 	
 	public Board()
 	{
-		this.getCreepPath();
+		//this.getCreepPath();
+		creepPath = new ArrayList<PathSpace>();
 		this.getMap();
 		this.setAdjacencies();
+		this.setPathSpaces();
 	}
 	
 	private void getMap()
@@ -20,7 +22,16 @@ public class Board {
 		{
 			for(int j = 0; j < 32;j++)
 			{
-				map[i][j] = new BlankSpace(i,j);
+				if((i == 14 && j <5 ) || (j == 4 && i>4 && i<14) || (i == 5 && j>4 && j <12) || (j == 11 && i<17 && i>5) || (i == 16 && j>11 && j<21) || (j == 20 && i>9 && i<16) || (i == 10 && j>20 && j<32)){
+					PathSpace p = new PathSpace(i, j);
+					map[i][j] = p;
+					creepPath.add(p);
+				}
+				else{
+					map[i][j] = new BlankSpace(i,j);
+				}
+				//assign some to be 
+				
 			}
 		}
 		
@@ -29,29 +40,62 @@ public class Board {
 	private void setAdjacencies(){
 		for(int i = 0; i<20; i++){
 			for(int j = 0; j<32; j++){
-				if(i != 0)
-					map[i][j].setNorth(map[i-1][j]);
-				else
-					map[i][j].setNorth(null);
-				
-				if(i != 19)
-					map[i][j].setSouth(map[i+1][j]);
-				else
-					map[i][j].setSouth(null);
-				
-				if(j != 0)
-					map[i][j].setWest(map[i][j-1]);
-				else
-					map[i][j].setWest(null);
-				
-				if(j != 31)
-					map[i][j].setEast(map[i][j+1]);
-				else
-					map[i][j].setEast(null);
+				if(!(map[i][j] instanceof PathSpace)){
+					//north
+					if(i != 0 && !(map[i-1][j] instanceof PathSpace))
+						map[i][j].setNorth(map[i-1][j]);
+					else
+						map[i][j].setNorth(null);
+					
+					//south
+					if(i != 19 && !(map[i+1][j] instanceof PathSpace))
+						map[i][j].setSouth(map[i+1][j]);
+					else
+						map[i][j].setSouth(null);
+					
+					//west
+					if(j != 0 && !(map[i][j-1] instanceof PathSpace))
+						map[i][j].setWest(map[i][j-1]);
+					else
+						map[i][j].setWest(null);
+					
+					//east
+					if(j != 31 && !(map[i][j+1] instanceof PathSpace))
+						map[i][j].setEast(map[i][j+1]);
+					else
+						map[i][j].setEast(null);
+					
+					//northwest
+					if(i != 0 && j != 0 && !(map[i-1][j-1] instanceof PathSpace))
+						map[i][j].setNorthWest(map[i-1][j-1]);
+					else
+						map[i][j].setNorthWest(null);
+					
+					//northeast
+					if(i != 0 && j != 31 && !(map[i-1][j+1] instanceof PathSpace))
+						map[i][j].setNorthEast(map[i-1][j+1]);
+					else
+						map[i][j].setNorthEast(null);
+					
+					//southeast
+					if(i != 19 && j != 31 && !(map[i+1][j+1] instanceof PathSpace))
+						map[i][j].setSouthEast(map[i+1][j+1]);
+					else
+						map[i][j].setSouthEast(null);
+					
+					//southwest
+					if(i != 19 && j != 0 && !(map[i+1][j-1] instanceof PathSpace))
+						map[i][j].setSouthWest(map[i+1][j-1]);
+					else
+						map[i][j].setSouthWest(null);
+				}
+
 			}
 		}
 	}
 	
+
+/*	
 	private void getCreepPath()
 	{
 		creepPath = new ArrayList<PathSpace>();
@@ -119,6 +163,14 @@ public class Board {
 		creepPath.add(new PathSpace(10,29));
 		creepPath.add(new PathSpace(10,30));
 		creepPath.add(new PathSpace(10,31));
+	}
+*/
+	
+	private void setPathSpaces(){
+		for(int i = 0; i<creepPath.size()-1; i++){
+			creepPath.get(i).setNext(creepPath.get(i+1));
+		}
+		creepPath.get(creepPath.size()-1).setNext(null);
 	}
 	
 
