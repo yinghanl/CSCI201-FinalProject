@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.sun.prism.paint.Color;
 
-public class GameRoomGUI extends JFrame{
+public class GameRoomGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	//private JPanel windowPanel;
 	private JPanel picture_of_mapPanel;
@@ -116,9 +116,6 @@ public class GameRoomGUI extends JFrame{
 			setupHost();
 			//connectToRoom(player);
 		}
-		else{
-			connectToRoom(player);
-		}	
 	}//end of constructor
 	
 	
@@ -351,7 +348,7 @@ public class GameRoomGUI extends JFrame{
 				new ReadObject().start();
 				String line = typefield.getText();
 				while(true){
-					if(playersReady == 4){
+					if(playersReady == 2){
 						startGameButton.setEnabled(true);
 					}
 					if(loadGameScreen){
