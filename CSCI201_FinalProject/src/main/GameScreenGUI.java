@@ -59,6 +59,8 @@ public class GameScreenGUI extends JFrame{
 	private Player currentPlayer;
 	private boolean isHost;
 	
+	private boolean msgSent = false;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		this.setSize(825,510);
@@ -114,6 +116,12 @@ public class GameScreenGUI extends JFrame{
 		
 		lvlTimer.start();
 				
+		
+		if(isHost == true)
+		{
+			new Chatserver(1200);
+		}
+		
 		this.placeTower(0,1);
 	}
 	
@@ -374,7 +382,20 @@ public class GameScreenGUI extends JFrame{
 				
 			}
 		});
-		
+		chatEdit.addKeyListener(new KeyAdapter()
+		{
+			public void keyPressed(KeyEvent ke) {
+			
+				int key = ke.getKeyCode();
+				
+				if(key == ke.VK_ENTER && chatEdit.getText() != null)
+				{
+					msgSent = true;
+				}
+				
+			}
+
+		});
 	}
 	
 	public void updateBoard()
@@ -456,7 +477,22 @@ public class GameScreenGUI extends JFrame{
 				
 				obj = new Object();
 				new ReadObject().start();
+				
+				String line = "";
 				while(true){
+					
+					if(msgSent){
+						line = currentPlayer.getPlayerName() + ": " + chatEdit.getText();
+						try {
+							//System.out.println("sent string object: "+line);
+							oos.writeObject(line);
+							oos.flush();
+						} catch (IOException e) {
+							System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
+							//System.exit(0);
+						}//end of try-catch
+						msgSent = false;
+					}//end of if acceptable text
 					
 				}//end of while loop
 				

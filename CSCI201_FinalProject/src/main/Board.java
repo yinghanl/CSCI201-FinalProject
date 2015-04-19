@@ -11,6 +11,7 @@ public class Board {
 		//this.getCreepPath();
 		creepPath = new ArrayList<PathSpace>();
 		this.getMap();
+		this.setPlayer(0, 0, "Host");
 		this.setAdjacencies();
 		this.setPathSpaces();
 	}

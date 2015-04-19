@@ -15,7 +15,6 @@ public class Main {
 //		grg2.connectToRoom(p2);
 		
 		Board b = new Board();
-		b.setPlayer(0, 0, "host");
 		new GameScreenGUI(b, p1, true);
 		
 	}
