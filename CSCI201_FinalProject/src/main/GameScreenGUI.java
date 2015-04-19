@@ -11,6 +11,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,6 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+
+import main.GameRoomGUI.Chatserver.ReadObject;
 
 public class GameScreenGUI extends JFrame{
 
@@ -412,4 +421,107 @@ public class GameScreenGUI extends JFrame{
 			
 		});
 	}
-}
+	public class Chatserver extends Thread{
+		private ServerSocket ss;
+		private Socket s;
+		private BufferedReader br;
+		private ObjectInputStream ois;
+		private ObjectOutputStream oos;
+		private int port;
+		private Object obj;
+		public Chatserver(int port){
+			this.port = port;
+			
+			//end of try
+		}//end of constructor
+		public void run(){
+
+			try{
+				ss = new ServerSocket(port);
+				//chatbox.append("\nWaiting for players to connect...");
+				s = ss.accept();   //blocking line waits till accepted to proceed to next lines of code
+				//chatbox.append("\nConnection established!");
+				br = new BufferedReader( new InputStreamReader(s.getInputStream()));
+				ois = new ObjectInputStream(s.getInputStream());
+				oos = new ObjectOutputStream(s.getOutputStream());
+				oos.writeObject(new String("Connected to Game Room!"));
+				oos.flush();
+				
+				obj = new Object();
+				new ReadObject().start();
+				while(true){
+					
+				}//end of while loop
+				
+			}catch(IOException ioe){
+				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+			} finally{
+				try {
+					br.close();
+					s.close();
+					ss.close();
+				} catch (IOException e) {
+					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
+				}
+			}//end of finally block
+		}//end of run
+		class ReadObject extends Thread{
+			ReadObject(){
+			}
+			
+			public synchronized void run(){
+				try {
+					obj = ois.readObject();
+					while(obj != null){
+					
+						obj = ois.readObject();
+					}//end of while	
+				}catch(IOException ioe){
+					System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+				} catch(ClassNotFoundException cnfe){
+					System.out.println("CNFE in chatserver constructor: " + cnfe.getMessage());
+				}
+			}//end of run
+		}//end of inner class read object
+	}//end of chat server class
+	
+	public class Chatclient extends Thread{
+		private Socket s;
+		private BufferedReader br;
+		private ObjectInputStream ois;
+		private ObjectOutputStream oos;
+		private String IPAddress;
+		private int port;
+		private Player p;
+		
+		public Chatclient(String IPAddress, Player p, int port){
+			this.IPAddress = IPAddress;
+			this.p = p;
+			this.port = port;
+			try{
+				s = new Socket(IPAddress, port);
+				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+				oos = new ObjectOutputStream(s.getOutputStream());
+				ois = new ObjectInputStream(s.getInputStream());
+				this.start();
+				
+				Object ob = ois.readObject();
+				while(ob != null){
+					ob = ois.readObject();
+				}//end of while	
+				
+			}catch(IOException ioe){
+				System.out.println("IOE in chatclient constructor: " + ioe.getMessage());
+			} catch (ClassNotFoundException e) {
+				System.out.println("CNFE in chatclient reading object: "+e.getMessage());
+			}
+		}//end of constructor
+		
+		public synchronized void run(){
+			while(true){
+				
+				}//end of if acceptable text
+				
+			}//end of while loop
+		}//end of run()
+}//end of class
