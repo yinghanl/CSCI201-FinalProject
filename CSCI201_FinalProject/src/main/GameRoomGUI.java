@@ -54,9 +54,7 @@ public class GameRoomGUI extends JFrame{
 	private JButton sendButton;
 	private JButton startGameButton;
 	private JButton readyButton;
-	private boolean players_ready_array[];
 	private int players_in_room;
-	//private JTable playersJT;
 	private JLabel playerLabels[][];
 	private Player playersConnected[];
 	private Player player;
@@ -64,12 +62,14 @@ public class GameRoomGUI extends JFrame{
 	private boolean msgSent;
 	private boolean updated;
 	private boolean labelChange;
+	private boolean resetLabels;
 	private String message;
 	private String IPAddress;
 	private String roomTitle;
-	//private String playerIPAddresses[];
+	private boolean loadGameScreen;
 	private int port;
 	private int playerLabelIndex;
+	private int playersReady;
 	private Chatserver chatserver;
 	private Chatclient chatclient;
 	
@@ -84,24 +84,14 @@ public class GameRoomGUI extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		
-	
-		/*
-		 * User who creates the room will have the ready button disabled because they have the start button
-		 * Assumes the host is always ready so boolea[0] is set at true
-		 * Gameroom will have at least one player (host who created the room)
-		 */
 		
-		//test players
-//		for(int i=1; i<4; i++){
-//			players_array[i] = new Player("p"+i);
-//		}
-//		
 		message = null;
 		msgSent = false;
 		updated = false;
-		players_ready_array = new boolean[]{true, false, false, false};
+		loadGameScreen = false;
+		resetLabels = false;
+		playersReady = 1;
 		players_in_room = 0;
-		//playerIPAddresses = new String[4];
 		playersConnected = new Player[4];
 		
 		centerPanel = new JPanel();
@@ -201,11 +191,18 @@ public class GameRoomGUI extends JFrame{
 				}
 			}
 		});
+		
+		startGameButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				loadGameScreen = true;
+			}
+		});
 		buttonPanel.add(typefield);
 		buttonPanel.add(sendButton);
 		buttonPanel.add(startGameButton);
 		buttonPanel.add(readyButton);
 		add(buttonPanel, BorderLayout.SOUTH);
+		startGameButton.setEnabled(false);
 	}//end of ceating the button
 	
 	public void createPicturePanel(){
@@ -302,6 +299,7 @@ public class GameRoomGUI extends JFrame{
 				playerLabels[i][0].setText("   "+playersConnected[i].getPlayerName());
 				if(playersConnected[i].getReadyStatus()){
 					playerLabels[i][1].setText("   Ready");
+					playersReady++;
 				}//end of if ready
 				else{
 					playerLabels[i][1].setText("   Not Ready");
@@ -310,6 +308,18 @@ public class GameRoomGUI extends JFrame{
 		}//end of for
 		updated = true;
 	}//end of updating the labels
+	
+	public void reopenGameRoom(){
+		setVisible(true);
+		/*
+		 * reset jlabels
+		*/
+	}//end of reopening the gameroom
+	public void reset(){
+		for(int i=1; i < 4; i++){
+			playerLabels[i][1].setText("   Not Ready");
+		}//end of for
+	}
 	
 	public class Chatserver extends Thread{
 		private ServerSocket ss;
@@ -341,6 +351,17 @@ public class GameRoomGUI extends JFrame{
 				new ReadObject().start();
 				String line = typefield.getText();
 				while(true){
+					if(playersReady == 4){
+						startGameButton.setEnabled(true);
+					}
+					if(loadGameScreen){
+						oos.writeObject(new Integer(-1));
+						oos.flush();
+						Board b = new Board();
+						b.setPlayer(0, 0, player.getName());
+						new GameScreenGUI(b, player, true);
+						setVisible(false);
+					}
 					if(msgSent){
 						line = player.getPlayerName() + ": " + message;
 						try {
@@ -352,7 +373,12 @@ public class GameRoomGUI extends JFrame{
 							//System.exit(0);
 						}//end of try-catch
 						msgSent = false;
-					}//end of if acceptable text	
+					}//end of if acceptable text
+					if(resetLabels){
+						reset();
+						oos.writeObject(playerLabels);
+						oos.flush();
+					}
 					line = typefield.getText();
 				}//end of while loop
 				
@@ -438,13 +464,21 @@ public class GameRoomGUI extends JFrame{
 							playerLabels[i][0].setText(((JLabel[][])ob)[i][0].getText());
 							playerLabels[i][1].setText(((JLabel[][])ob)[i][1].getText());
 						}//end of forloop updating playerLabels
-					}
+					}//end of else jlabel
 					else if(ob instanceof Integer){
-						playerLabelIndex = (Integer)ob;
-					}
+						if((Integer)ob == -1){
+							Board b = new Board();
+							b.setPlayer(0, 0, player.getName());
+							new GameScreenGUI(b, player, false);
+							setVisible(false);
+						}
+						else{
+							playerLabelIndex = (Integer)ob;
+						}
+					}//end of else integer
 					else{
 						System.out.println(ob.getClass());
-					}
+					}//end of else 
 					ob = ois.readObject();
 				}//end of while	
 				
@@ -470,10 +504,6 @@ public class GameRoomGUI extends JFrame{
 				}//end of if acceptable text
 				if(labelChange){
 					try {
-//						for(int i=0; i<4; i++){
-//							System.out.print(playerLabels[i][0].getText()+"    ");
-//							System.out.println(playerLabels[i][1].getText());
-//						}
 						oos.writeObject(playerLabels);
 						oos.flush();
 					} catch (IOException e) {
@@ -485,5 +515,6 @@ public class GameRoomGUI extends JFrame{
 			}//end of while loop
 		}//end of run()
 	}//end of class
+
 }//end of class
 

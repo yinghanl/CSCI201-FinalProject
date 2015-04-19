@@ -61,8 +61,9 @@ public class GameScreenGUI extends JFrame{
 	private int previousIndex = 0;
 	
 	private Player currentPlayer;
+	private boolean isHost;
 	
-	public GameScreenGUI(Board b)
+	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		this.setSize(825,510);
 		this.setLocation(0,0);
@@ -71,6 +72,10 @@ public class GameScreenGUI extends JFrame{
 		this.setLayout(new BorderLayout());
 		
 		this.backendBoard = b;
+		
+		this.currentPlayer = p;
+		
+		this.isHost = isHost;
 		
 		board = this.createBoard();
 		
