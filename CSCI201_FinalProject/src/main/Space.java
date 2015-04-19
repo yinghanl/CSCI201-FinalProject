@@ -5,7 +5,7 @@ import java.io.Serializable;
 abstract class Space implements Serializable{
 	private static final long serialVersionUID = 1;
 	private Moveable occupant;
-	private Space north, south, east, west;
+	private Space north, south, east, west, northWest, northEast, southWest, southEast;
 	private int x, y;
 	
 	public Space(int x, int y){
@@ -54,6 +54,22 @@ abstract class Space implements Serializable{
 		west = s;
 	}
 	
+	public void setNorthWest(Space s){
+		northWest = s;
+	}
+	
+	public void setNorthEast(Space s){
+		northEast = s;
+	}
+	
+	public void setSouthWest(Space s){
+		southWest = s;
+	}
+	
+	public void setSouthEast(Space s){
+		southEast = s;
+	}
+	
 	public Space getNorth() throws BoundaryException{
 		if(north == null)
 			throw new BoundaryException();
@@ -84,5 +100,34 @@ abstract class Space implements Serializable{
 			return east;
 		
 	}
+	
+	public Space getNorthEast() throws BoundaryException{
+		if(northEast == null)
+			throw new BoundaryException();
+		else
+			return northEast;
+	}
+	
+	public Space getSouthEast() throws BoundaryException{
+		if(southEast == null)
+			throw new BoundaryException();
+		else
+			return southEast;
+	}
+	
+	public Space getNorthWest() throws BoundaryException{
+		if(northWest == null)
+			throw new BoundaryException();
+		else
+			return northWest;
+	}
+	
+	public Space getSouthWest() throws BoundaryException{
+		if(southWest == null)
+			throw new BoundaryException();
+		else
+			return southWest;
+	}
+	
 	
 }
