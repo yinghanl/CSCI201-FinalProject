@@ -1,5 +1,8 @@
 package main;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 25d59111f3ce38795913a8f4681c978bd3827a5f
 import java.util.ArrayList;
 
 
