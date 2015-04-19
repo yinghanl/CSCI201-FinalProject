@@ -8,9 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,8 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-
-import main.GameRoomGUI.Chatserver.ReadObject;
 
 public class GameScreenGUI extends JFrame{
 
@@ -74,7 +70,7 @@ public class GameScreenGUI extends JFrame{
 		this.backendBoard = b;
 		
 		this.currentPlayer = p;
-		
+				
 		this.isHost = isHost;
 		
 		board = this.createBoard();
@@ -117,9 +113,7 @@ public class GameScreenGUI extends JFrame{
 		});
 		
 		lvlTimer.start();
-		
-		//setKeys();
-		
+				
 		this.placeTower(0,1);
 	}
 	
@@ -169,6 +163,8 @@ public class GameScreenGUI extends JFrame{
 			}
 		}
 		
+		toReturn.setFocusable(true);
+		toReturn.requestFocusInWindow();
 		
 		return toReturn;
 	}
@@ -327,6 +323,30 @@ public class GameScreenGUI extends JFrame{
 			}
 		});
 		
+		board.addKeyListener(new KeyAdapter()
+		{
+			public void keyPressed(KeyEvent ke) {
+
+				int key = ke.getKeyCode();
+				int playerx = currentPlayer.getLocation().getX();
+				int playery = currentPlayer.getLocation().getY();
+				
+				System.out.println(playerx + " " + playery);
+				
+				if(key == ke.VK_S)
+				{
+					try {
+						currentPlayer.move(1);
+					} catch (BoundaryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+				
+			}
+		});
+		
 	}
 	
 	public void updateBoard()
@@ -380,62 +400,6 @@ public class GameScreenGUI extends JFrame{
 		
 	}
 
-	public void setKeys()
-	{
-		this.addKeyListener(new KeyAdapter()
-		{
-
-			@Override
-			public void keyPressed(KeyEvent ke) {
-				int key = ke.getKeyCode();
-				
-				if(key == KeyEvent.VK_1)
-				{
-					System.out.println("1 clicked");
-
-					options[1].doClick();
-				}				
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void keyTyped(KeyEvent ke) {
-				
-				int key = ke.getKeyCode();
-				
-				if(key == KeyEvent.VK_A)
-				{
-					System.out.println("1 clicked");
-
-					options[1].doClick();
-				}
-				else if(ke.getKeyChar() == '2')
-				{
-					options[2].doClick();
-				}
-				else if(ke.getKeyChar() == '3')
-				{
-					options[3].doClick();
-				}
-				else if(ke.getKeyChar() == '4')
-				{
-					options[4].doClick();
-				}
-				else if(ke.getKeyChar() == '5')
-				{
-					options[5].doClick();
-				}
-				
-			}
-			
-			
-		});
-	}
 	public class Chatserver extends Thread{
 		private ServerSocket ss;
 		private Socket s;
