@@ -1,4 +1,4 @@
-package main;
+//package main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -39,9 +39,9 @@ public class GameLobbyGUI extends JFrame {
 	
 	private void initializeComponents(){
 		mainPane = new JTabbedPane();
-		easyPanel = new TabPanel();
-		mediumPanel = new TabPanel();
-		hardPanel = new TabPanel();
+		easyPanel = new TabPanel(user);
+		mediumPanel = new TabPanel(user);
+		hardPanel = new TabPanel(user);
 	}
 	
 	private void createGUI(){
