@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,7 +22,7 @@ public class GameLobbyGUI extends JFrame {
 	private TabPanel mediumPanel;
 	private TabPanel hardPanel;
 	private JButton profileButton;
-
+	public static ArrayList<Game> gamesOpen;
 	
 	public GameLobbyGUI(AbstractUser u){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -32,6 +33,8 @@ public class GameLobbyGUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.user = u;
+		gamesOpen = new ArrayList<Game>();
+		
 		initializeComponents();
 		createGUI();
 		setVisible(true);
