@@ -177,4 +177,9 @@ public class Board {
 	public Space getSpace(int x, int y){
 		return map[x][y];
 	}
+	
+	public void setPlayer(int x, int y, String playerName)
+	{
+		map[x][y].setOccupant(new Player(playerName));
+	}
 }

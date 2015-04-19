@@ -60,6 +60,8 @@ public class GameScreenGUI extends JFrame{
 	private int nextIndex = 0;
 	private int previousIndex = 0;
 	
+	private Player currentPlayer;
+	
 	public GameScreenGUI(Board b)
 	{
 		this.setSize(825,510);
@@ -330,9 +332,17 @@ public class GameScreenGUI extends JFrame{
 			{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
-					ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
+					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
+					{
+						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
+					}
+					else
+					{
+						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
 					
-					spaces[i][j].setIcon(icon);
+						spaces[i][j].setIcon(icon);
+					}
+
 					
 				}
 			}
