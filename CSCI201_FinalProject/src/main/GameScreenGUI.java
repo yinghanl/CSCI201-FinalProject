@@ -2,7 +2,6 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -19,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -72,7 +72,7 @@ public class GameScreenGUI extends JFrame{
 	private boolean msgSent = false;
 
 	private Tower testTower;
-	
+		
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		this.setSize(825,510);
@@ -81,7 +81,6 @@ public class GameScreenGUI extends JFrame{
 		
 		this.setLayout(new BorderLayout());
 		this.setResizable(false);
-
 		
 		this.backendBoard = b;
 		
@@ -393,6 +392,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(0);
+						currentPlayer.setPlayerDirection("NORTH");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -402,6 +402,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(1);
+						currentPlayer.setPlayerDirection("SOUTH");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -412,6 +413,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(2);
+						currentPlayer.setPlayerDirection("EAST");
 					} 
 					catch (BoundaryException e) {
 						e.printStackTrace();
@@ -421,6 +423,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(3);
+						currentPlayer.setPlayerDirection("WEST");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -433,7 +436,7 @@ public class GameScreenGUI extends JFrame{
 				else if(key == ke.VK_1)
 				{
 					options[0].setBackground(Color.GREEN);
-										
+					
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
@@ -443,17 +446,17 @@ public class GameScreenGUI extends JFrame{
 					}
 					else if(currentPlayer.getPlayerDirection() == "NORTH")
 					{
-						if(playerx-1 > 0)
+						if(playerx-2 > 0)
 						{
-							placeTower(playerx-1, playery);
+							placeTower(playerx-2, playery);
 						}
 					}
 					
 					else if(currentPlayer.getPlayerDirection() == "WEST")
 					{
-						if(playery-1 > 0)
+						if(playery-2 > 0)
 						{
-							placeTower(playerx, playery-1);
+							placeTower(playerx, playery-2);
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -506,7 +509,7 @@ public class GameScreenGUI extends JFrame{
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
 							//check to see if currentlocation = previous location, if the player was unable to move
 							if(backendBoard.getSpace(i, j).getMoveable().moveableCouldMove()){
-								spaces[x][y].setBorder(BorderFactory.createLineBorder(null));
+								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							}
 						}
 					}
@@ -519,9 +522,6 @@ public class GameScreenGUI extends JFrame{
 
 					
 				}
-				else{
-					//spaces[i][j].setBorder(BorderFactory.createLineBorder(null));
-				}
 			}
 		}
 	}
@@ -529,9 +529,23 @@ public class GameScreenGUI extends JFrame{
 	public void placeTower(int x, int y)
 	{
 		BasicTower b = new BasicTower(x, y);
+		
 		testTower = b;
 		BufferedImage img[] = b.getTowerImages();
 		int count = 0;
+		
+		for(int i = 0; i < 2; i++)
+		{
+			for(int j = 0; j < 2; j++)
+			{
+				if(x+i < 0 || y+j < 0 || x+i > 30 || y+j > 30)
+				{
+					System.out.println("Attempted to place tower outside of boundaries");
+					return;
+				}
+			}
+		}
+		
 		
 		for(int i = 0; i < 2; i++)
 		{
@@ -540,6 +554,8 @@ public class GameScreenGUI extends JFrame{
 				Image resizedImage = img[count].getScaledInstance(spaces[i][j].getWidth(), spaces[i][j].getHeight(), Image.SCALE_SMOOTH);
 				
 				spaces[x+i][y+j].setIcon(new ImageIcon(resizedImage));
+				
+				backendBoard.placeTower(x+i, y+j);
 				
 				count++;
 			}
