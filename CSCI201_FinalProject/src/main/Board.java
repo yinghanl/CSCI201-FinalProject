@@ -183,4 +183,9 @@ public class Board {
 	{
 		map[p.getLocation().getX()][p.getLocation().getY()].setOccupant(p);
 	}
+	
+	public void placeTower(int x, int y)
+	{
+		map[x][y] = new TowerSpace(x, y);
+	}
 }

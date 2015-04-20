@@ -2,12 +2,15 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -44,10 +48,16 @@ public class GameScreenGUI extends JFrame{
 	private JButton next = new JButton("->");
 	private JPanel buttonsPanel;
 	private Timer timer;
+	
+	private JLayeredPane[] optionsLayer;
+	
 	private JLabel levelTimer;
 	private JLabel teamGold;
+	private JLabel lives;
+	
 	private int timerInt = 60;
 	private int goldEarned = 0;
+	private int livesInt;
 	
 	private Timer lvlTimer;
 	
@@ -60,6 +70,8 @@ public class GameScreenGUI extends JFrame{
 	private boolean isHost;
 	
 	private boolean msgSent = false;
+
+	private Tower testTower;
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
@@ -85,7 +97,7 @@ public class GameScreenGUI extends JFrame{
 		
 		this.add(chatBox, BorderLayout.EAST);
 		
-		this.createButtons(13);
+		this.createButtons(5);
 		
 		optionsPanel = this.getOptions();
 				
@@ -128,7 +140,14 @@ public class GameScreenGUI extends JFrame{
 			new Chatclient("localhost", currentPlayer, 1200);
 		}
 		
-		this.placeTower(0,1);
+		//this.placeTower(0,1);
+		
+		board.addMouseListener(new MouseAdapter()
+		{
+            public void mouseClicked(MouseEvent e) {
+                board.requestFocusInWindow();
+            }
+		});
 		
 	}
 	
@@ -142,6 +161,9 @@ public class GameScreenGUI extends JFrame{
 		
 		teamGold = new JLabel("Gold: " + goldEarned);
 		
+		lives = new JLabel("Lives: " + livesInt);
+		
+		toReturn.add(lives);
 		toReturn.add(Box.createGlue());
 		toReturn.add(Box.createGlue());
 
@@ -153,6 +175,8 @@ public class GameScreenGUI extends JFrame{
 		toReturn.add(Box.createGlue());
 		
 		toReturn.add(teamGold);
+		
+		toReturn.add(Box.createGlue());
 		
 		return toReturn;
 	}
@@ -213,7 +237,16 @@ public class GameScreenGUI extends JFrame{
 		
 		for(int i = 0; i < k; i++)
 		{
-			options[i] = new JButton("" + i);
+			if(i == 0)
+			{
+				options[i] = new JButton("1. Build Tower");
+			}
+			else
+			{
+				options[i] = new JButton("" + i);
+			}
+			
+			
 			options[i].setSize(10,10);
 			options[i].setPreferredSize(options[i].getPreferredSize());
 		}
@@ -225,6 +258,9 @@ public class GameScreenGUI extends JFrame{
 		toReturn.setSize(100,50);
 		toReturn.setPreferredSize(toReturn.getSize());
 		toReturn.setLayout(new BorderLayout());
+		
+		optionsLayer = new JLayeredPane[5];
+		
 		
 		buttonsPanel = new JPanel();
 		buttonsPanel.setSize(100,50);
@@ -241,7 +277,7 @@ public class GameScreenGUI extends JFrame{
 			buttonsPanel.add(options[i]);
 			buttonsPanel.add(javax.swing.Box.createGlue());
 		}
-
+		
 		toReturn.add(buttonsPanel, BorderLayout.CENTER);
 		toReturn.add(next, BorderLayout.EAST);
 
@@ -386,8 +422,14 @@ public class GameScreenGUI extends JFrame{
 						e.printStackTrace();
 					}
 				}
+				else if(key == ke.VK_W)
+				{
+					testTower.shoot();
+				}
 				else if(key == ke.VK_1)
 				{
+					options[0].setBackground(Color.GREEN);
+										
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
@@ -468,7 +510,8 @@ public class GameScreenGUI extends JFrame{
 	
 	public void placeTower(int x, int y)
 	{
-		BasicTower b = new BasicTower();
+		BasicTower b = new BasicTower(x, y);
+		testTower = b;
 		BufferedImage img[] = b.getTowerImages();
 		int count = 0;
 		

@@ -6,6 +6,7 @@ public class TowerSpace extends ClickableSpace{
 	
 	public TowerSpace(int x, int y){
 		super(x, y);
+		tower = new BasicTower(x, y);
 	}
 	
 	public void performAction(){
