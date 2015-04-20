@@ -51,7 +51,7 @@ public class Board {
 					if(i != 19 && !(map[i+1][j] instanceof PathSpace))
 						map[i][j].setSouth(map[i+1][j]);
 					else
-						System.out.println("setting south to null for: " + i + " "+j);
+						//System.out.println("setting south to null for: " + i + " "+j);
 						map[i][j].setSouth(null);
 					
 					//west

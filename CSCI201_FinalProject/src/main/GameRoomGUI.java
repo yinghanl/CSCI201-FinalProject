@@ -38,6 +38,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultCaret;
 
 import com.sun.prism.paint.Color;
 
@@ -226,6 +227,8 @@ public class GameRoomGUI extends JFrame {
 		chatboxPanel.setLayout(new BoxLayout(chatboxPanel, BoxLayout.X_AXIS));
 		chatbox = new JTextArea(3,50);
 		chatbox.setEditable(false);
+		DefaultCaret caret = (DefaultCaret)chatbox.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JScrollPane scroll = new JScrollPane(chatbox, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		chatbox.setLineWrap(true);
 		chatbox.setWrapStyleWord(true);
