@@ -22,7 +22,7 @@ public class Board {
 		{
 			for(int j = 0; j < 32;j++)
 			{
-				if((i == 14 && j <5 ) || (j == 4 && i>4 && i<14) || (i == 5 && j>4 && j <12) || (j == 11 && i<17 && i>5) || (i == 16 && j>11 && j<21) || (j == 20 && i>9 && i<16) || (i == 10 && j>20 && j<32)){
+				if((i == 10 && j <5 ) || (j == 4 && i>4 && i<11) || (i == 5 && j>4 && j <12) || (j == 11 && i<13 && i>5) || (i == 12 && j>11 && j<20) || (j == 19 && i>7 && i<13) || (i == 8 && j>19 && j<32)){
 					PathSpace p = new PathSpace(i, j);
 					map[i][j] = p;
 					creepPath.add(p);
@@ -30,7 +30,7 @@ public class Board {
 				else{
 					map[i][j] = new BlankSpace(i,j);
 				}
-				//assign some to be 
+				//assign some to be mineable spaces
 				
 			}
 		}
@@ -51,7 +51,6 @@ public class Board {
 					if(i != 19 && !(map[i+1][j] instanceof PathSpace))
 						map[i][j].setSouth(map[i+1][j]);
 					else
-						System.out.println("setting south to null for: " + i + " "+j);
 						map[i][j].setSouth(null);
 					
 					//west

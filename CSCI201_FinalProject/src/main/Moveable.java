@@ -8,6 +8,7 @@ abstract class Moveable extends Thread implements Serializable{
 
 	protected Space currentLocation, previousLocation;
 	protected BufferedImage img;
+	protected boolean couldMove = true;
 	
 	public Moveable(Space loc){
 		currentLocation = loc;
@@ -19,24 +20,49 @@ abstract class Moveable extends Thread implements Serializable{
 	public void move(int direction) throws BoundaryException{
 		previousLocation = currentLocation;
 		currentLocation.removeOccupant();
-		switch(direction){
-			//0 = up
-			case 0:
-				currentLocation = currentLocation.getNorth();
-				break;
-			//1 = down
-			case 1:
-				currentLocation = currentLocation.getSouth();
-				break;
-			//2 = right
-			case 2:
-				currentLocation = currentLocation.getEast();
-				break;
-			//3 = left
-			default:
-				currentLocation = currentLocation.getWest();
-				break;
+		try{
+			switch(direction){
+				//0 = up
+				case 0:
+					currentLocation = currentLocation.getNorth();
+					break;
+				//1 = down
+				case 1:
+					currentLocation = currentLocation.getSouth();
+					break;
+				//2 = right
+				case 2:
+					currentLocation = currentLocation.getEast();
+					break;
+				//3 = left
+				case 3:
+					currentLocation = currentLocation.getWest();
+					break;
+				//4 = northeast
+				case 4:
+					currentLocation = currentLocation.getNorthEast();
+					break;
+				//5 = northwest
+				case 5:
+					currentLocation = currentLocation.getNorthWest();
+					break;
+				//6 = southeast
+				case 6:
+					currentLocation = currentLocation.getSouthEast();
+					break;
+				//7 = southwest
+				case 7:
+					currentLocation = currentLocation.getSouthWest();
+					break;
+			}
+			couldMove = true;
 		}
+		catch(BoundaryException be){
+			currentLocation = previousLocation;
+			couldMove = false;
+			System.out.println("Boundary exception in Moveable.move()");
+		}
+		
 		currentLocation.setOccupant(this);
 		
 		
@@ -52,6 +78,10 @@ abstract class Moveable extends Thread implements Serializable{
 	
 	public BufferedImage getMoveableImage(){
 		return img;
+	}
+	
+	public boolean moveableCouldMove(){
+		return couldMove;
 	}
 	
 }

@@ -97,7 +97,7 @@ public class GameScreenGUI extends JFrame{
 		
 		this.setVisible(true);
 		
-		Timer time = new Timer(100, new ActionListener()
+		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
 				updateBoard();
@@ -109,7 +109,11 @@ public class GameScreenGUI extends JFrame{
 		lvlTimer = new Timer(1000, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
+				
 				timerInt--;
+				if(timerInt<0){
+					restartLevelTimer();
+				}
 				levelTimer.setText("" + timerInt);
 			}
 			
@@ -343,11 +347,11 @@ public class GameScreenGUI extends JFrame{
 			public void keyPressed(KeyEvent ke) {
 
 				int key = ke.getKeyCode();
-				System.out.println(key);
+				//System.out.println(key);
 				int playerx = currentPlayer.getLocation().getX();
 				int playery = currentPlayer.getLocation().getY();
-				
-				System.out.println(playerx + " " + playery);
+//				
+//				System.out.println("Before " + playerx + " " + playery);
 				
 				if(key == ke.VK_UP)
 				{
@@ -419,7 +423,10 @@ public class GameScreenGUI extends JFrame{
 					}
 				}
 			}
+			
 		});
+		
+		
 		chatEdit.addKeyListener(new KeyAdapter()
 		{
 			public void keyPressed(KeyEvent ke) {
@@ -452,6 +459,14 @@ public class GameScreenGUI extends JFrame{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
 					{
 						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
+							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
+							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
+							//check to see if currentlocation = previous location, if the player was unable to move
+							if(backendBoard.getSpace(i, j).getMoveable().moveableCouldMove()){
+								spaces[x][y].setBorder(BorderFactory.createLineBorder(null));
+							}
+						}
 					}
 					else
 					{
@@ -461,6 +476,9 @@ public class GameScreenGUI extends JFrame{
 					}
 
 					
+				}
+				else{
+					//spaces[i][j].setBorder(BorderFactory.createLineBorder(null));
 				}
 			}
 		}
@@ -487,7 +505,7 @@ public class GameScreenGUI extends JFrame{
 	
 	public void restartLevelTimer()
 	{
-		
+		timerInt = 60;
 
 		
 	}
