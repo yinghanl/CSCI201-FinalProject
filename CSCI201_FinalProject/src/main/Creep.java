@@ -5,8 +5,12 @@ public class Creep extends Moveable{
 	private int health;
 	private PathSpace currentPathLocation;
 	
-	public Creep(Space loc){
-		super(loc);
+	public Creep(PathSpace p){
+		super(p); //may cause error
+		currentPathLocation = p;
+		currentPathLocation.setOccupant(this);
+		health = 100;
+		
 	}
 	
 	public boolean isDead(){
@@ -19,19 +23,26 @@ public class Creep extends Moveable{
 	
 	public void run(){
 		while(health>0){
+			
 			try {
-				sleep(500);
+				sleep(1000);
 				if(currentPathLocation.getNext() ==  null){
 					//decrease the team's health, have reached the end
 				}
 				else{
+					previousLocation = currentPathLocation;
+					currentPathLocation.removeOccupant();
 					currentPathLocation = currentPathLocation.getNext();
+					currentPathLocation.setOccupant(this);
+					//System.out.println(currentPathLocation.hashCode());
 				}
 				
 			} catch (InterruptedException ie) {
 				System.out.println("Interrupted Exception in creep.run() " + ie.getMessage());
 			}
 		}
+		currentPathLocation.removeOccupant();
+		
 	}
 
 }

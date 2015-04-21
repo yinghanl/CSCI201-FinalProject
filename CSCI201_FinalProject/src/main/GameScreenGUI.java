@@ -579,9 +579,35 @@ public class GameScreenGUI extends JFrame{
 		});
 	}
 	
+	public void run(){
+		int numCreeps = 10;
+		while(numCreeps>0){ //there are remaining creeps
+			try {
+				Thread.sleep(1000);
+				new Creep(backendBoard.getPathSpace(0)).start();
+				numCreeps--;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}	
+		}
+	}
 	/*
 	public void updateBoard()
 	{
+		//update creeps
+		for(int i = 0; i<backendBoard.getCreepPathSize(); i++){
+			if(backendBoard.getPathSpace(i).isOccupied()){
+				int p = backendBoard.getPathSpace(i).getX();
+				int q = backendBoard.getPathSpace(i).getY();
+				spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
+				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null){
+					int x = backendBoard.getPathSpace(i).getMoveable().getPrevious().getX();
+					int y = backendBoard.getPathSpace(i).getMoveable().getPrevious().getY();
+					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				}
+			}
+		}
+		
 		for(int i = 0; i < 20; i++)
 		{
 			for(int j = 0; j < 32; j++)
@@ -621,8 +647,24 @@ public class GameScreenGUI extends JFrame{
 	}
 	*/
 	
+	
+	
 	public void updateBoard()
 	{
+		//update creeps
+		for(int i = 0; i<backendBoard.getCreepPathSize(); i++){
+			if(backendBoard.getPathSpace(i).isOccupied()){
+				int p = backendBoard.getPathSpace(i).getX();
+				int q = backendBoard.getPathSpace(i).getY();
+				spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
+				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null){
+					int x = backendBoard.getPathSpace(i).getMoveable().getPrevious().getX();
+					int y = backendBoard.getPathSpace(i).getMoveable().getPrevious().getY();
+					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				}
+			}
+		}
+	
 		for(Player p: players)
 		{
 			int playerx = p.getLocation().getX();
