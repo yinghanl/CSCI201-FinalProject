@@ -46,4 +46,5 @@ public class User extends AbstractUser
 	{
 		return true;
 	}
+	
 }

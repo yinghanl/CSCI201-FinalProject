@@ -209,12 +209,39 @@ public class DataBaseUtils {
 		return newGuest;
 	}
 	
-	/*
-	public static void deleteGuest(int guestID)
+	
+	public static boolean deleteGuest(Guest g)
+	{
+		int guestID = g.getUserID();
+		boolean deleted = false;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(getConnectionString());
+			Statement st = conn.createStatement();
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM user WHERE userID=?");
+			ps.setInt(1, guestID);
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected > 0)
+			{
+				deleted = true;
+			}
+			
+			st.close();
+			conn.close();
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+		}
+		
+		return deleted;
+	}
+	
+	public static void updatePlayerStats(GameStats gs)
 	{
 		
-	}*/
-	
+	}
 	
 	private static String cArrayToString(char [] cArray)
 	{
