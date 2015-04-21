@@ -190,6 +190,12 @@ public class GameScreenGUI extends JFrame{
             }
 		});
 		
+		try {
+			oos.writeObject(currentPlayer);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 	}
 	
 	private JPanel getTopPanel()
@@ -614,8 +620,6 @@ public class GameScreenGUI extends JFrame{
 	public void restartLevelTimer()
 	{
 		timerInt = 60;
-
-		
 	}
 
 	public class ReadObject extends Thread{
@@ -630,6 +634,10 @@ public class GameScreenGUI extends JFrame{
 					if(obj instanceof String){
 						chat.append(((String)obj));
 					}//end of if ob is String
+					else if(obj instanceof Player)
+					{
+						backendBoard.setPlayer((Player)obj);
+					}
 					obj = ois.readObject();
 				}//end of while	
 			}catch(IOException ioe){
