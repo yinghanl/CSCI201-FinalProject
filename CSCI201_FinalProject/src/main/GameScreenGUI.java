@@ -449,8 +449,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					try {
 						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
-						oos.writeObject(new Command(currentPlayer, "Move(0)"));
-						oos.flush();
+						if(currentPlayer.moveableCouldMove())
+						{
+							oos.writeObject(new Command(currentPlayer, "Move(0)"));
+							oos.flush();
+						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -464,8 +467,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					try {
 						currentPlayer.move(1);
 						currentPlayer.setPlayerDirection("SOUTH");
-						oos.writeObject(new Command(currentPlayer, "Move(1)"));
-						oos.flush();
+						if(currentPlayer.moveableCouldMove())
+						{
+							oos.writeObject(new Command(currentPlayer, "Move(1)"));
+							oos.flush();
+						}
 
 					}catch (BoundaryException e) {
 						// TODO Auto-generated catch block
@@ -481,8 +487,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					try {
 						currentPlayer.move(2);
 						currentPlayer.setPlayerDirection("EAST");
-						oos.writeObject(new Command(currentPlayer, "Move(2)"));
-						oos.flush();
+						if(currentPlayer.moveableCouldMove())
+						{
+							oos.writeObject(new Command(currentPlayer, "Move(2)"));
+							oos.flush();
+						}
 					} 
 					catch (BoundaryException e) {
 						e.printStackTrace();
@@ -497,8 +506,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					try {
 						currentPlayer.move(3);
 						currentPlayer.setPlayerDirection("WEST");
-						oos.writeObject(new Command(currentPlayer, "Move(3)"));
-						oos.flush();
+						if(currentPlayer.moveableCouldMove())
+						{
+							oos.writeObject(new Command(currentPlayer, "Move(3)"));
+							oos.flush();
+						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -687,7 +699,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			
 			spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 			
-			if(p.getPrevious() != null)
+			if(p.getPrevious() != null && p.moveableCouldMove())
 			{
 				int x = p.getPrevious().getX();
 				int y = p.getPrevious().getY();

@@ -146,6 +146,9 @@ public class Board implements Serializable {
 	
 	public void placeTower(int x, int y)
 	{
+		if(map[x][y] instanceof PathSpace){
+			return;
+		}
 		map[x][y] = new TowerSpace(x, y);
 		if(x>0){
 			map[x-1][y].setSouth(null);

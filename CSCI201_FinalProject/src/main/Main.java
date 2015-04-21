@@ -20,9 +20,8 @@ public class Main {
 //		b = new Board();
 //		b.setPlayer(p1);
 //		new GameScreenGUI(b, p1, true);
-		b = new Board();
-		//Player p1 = new Player("player 1", b.getSpace(10, 10));
-		Player p1 = new Player("Player 2", b.getSpace(5, 5));
+		Player p1 = new Player("player 1", b.getSpace(10, 10));
+		//Player p1 = new Player("Player 2", b.getSpace(5, 5));
 		b.setPlayer(p1);
 		//new GameScreenGUI(b, p1, true).run();
 		new GameScreenGUI(b, p1, false).run();
