@@ -56,7 +56,7 @@ public class TabPanel extends JPanel {
 		//populate with games already open
 		for (int i = 0; i < GameLobbyGUI.gamesOpen.size(); i++){
 					
-					String creator = GameLobbyGUI.gamesOpen.get(i).getGameCreator();
+					String creator = GameLobbyGUI.gamesOpen.get(i).getGameHost().getUsername();
 					int playersJoined = GameLobbyGUI.gamesOpen.get(i).getNumJoined();
 					
 					DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
@@ -127,7 +127,7 @@ public class TabPanel extends JPanel {
 				System.out.println(GameLobbyGUI.gamesOpen.size());
 				
 				DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
-				tableModel.addRow(new Object[] { newgame.getGameCreator(), newgame.getNumJoined() });
+				tableModel.addRow(new Object[] { newgame.getGameHost().getUsername(), newgame.getNumJoined() });
 				
 				//recreate table to update
 				gameListTable = new JTable(tableModel);
