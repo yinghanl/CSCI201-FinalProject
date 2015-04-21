@@ -152,9 +152,9 @@ public class GameScreenGUI extends JFrame{
 		{
 			try {
 				ss = new ServerSocket(6789);
-				chat.append("\nWaiting for players to connect...");
+				chat.append("Waiting for players to connect...");
 				s = ss.accept();   //blocking line waits till accepted to proceed to next lines of code
-				chat.append("\nConnection established!\n");
+				chat.append("Connection established!\n");
 				br = new BufferedReader( new InputStreamReader(s.getInputStream()));
 				ois = new ObjectInputStream(s.getInputStream());
 				oos = new ObjectOutputStream(s.getOutputStream());
@@ -262,9 +262,9 @@ public class GameScreenGUI extends JFrame{
 		chat = new JTextArea();
 		chat.setLineWrap(true);
 		chat.setWrapStyleWord(true);
-		JScrollPane sp = new JScrollPane(chat);
 		DefaultCaret caret = (DefaultCaret)chat.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		JScrollPane sp = new JScrollPane(chat);
 		chatEdit = new JTextField();
 		
 		chat.setEditable(false);
@@ -523,9 +523,9 @@ public class GameScreenGUI extends JFrame{
 					System.out.println("setting messageSent to true");
 					String playerName = currentPlayer.getPlayerName();
 					 
-					String toAppend = currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
+					String toAppend = "\n"+currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
 					message = toAppend;
-					chat.append("\n"+ toAppend);
+					chat.append(toAppend);
 					chatEdit.setText(null);
 					try {
 						oos.writeObject(message);
@@ -628,8 +628,7 @@ public class GameScreenGUI extends JFrame{
 				while(obj != null){
 					System.out.println("ob not null in client: "+obj.getClass());
 					if(obj instanceof String){
-						System.out.println("got string: "+(String)obj);
-						chat.append("\n"+((String)obj));
+						chat.append(((String)obj));
 					}//end of if ob is String
 					obj = ois.readObject();
 				}//end of while	
