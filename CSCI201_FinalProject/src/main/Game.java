@@ -1,22 +1,28 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Game {
 
-	AbstractUser creator;
-	int playersJoined = 1;
-	ArrayList<String> usersPlaying = new ArrayList<String>();
+	private AbstractUser host;
+	private int playersJoined = 1;
+	private Lock userLock = new ReentrantLock();
+	private Condition userCondition = userLock.newCondition();
+	
+	private ArrayList<AbstractUser> usersPlaying = new ArrayList<AbstractUser>();
 	
 	public Game(AbstractUser u)
 	{
-		this.creator = u;
+		this.host = u;
 	}
 	
-	public String getGameCreator()
+	public AbstractUser getGameHost()
 	{
-		return creator.getUsername();
+		return host;
 	}
 	
 	public int getNumJoined()
@@ -24,13 +30,37 @@ public class Game {
 		return this.playersJoined;
 	}
 	
-	public void joinGame(String userName)
+	public void joinGame(AbstractUser au)
 	{
-		usersPlaying.add(userName);
-		playersJoined++;
+		
+		userLock.lock();
+		try
+		{
+			usersPlaying.add(au);
+			playersJoined++;
+		}
+		finally
+		{
+			userLock.unlock();
+		}
+		
 	}
 	
-	public ArrayList<String> getUsersPlaying(){
+	public void leaveGame(AbstractUser au)
+	{
+		userLock.lock();
+		try
+		{
+			usersPlaying.remove(au);
+			playersJoined--;
+		}
+		finally
+		{
+			userLock.unlock();
+		}
+	}
+	
+	public ArrayList<AbstractUser> getUsersPlaying(){
 		return usersPlaying;
 	}
 	
