@@ -23,6 +23,7 @@ import javax.swing.table.TableModel;
 public class TabPanel extends JPanel {
 	JTable gameListTable;
 	Object tableData[][];
+	GameLobbyGUI gameLobbyWindow;
 	
 	JPanel buttonPanel;
 	JButton createButton;
@@ -31,10 +32,11 @@ public class TabPanel extends JPanel {
 	AbstractUser u;
 	
 	
-	public TabPanel(AbstractUser user){
+	public TabPanel(AbstractUser user, GameLobbyGUI gameLobbyWindow){
 		initializeComponents();
 		createGUI();
 		this.u = user;
+		this.gameLobbyWindow = gameLobbyWindow;
 	}
 	
 	public void initializeComponents(){
@@ -80,6 +82,9 @@ public class TabPanel extends JPanel {
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				
+				gameLobbyWindow.setVisible(false);
+				
+				/*
 				int row = gameListTable.getSelectedRow();
 				
 				//check that there are less than 4 players 
@@ -109,7 +114,7 @@ public class TabPanel extends JPanel {
 					}
 					
 				}
-				
+			*/	
 			}
 		});
 		
