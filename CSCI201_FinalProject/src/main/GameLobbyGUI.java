@@ -17,10 +17,8 @@ public class GameLobbyGUI extends JFrame {
 
 	private static final long serialVersionUID = 1;
 	private AbstractUser user;
-	private JTabbedPane mainPane;
-	private TabPanel easyPanel;
-	private TabPanel mediumPanel;
-	private TabPanel hardPanel;
+	private TabPanel lobby;
+
 	private JButton profileButton;
 	public static ArrayList<Game> gamesOpen;
 	
@@ -41,10 +39,7 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	private void initializeComponents(){
-		mainPane = new JTabbedPane();
-		easyPanel = new TabPanel(user);
-		mediumPanel = new TabPanel(user);
-		hardPanel = new TabPanel(user);
+		lobby = new TabPanel(user);
 	}
 	
 	private void createGUI(){
@@ -63,10 +58,8 @@ public class GameLobbyGUI extends JFrame {
 			
 		});
 		
-		getContentPane().add(mainPane);
-		mainPane.add("EASY",easyPanel);
-		mainPane.add("MEDIUM", mediumPanel);
-		mainPane.add("HARD", hardPanel);
+		getContentPane().add(lobby);
+		
 		add(profileButton, BorderLayout.SOUTH);
 		
 	}
