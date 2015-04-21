@@ -84,8 +84,12 @@ public class GameScreenGUI extends JFrame{
 
 	private Tower testTower;
 		
+	private ArrayList<Player> players;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
+		players = new ArrayList<Player>();
+		
 		this.setSize(825,510);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -99,6 +103,8 @@ public class GameScreenGUI extends JFrame{
 		this.backendBoard = b;
 		
 		this.currentPlayer = p;
+		
+		players.add(currentPlayer);
 				
 		this.isHost = isHost;
 		
@@ -117,9 +123,7 @@ public class GameScreenGUI extends JFrame{
 		this.add(optionsPanel, BorderLayout.SOUTH);
 		
 		this.add(getTopPanel(), BorderLayout.NORTH);
-		
-		this.createActions();
-		
+				
 		this.setVisible(true);
 			
 		lvlTimer = new Timer(1000, new ActionListener()
@@ -180,7 +184,8 @@ public class GameScreenGUI extends JFrame{
 			} catch (UnknownHostException e) {
 				System.out.println("unknownhost in gamescreengui.constructor.setting up client: "+e.getMessage());
 				e.printStackTrace();
-			} catch (IOException e) {
+				//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+	} catch (IOException e) {
 				System.out.println("IOE in gamescreengui.constructor.setting up client: "+e.getMessage());
 			}
 			
@@ -190,13 +195,15 @@ public class GameScreenGUI extends JFrame{
 		{
 			if(oos != null)
 			{
+				this.createActions();
+				System.out.println("Hello");
 				oos.writeObject(currentPlayer);
 				oos.flush();
 			}
 		} catch (IOException e1) {
 			System.out.println("Exception sending player to server");
 		}
-		
+
 		
 	}
 	
@@ -442,7 +449,12 @@ public class GameScreenGUI extends JFrame{
 					try {
 						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
+						oos.writeObject(new Command(currentPlayer, "Move(0)"));
+						oos.flush();
 					} catch (BoundaryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -452,19 +464,31 @@ public class GameScreenGUI extends JFrame{
 					try {
 						currentPlayer.move(1);
 						currentPlayer.setPlayerDirection("SOUTH");
-					} catch (BoundaryException e) {
+						oos.writeObject(new Command(currentPlayer, "Move(1)"));
+						oos.flush();
+
+					}catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
+					catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				else if(key == ke.VK_RIGHT)
 				{
 					try {
 						currentPlayer.move(2);
 						currentPlayer.setPlayerDirection("EAST");
+						oos.writeObject(new Command(currentPlayer, "Move(2)"));
+						oos.flush();
 					} 
 					catch (BoundaryException e) {
+						e.printStackTrace();
+					}
+					catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -473,7 +497,13 @@ public class GameScreenGUI extends JFrame{
 					try {
 						currentPlayer.move(3);
 						currentPlayer.setPlayerDirection("WEST");
+						oos.writeObject(new Command(currentPlayer, "Move(3)"));
+						oos.flush();
 					} catch (BoundaryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -549,7 +579,7 @@ public class GameScreenGUI extends JFrame{
 		});
 	}
 	
-	
+	/*
 	public void updateBoard()
 	{
 		for(int i = 0; i < 20; i++)
@@ -559,8 +589,12 @@ public class GameScreenGUI extends JFrame{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
-					{
+					{	
+						//System.out.println(p.getPlayerName() + "(" + p.getLocation().getX() + "," + p.getLocation().getY() + ")");
+						
+						
 						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+						
 						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
@@ -569,6 +603,9 @@ public class GameScreenGUI extends JFrame{
 								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							}
 						}
+						
+						spaces[i][j].validate();
+						spaces[i][j].repaint();
 					}
 					else
 					{
@@ -578,6 +615,41 @@ public class GameScreenGUI extends JFrame{
 					}
 
 					
+				}
+			}
+		}
+	}
+	*/
+	
+	public void updateBoard()
+	{
+		for(Player p: players)
+		{
+			int playerx = p.getLocation().getX();
+			int playery = p.getLocation().getY();
+			
+			spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			
+			if(p.getPrevious() != null)
+			{
+				int x = p.getPrevious().getX();
+				int y = p.getPrevious().getY();
+				spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			}
+		}
+		for(int i = 0; i < 20; i++)
+		{
+			for(int j = 0; j < 32; j++)
+			{
+				if(backendBoard.getSpace(i, j).isOccupied())
+				{
+					if(backendBoard.getSpace(i,j).getMoveable().getMoveableImage() != null)
+					{
+						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
+					
+						spaces[i][j].setIcon(icon);
+					
+					}
 				}
 			}
 		}
@@ -623,39 +695,6 @@ public class GameScreenGUI extends JFrame{
 	{
 		timerInt = 60;
 	}
-
-	public void updateBoardServer(Board other)
-	{
-		for(int i = 0; i < 20; i++)
-		{
-			for(int j = 0; j < 32; j++)
-			{
-				if(other.getSpace(i, j).isOccupied())
-				{
-					if(other.getSpace(i, j).getMoveable() instanceof Player)
-					{
-						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
-						if(other.getSpace(i, j).getMoveable().getPrevious() != null){
-							int x = other.getSpace(i, j).getMoveable().getPrevious().getX();
-							int y = other.getSpace(i, j).getMoveable().getPrevious().getY();
-							//check to see if currentlocation = previous location, if the player was unable to move
-							if(other.getSpace(i, j).getMoveable().moveableCouldMove()){
-								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							}
-						}
-					}
-					else
-					{
-						ImageIcon icon = new ImageIcon(other.getSpace(i,j).getMoveable().getMoveableImage());
-					
-						spaces[i][j].setIcon(icon);
-					}
-
-					
-				}
-			}
-		}
-	}
 	
 	public class ReadObject extends Thread{
 		ReadObject(){
@@ -670,12 +709,64 @@ public class GameScreenGUI extends JFrame{
 						chat.append(((String)obj));
 					}//end of if ob is String
 					else if(obj instanceof Player)
-					{
+					{						
 						backendBoard.setPlayer((Player)obj);
+						players.add((Player)obj);
+						
 					}
-					else if(obj instanceof Board)
+					else if(obj instanceof Command)
 					{
-						//updateBoardServer((Board)obj);
+						Player player = ((Command)obj).getPlayer();
+						
+						String command = ((Command)obj).getCommand();
+						
+						for(Player p : players)
+						{
+							if(player.getPlayerName() == p.getPlayerName())
+							{
+								if(command.equals("Move(0)"))
+								{
+									try
+									{
+										p.move(0);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(1)"))
+								{
+									try
+									{
+										p.move(1);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(2)"))
+								{
+									try
+									{
+										p.move(2);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(3)"))
+								{
+									try
+									{
+										p.move(3);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+						
 					}
 					obj = ois.readObject();
 				}//end of while	
