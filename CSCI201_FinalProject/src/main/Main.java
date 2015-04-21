@@ -21,7 +21,7 @@ public class Main {
 //		b.setPlayer(p1);
 //		new GameScreenGUI(b, p1, true);
 		b = new Board();
-		Player p2 = new Player("player 2", b.getSpace(15, 3));
+		Player p2 = new Player("player 1", b.getSpace(10, 10));
 		b.setPlayer(p2);
 		new GameScreenGUI(b, p2, false);
 		
