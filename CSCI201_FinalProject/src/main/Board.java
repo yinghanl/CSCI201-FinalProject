@@ -104,6 +104,14 @@ public class Board {
 		return map[x][y];
 	}
 	
+	public PathSpace getCreepSpace(int x){
+		return creepPath.get(x);
+	}
+	
+	public int getCreepPathSize(){
+		return creepPath.size();
+	}
+	
 	public void setPlayer(Player p)
 	{
 		map[p.getLocation().getX()][p.getLocation().getY()].setOccupant(p);
