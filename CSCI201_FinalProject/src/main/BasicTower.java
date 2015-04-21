@@ -10,9 +10,13 @@ import javax.imageio.ImageIO;
 public class BasicTower extends Tower{
 
 	BufferedImage sprite;
+	int x;
+	int y;
 	
-	public BasicTower()
+	public BasicTower(int x, int y)
 	{
+		this.x = x;
+		this.y = y;
 		try
 		{
 			sprite = ImageIO.read(new File("basicTower.png"));

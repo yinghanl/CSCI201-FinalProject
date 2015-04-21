@@ -82,23 +82,20 @@ abstract class Space implements Serializable{
 			throw new BoundaryException();
 		else
 			return south;
-		
 	}
 	
 	public Space getWest() throws BoundaryException{
 		if(west == null)
 			throw new BoundaryException();
 		else
-			return west;
-		
+			return west;	
 	}
 	
 	public Space getEast() throws BoundaryException{
 		if(east == null)
 			throw new BoundaryException();
 		else
-			return east;
-		
+			return east;	
 	}
 	
 	public Space getNorthEast() throws BoundaryException{

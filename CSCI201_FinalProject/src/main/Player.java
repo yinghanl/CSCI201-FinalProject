@@ -10,8 +10,8 @@ public class Player extends Moveable implements Serializable{
 	private String playerDirection;
 	boolean readyStatus;
 	
-	public Player(String name, int x, int y){
-		super(new BlankSpace(x, y));
+	public Player(String name, Space s){
+		super(s);
 		this.name = name;
 		readyStatus = false;
 		playerDirection = "SOUTH";

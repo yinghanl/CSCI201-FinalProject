@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -45,11 +49,18 @@ public class GameScreenGUI extends JFrame{
 	private JButton next = new JButton("->");
 	private JPanel buttonsPanel;
 	private Timer timer;
+	
+	private JLayeredPane[] optionsLayer;
+	
 	private JLabel levelTimer;
 	private JLabel teamGold;
+	private JLabel lives;
+	
 	private int timerInt = 60;
 	private int goldEarned = 0;
 	private String message;
+	private int livesInt;
+	
 	private Timer lvlTimer;
 	
 	private Board backendBoard;
@@ -68,6 +79,10 @@ public class GameScreenGUI extends JFrame{
 	private ObjectOutputStream oos;
 	private Object obj;
 	
+	private boolean msgSent = false;
+
+	private Tower testTower;
+		
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		this.setSize(825,510);
@@ -79,6 +94,7 @@ public class GameScreenGUI extends JFrame{
 
 		messageSent = false;
 		message = "";
+
 		this.backendBoard = b;
 		
 		this.currentPlayer = p;
@@ -93,7 +109,7 @@ public class GameScreenGUI extends JFrame{
 		
 		this.add(chatBox, BorderLayout.EAST);
 		
-		this.createButtons(13);
+		this.createButtons(5);
 		
 		optionsPanel = this.getOptions();
 				
@@ -105,7 +121,7 @@ public class GameScreenGUI extends JFrame{
 		
 		this.setVisible(true);
 		
-		Timer time = new Timer(100, new ActionListener()
+		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
 				updateBoard();
@@ -117,7 +133,11 @@ public class GameScreenGUI extends JFrame{
 		lvlTimer = new Timer(1000, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
+				
 				timerInt--;
+				if(timerInt<0){
+					restartLevelTimer();
+				}
 				levelTimer.setText("" + timerInt);
 			}
 			
@@ -160,7 +180,14 @@ public class GameScreenGUI extends JFrame{
 			
 		}//end else
 		
-		this.placeTower(0,1);
+		//this.placeTower(0,1);
+		
+		board.addMouseListener(new MouseAdapter()
+		{
+            public void mouseClicked(MouseEvent e) {
+                board.requestFocusInWindow();
+            }
+		});
 		
 	}
 	
@@ -174,6 +201,9 @@ public class GameScreenGUI extends JFrame{
 		
 		teamGold = new JLabel("Gold: " + goldEarned);
 		
+		lives = new JLabel("Lives: " + livesInt);
+		
+		toReturn.add(lives);
 		toReturn.add(Box.createGlue());
 		toReturn.add(Box.createGlue());
 
@@ -185,6 +215,8 @@ public class GameScreenGUI extends JFrame{
 		toReturn.add(Box.createGlue());
 		
 		toReturn.add(teamGold);
+		
+		toReturn.add(Box.createGlue());
 		
 		return toReturn;
 	}
@@ -245,7 +277,16 @@ public class GameScreenGUI extends JFrame{
 		
 		for(int i = 0; i < k; i++)
 		{
-			options[i] = new JButton("" + i);
+			if(i == 0)
+			{
+				options[i] = new JButton("1. Build Tower");
+			}
+			else
+			{
+				options[i] = new JButton("" + i);
+			}
+			
+			
 			options[i].setSize(10,10);
 			options[i].setPreferredSize(options[i].getPreferredSize());
 		}
@@ -257,6 +298,9 @@ public class GameScreenGUI extends JFrame{
 		toReturn.setSize(100,50);
 		toReturn.setPreferredSize(toReturn.getSize());
 		toReturn.setLayout(new BorderLayout());
+		
+		optionsLayer = new JLayeredPane[5];
+		
 		
 		buttonsPanel = new JPanel();
 		buttonsPanel.setSize(100,50);
@@ -273,7 +317,7 @@ public class GameScreenGUI extends JFrame{
 			buttonsPanel.add(options[i]);
 			buttonsPanel.add(javax.swing.Box.createGlue());
 		}
-
+		
 		toReturn.add(buttonsPanel, BorderLayout.CENTER);
 		toReturn.add(next, BorderLayout.EAST);
 
@@ -375,16 +419,17 @@ public class GameScreenGUI extends JFrame{
 			public void keyPressed(KeyEvent ke) {
 
 				int key = ke.getKeyCode();
-				System.out.println(key);
+				//System.out.println(key);
 				int playerx = currentPlayer.getLocation().getX();
 				int playery = currentPlayer.getLocation().getY();
-				
-				System.out.println(playerx + " " + playery);
+//				
+//				System.out.println("Before " + playerx + " " + playery);
 				
 				if(key == ke.VK_UP)
 				{
 					try {
 						currentPlayer.move(0);
+						currentPlayer.setPlayerDirection("NORTH");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -394,6 +439,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(1);
+						currentPlayer.setPlayerDirection("SOUTH");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -404,6 +450,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(2);
+						currentPlayer.setPlayerDirection("EAST");
 					} 
 					catch (BoundaryException e) {
 						e.printStackTrace();
@@ -413,13 +460,20 @@ public class GameScreenGUI extends JFrame{
 				{
 					try {
 						currentPlayer.move(3);
+						currentPlayer.setPlayerDirection("WEST");
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				else if(key == ke.VK_W)
+				{
+					testTower.shoot();
+				}
 				else if(key == ke.VK_1)
 				{
+					options[0].setBackground(Color.GREEN);
+					
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
@@ -429,17 +483,17 @@ public class GameScreenGUI extends JFrame{
 					}
 					else if(currentPlayer.getPlayerDirection() == "NORTH")
 					{
-						if(playerx-1 > 0)
+						if(playerx-2 > 0)
 						{
-							placeTower(playerx-1, playery);
+							placeTower(playerx-2, playery);
 						}
 					}
 					
 					else if(currentPlayer.getPlayerDirection() == "WEST")
 					{
-						if(playery-1 > 0)
+						if(playery-2 > 0)
 						{
-							placeTower(playerx, playery-1);
+							placeTower(playerx, playery-2);
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -451,8 +505,11 @@ public class GameScreenGUI extends JFrame{
 					}
 				}
 			}
+			
 		});
-		chatEdit.addKeyListener(new KeyAdapter(){
+		
+		chatEdit.addKeyListener(new KeyAdapter()
+		{
 			public void keyPressed(KeyEvent ke) {
 			
 				int key = ke.getKeyCode();
@@ -490,6 +547,14 @@ public class GameScreenGUI extends JFrame{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
 					{
 						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
+							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
+							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
+							//check to see if currentlocation = previous location, if the player was unable to move
+							if(backendBoard.getSpace(i, j).getMoveable().moveableCouldMove()){
+								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							}
+						}
 					}
 					else
 					{
@@ -506,9 +571,24 @@ public class GameScreenGUI extends JFrame{
 	
 	public void placeTower(int x, int y)
 	{
-		BasicTower b = new BasicTower();
+		BasicTower b = new BasicTower(x, y);
+		
+		testTower = b;
 		BufferedImage img[] = b.getTowerImages();
 		int count = 0;
+		
+		for(int i = 0; i < 2; i++)
+		{
+			for(int j = 0; j < 2; j++)
+			{
+				if(x+i < 0 || y+j < 0 || x+i > 30 || y+j > 30)
+				{
+					System.out.println("Attempted to place tower outside of boundaries");
+					return;
+				}
+			}
+		}
+		
 		
 		for(int i = 0; i < 2; i++)
 		{
@@ -518,6 +598,8 @@ public class GameScreenGUI extends JFrame{
 				
 				spaces[x+i][y+j].setIcon(new ImageIcon(resizedImage));
 				
+				backendBoard.placeTower(x+i, y+j);
+				
 				count++;
 			}
 		}
@@ -525,7 +607,7 @@ public class GameScreenGUI extends JFrame{
 	
 	public void restartLevelTimer()
 	{
-		
+		timerInt = 60;
 
 		
 	}
