@@ -1,8 +1,13 @@
 package main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements Serializable {
+	
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Space [][] map;
 	private ArrayList<PathSpace> creepPath;
 	

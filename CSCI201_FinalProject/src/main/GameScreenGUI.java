@@ -92,7 +92,7 @@ public class GameScreenGUI extends JFrame{
 		
 		this.setLayout(new BorderLayout());
 		this.setResizable(false);
-
+		
 		messageSent = false;
 		message = "";
 
@@ -121,15 +121,8 @@ public class GameScreenGUI extends JFrame{
 		this.createActions();
 		
 		this.setVisible(true);
-		
-		Timer time = new Timer(10, new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae) {
-				updateBoard();
-				
-			}
-		});
-		time.start();
+	
+		System.out.println("Here");
 		
 		lvlTimer = new Timer(1000, new ActionListener()
 		{
@@ -147,6 +140,20 @@ public class GameScreenGUI extends JFrame{
 		
 		lvlTimer.start();
 				
+		Timer time = new Timer(10, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent ae) {
+				updateBoard();
+			}
+		});
+		time.start();
+		
+		board.addMouseListener(new MouseAdapter()
+		{
+            public void mouseClicked(MouseEvent e) {
+                board.requestFocusInWindow();
+            }
+		});
 		
 		if(isHost == true)
 		{
@@ -181,20 +188,16 @@ public class GameScreenGUI extends JFrame{
 			
 		}//end else
 		
-		//this.placeTower(0,1);
-		
-		board.addMouseListener(new MouseAdapter()
-		{
-            public void mouseClicked(MouseEvent e) {
-                board.requestFocusInWindow();
-            }
-		});
-		
 		try {
-			oos.writeObject(currentPlayer);
+			if(oos != null)
+			{
+				oos.writeObject(currentPlayer);
+				oos.flush();
+			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			System.out.println("Exception sending player to server");
 		}
+		
 		
 	}
 	
@@ -558,7 +561,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
 					{
-						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
+						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
@@ -579,6 +582,19 @@ public class GameScreenGUI extends JFrame{
 				}
 			}
 		}
+		
+		try
+		{
+			if(oos != null)
+			{
+				oos.writeObject(backendBoard);
+			}
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void placeTower(int x, int y)
@@ -622,6 +638,39 @@ public class GameScreenGUI extends JFrame{
 		timerInt = 60;
 	}
 
+	public void updateBoardServer(Board other)
+	{
+		for(int i = 0; i < 20; i++)
+		{
+			for(int j = 0; j < 32; j++)
+			{
+				if(other.getSpace(i, j).isOccupied())
+				{
+					if(other.getSpace(i, j).getMoveable() instanceof Player)
+					{
+						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.yellow));
+						if(other.getSpace(i, j).getMoveable().getPrevious() != null){
+							int x = other.getSpace(i, j).getMoveable().getPrevious().getX();
+							int y = other.getSpace(i, j).getMoveable().getPrevious().getY();
+							//check to see if currentlocation = previous location, if the player was unable to move
+							if(other.getSpace(i, j).getMoveable().moveableCouldMove()){
+								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							}
+						}
+					}
+					else
+					{
+						ImageIcon icon = new ImageIcon(other.getSpace(i,j).getMoveable().getMoveableImage());
+					
+						spaces[i][j].setIcon(icon);
+					}
+
+					
+				}
+			}
+		}
+	}
+	
 	public class ReadObject extends Thread{
 		ReadObject(){
 		}
@@ -630,13 +679,17 @@ public class GameScreenGUI extends JFrame{
 			try {
 				obj = ois.readObject();
 				while(obj != null){
-					System.out.println("ob not null in client: "+obj.getClass());
+					//System.out.println("ob not null in client: "+obj.getClass());
 					if(obj instanceof String){
 						chat.append(((String)obj));
 					}//end of if ob is String
 					else if(obj instanceof Player)
 					{
 						backendBoard.setPlayer((Player)obj);
+					}
+					else if(obj instanceof Board)
+					{
+						//updateBoardServer((Board)obj);
 					}
 					obj = ois.readObject();
 				}//end of while	
