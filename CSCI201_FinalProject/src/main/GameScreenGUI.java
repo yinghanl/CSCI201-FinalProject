@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.text.DefaultCaret;
 
 public class GameScreenGUI extends JFrame{
 
@@ -259,8 +260,11 @@ public class GameScreenGUI extends JFrame{
 		
 		
 		chat = new JTextArea();
+		chat.setLineWrap(true);
+		chat.setWrapStyleWord(true);
 		JScrollPane sp = new JScrollPane(chat);
-
+		DefaultCaret caret = (DefaultCaret)chat.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatEdit = new JTextField();
 		
 		chat.setEditable(false);
@@ -517,9 +521,11 @@ public class GameScreenGUI extends JFrame{
 				if(key == ke.VK_ENTER && chatEdit.getText() != null){
 					messageSent = true;
 					System.out.println("setting messageSent to true");
+					String playerName = currentPlayer.getPlayerName();
+					 
 					String toAppend = currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
 					message = toAppend;
-					chat.setText(chat.getText() + toAppend);
+					chat.append("\n"+ toAppend);
 					chatEdit.setText(null);
 					try {
 						oos.writeObject(message);
