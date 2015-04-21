@@ -25,15 +25,7 @@ public class ProfileScreen extends JFrame{
 		this.u = u;
 		
 		change_pass = new JButton("Change Password");
-		change_pass.addActionListener(new ActionListener(){
-
-			public void actionPerformed(ActionEvent e) {
-			//allows user to change their password
-			
-				changePasswordWindow cpw = new changePasswordWindow(u);
-				
-			}
-		});
+		change_pass.addActionListener(new OpenPasswordWindow(this));
 		
 		//display user's history of achievements
 		user_stats_panel = new JPanel();
@@ -54,6 +46,19 @@ public class ProfileScreen extends JFrame{
 		
 		
 		setVisible(true);
+	}
+	
+	class OpenPasswordWindow implements ActionListener{
+		ProfileScreen parentReference;
+		OpenPasswordWindow(ProfileScreen p){
+			parentReference = p;
+		}
+		public void actionPerformed(ActionEvent e) {
+		//allows user to change their password
+			changePasswordWindow cpw = new changePasswordWindow(u,parentReference);
+			
+		}
+
 	}
 	
 }
