@@ -521,21 +521,43 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playerx+1 < 20)
 						{
 							placeTower(playerx+1, playery);
+							Command c = new Command(currentPlayer, "PlaceTower", playerx+1, playery);
+							try {
+								oos.writeObject(c);
+								oos.flush();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "NORTH")
 					{
-						if(playerx-2 > 0)
+						if(playerx-1 > 0)
 						{
 							placeTower(playerx-1, playery);
+							Command c = new Command(currentPlayer, "PlaceTower", playerx-1, playery);
+							try {
+								oos.writeObject(c);
+								oos.flush();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							
 						}
 					}
 					
 					else if(currentPlayer.getPlayerDirection() == "WEST")
 					{
-						if(playery-2 > 0)
+						if(playery-1 > 0)
 						{
 							placeTower(playerx, playery-1);
+							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery-1);
+							try {
+								oos.writeObject(c);
+								oos.flush();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -543,6 +565,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playery+1 < 32)
 						{
 							placeTower(playerx, playery+1);
+							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery+1);
+							try {
+								oos.writeObject(c);
+								oos.flush();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -806,6 +835,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									catch (BoundaryException e) {
 										e.printStackTrace();
 									}
+								}
+								else if(command.equals("PlaceTower"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									placeTower(x, y);
 								}
 							}
 						}
