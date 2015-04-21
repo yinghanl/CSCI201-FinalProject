@@ -121,9 +121,7 @@ public class GameScreenGUI extends JFrame{
 		this.createActions();
 		
 		this.setVisible(true);
-	
-		System.out.println("Here");
-		
+			
 		lvlTimer = new Timer(1000, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
@@ -188,7 +186,8 @@ public class GameScreenGUI extends JFrame{
 			
 		}//end else
 		
-		try {
+		try
+		{
 			if(oos != null)
 			{
 				oos.writeObject(currentPlayer);
@@ -582,19 +581,6 @@ public class GameScreenGUI extends JFrame{
 				}
 			}
 		}
-		
-		try
-		{
-			if(oos != null)
-			{
-				oos.writeObject(backendBoard);
-			}
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 	
 	public void placeTower(int x, int y)
