@@ -527,7 +527,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(playerx-2 > 0)
 						{
-							placeTower(playerx-2, playery);
+							placeTower(playerx-1, playery);
 						}
 					}
 					
@@ -535,7 +535,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(playery-2 > 0)
 						{
-							placeTower(playerx, playery-2);
+							placeTower(playerx, playery-1);
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -688,9 +688,23 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		BasicTower b = new BasicTower(x, y);
 		
 		testTower = b;
-		BufferedImage img[] = b.getTowerImages();
-		int count = 0;
+		BufferedImage img = b.getTowerImages();
 		
+		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+
+		
+		if(x < 0 || y < 0 || x > 19 || y > 30)
+		{
+			return;
+		}
+			
+		spaces[x][y].setIcon(new ImageIcon(resizedImage));
+		backendBoard.placeTower(x, y);
+
+		
+		//int count = 0;
+		
+		/*
 		for(int i = 0; i < 2; i++)
 		{
 			for(int j = 0; j < 2; j++)
@@ -717,6 +731,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				count++;
 			}
 		}
+		*/
 	}
 	
 	public void restartLevelTimer()
