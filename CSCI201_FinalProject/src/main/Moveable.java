@@ -57,7 +57,7 @@ abstract class Moveable extends Thread implements Serializable{
 					currentLocation = currentLocation.getSouthWest();
 					break;
 			}
-			if(currentLocation instanceof TowerSpace || currentLocation.isOccupied()){
+			if(currentLocation instanceof TowerSpace || currentLocation.isOccupied() || currentLocation instanceof PathSpace){
 				throw new BoundaryException();
 			}
 			couldMove = true;

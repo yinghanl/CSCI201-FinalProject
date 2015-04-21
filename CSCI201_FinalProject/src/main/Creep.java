@@ -26,11 +26,12 @@ public class Creep extends Moveable{
 			
 			try {
 				sleep(1000);
+				previousLocation = currentPathLocation;
 				if(currentPathLocation.getNext() ==  null){
 					//decrease the team's health, have reached the end
 				}
 				else{
-					previousLocation = currentPathLocation;
+					//previousLocation = currentPathLocation;
 					currentPathLocation.removeOccupant();
 					currentPathLocation = currentPathLocation.getNext();
 					currentPathLocation.setOccupant(this);
