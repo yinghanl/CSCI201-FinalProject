@@ -18,7 +18,7 @@ public class GameLobbyGUI extends JFrame {
 	private static final long serialVersionUID = 1;
 	private AbstractUser user;
 	private TabPanel lobby;
-
+	ProfileScreen ps;
 	private JButton profileButton;
 	public static ArrayList<Game> gamesOpen;
 	
@@ -40,6 +40,8 @@ public class GameLobbyGUI extends JFrame {
 	
 	private void initializeComponents(){
 		lobby = new TabPanel(user, this);
+		ps = new ProfileScreen((User)user);
+		ps.setVisible(false);
 	}
 	
 	private void createGUI(){
@@ -53,7 +55,7 @@ public class GameLobbyGUI extends JFrame {
 		profileButton.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent e) {
-				ProfileScreen ps = new ProfileScreen((User)user);
+				ps.setVisible(true);
 			}
 			
 		});
