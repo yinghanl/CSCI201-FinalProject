@@ -39,7 +39,7 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	private void initializeComponents(){
-		lobby = new TabPanel(user);
+		lobby = new TabPanel(user, this);
 	}
 	
 	private void createGUI(){
