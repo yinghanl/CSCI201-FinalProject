@@ -583,7 +583,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		int numCreeps = 10;
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				new Creep(backendBoard.getPathSpace(0)).start();
 				numCreeps--;
 			} catch (InterruptedException e) {
