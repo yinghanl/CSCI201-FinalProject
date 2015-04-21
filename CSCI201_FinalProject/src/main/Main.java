@@ -23,7 +23,7 @@ public class Main {
 		b = new Board();
 		Player p2 = new Player("player 1", b.getSpace(7, 7));
 		b.setPlayer(p2);
-		new GameScreenGUI(b, p2, false);
+		new GameScreenGUI(b, p2, false).run();
 		
 	}
 }

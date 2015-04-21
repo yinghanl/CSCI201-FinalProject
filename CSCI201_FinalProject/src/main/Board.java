@@ -9,6 +9,7 @@ public class Board implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Space [][] map;
+	private PathSpace [][] tempMap;
 	private ArrayList<PathSpace> creepPath;
 	
 	public Board()
@@ -23,6 +24,7 @@ public class Board implements Serializable {
 	private void getMap()
 	{
 		map = new Space[20][32];
+		tempMap = new PathSpace[20][32];
 		for(int i = 0; i < 20; i++)
 		{
 			for(int j = 0; j < 32;j++)
@@ -30,7 +32,7 @@ public class Board implements Serializable {
 				if((i == 10 && j <5 ) || (j == 4 && i>4 && i<11) || (i == 5 && j>4 && j <12) || (j == 11 && i<13 && i>5) || (i == 12 && j>11 && j<20) || (j == 19 && i>7 && i<13) || (i == 8 && j>19 && j<32)){
 					PathSpace p = new PathSpace(i, j);
 					map[i][j] = p;
-					creepPath.add(p);
+					tempMap[i][j] = p;
 				}
 				else{
 					map[i][j] = new BlankSpace(i,j);
@@ -98,18 +100,38 @@ public class Board implements Serializable {
 	}
 	
 	private void setPathSpaces(){
+		for(int j = 0; j<5; j++){
+			creepPath.add(tempMap[10][j]);
+		}
+		for(int i = 9; i>4; i--){
+			creepPath.add(tempMap[i][4]);
+		}
+		for(int j = 5; j<12; j++){
+			creepPath.add(tempMap[5][j]);
+		}
+		for(int i = 6; i<13; i++){
+			creepPath.add(tempMap[i][11]);
+		}
+		for(int j = 12; j<20; j++){
+			creepPath.add(tempMap[12][j]);
+		}
+		for(int i = 11; i>7; i--){
+			creepPath.add(tempMap[i][19]);
+		}
+		for(int j = 20; j<32; j++){
+			creepPath.add(tempMap[8][j]);
+		}
 		for(int i = 0; i<creepPath.size()-1; i++){
 			creepPath.get(i).setNext(creepPath.get(i+1));
 		}
 		creepPath.get(creepPath.size()-1).setNext(null);
 	}
 	
-
 	public Space getSpace(int x, int y){
 		return map[x][y];
 	}
 	
-	public PathSpace getCreepSpace(int x){
+	public PathSpace getPathSpace(int x){
 		return creepPath.get(x);
 	}
 	

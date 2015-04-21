@@ -11,7 +11,6 @@ abstract class Space implements Serializable{
 	public Space(int x, int y){
 		this.x = x;
 		this.y = y;
-		occupant = null;
 	}
 	
 	public int getX(){
@@ -124,6 +123,10 @@ abstract class Space implements Serializable{
 			throw new BoundaryException();
 		else
 			return southWest;
+	}
+	
+	public String toString(){
+		return x + " " + y;
 	}
 	
 	
