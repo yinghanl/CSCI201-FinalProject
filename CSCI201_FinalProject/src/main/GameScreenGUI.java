@@ -687,7 +687,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			
 			spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 			
-			if(p.getPrevious() != null)
+			if(p.getPrevious() != null && p.moveableCouldMove())
 			{
 				int x = p.getPrevious().getX();
 				int y = p.getPrevious().getY();
