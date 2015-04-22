@@ -62,12 +62,14 @@ abstract class Moveable extends Thread implements Serializable{
 			couldMove = true;
 		}
 		catch(BoundaryException be){
+			System.out.println("Boundary exception in Moveable.move()");
 			currentLocation = previousLocation;
 			couldMove = false;
 			if(this instanceof Bullet){
-				currentLocation.removeOccupant();
+				//currentLocation.removeOccupant();
+				//previousLocation.removeOccupant();
+				throw new BoundaryException();
 			}
-			System.out.println("Boundary exception in Moveable.move()");
 		}
 		previousLocation.removeOccupant();
 		currentLocation.setOccupant(this);
