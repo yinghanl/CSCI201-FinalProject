@@ -171,10 +171,12 @@ public class TabPanel extends JPanel {
 				System.out.println(gamesOpen.size());
 				
 				
-				gameListModel.addRow(new Object[] { newgame.getGameHost().getUsername(), newgame.getNumJoined() });
+				gameListModel.addRow(new Object[] { u.getUsername(), newgame.getNumJoined() });
 				
 				//recreate table to update
 				gameListModel.fireTableDataChanged();
+				
+				new GameRoomGUI(u, true, "localhost", 8000, u.getUsername() + "'s Room");
 			}	
 		});
 	}
