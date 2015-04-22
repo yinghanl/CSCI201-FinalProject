@@ -40,8 +40,13 @@ public class GameLobbyGUI extends JFrame {
 	
 	private void initializeComponents(){
 		lobby = new TabPanel(user, this);
-		ps = new ProfileScreen((User)user);
-		ps.setVisible(false);
+		if(user instanceof User)
+		{
+			ps = new ProfileScreen((User)user);
+			ps.setVisible(false);
+		}
+		
+		
 	}
 	
 	private void createGUI(){

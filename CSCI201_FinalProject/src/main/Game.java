@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Game {
 
+	private int gameLobbyID;
 	private AbstractUser host;
 	private int playersJoined = 1;
 	private Lock userLock = new ReentrantLock();
@@ -64,4 +65,13 @@ public class Game {
 		return usersPlaying;
 	}
 	
+	public void setID(int id)
+	{
+		gameLobbyID = id;
+	}
+	
+	public int getID()
+	{
+		return gameLobbyID;
+	}
 }
