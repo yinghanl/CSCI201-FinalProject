@@ -37,9 +37,7 @@ public class Player extends Moveable implements Serializable{
 		playerDirection = s;
 	}
 	public Tower playerOperatingTower()
-	{
-		
-		
+	{	
 		if(playerDirection.equals("NORTH"))
 		{
 			try

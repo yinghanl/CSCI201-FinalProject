@@ -56,11 +56,11 @@ public class Tower {
 	
 	public int getX()
 	{
-		return x;
+		return location.getX();
 	}
 	public int getY()
 	{
-		return y;
+		return location.getY();
 	}
 	
 }

@@ -11,7 +11,6 @@ public class BasicTower extends Tower{
 
 	BufferedImage sprite;
 
-	
 	public BasicTower(Space s)
 	{
 		super(s);
