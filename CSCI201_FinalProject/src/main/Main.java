@@ -26,6 +26,7 @@ public class Main {
 		//new GameScreenGUI(b, p1, true).run();
 		new GameScreenGUI(b, p1, false).run();
 		
+		
 	}
 }
 

@@ -82,7 +82,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private boolean msgSent = false;
 
-	private Tower testTower;
+	private Tower currentTower;
 		
 	private ArrayList<Player> players;
 	
@@ -520,9 +520,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						e.printStackTrace();
 					}
 				}
-				else if(key == ke.VK_W)
+				else if(key == ke.VK_SPACE)
 				{
-					testTower.shoot();
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+						t.shoot();
+					}
 				}
 				else if(key == ke.VK_1)
 				{

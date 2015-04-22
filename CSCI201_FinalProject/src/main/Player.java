@@ -36,5 +36,66 @@ public class Player extends Moveable implements Serializable{
 	{
 		playerDirection = s;
 	}
+	public Tower playerOperatingTower()
+	{
+		if(playerDirection.equals("NORTH"))
+		{
+			try
+			{
+				if(this.getLocation().getNorth() instanceof TowerSpace)
+				{
+					return ((TowerSpace) (this.getLocation().getNorth())).getTower();
+				}
+			}
+			catch (BoundaryException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else if(playerDirection.equals("SOUTH"))
+		{
+			try
+			{
+				if(this.getLocation().getSouth() instanceof TowerSpace)
+				{
+					return ((TowerSpace) (this.getLocation().getSouth())).getTower();
+				}
+			}
+			catch (BoundaryException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else if(playerDirection.equals("WEST"))
+		{
+			try
+			{
+				if(this.getLocation().getWest() instanceof TowerSpace)
+				{
+					return ((TowerSpace) (this.getLocation().getWest())).getTower();
+				}
+			}
+			catch (BoundaryException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else if(playerDirection.equals("EAST"))
+		{
+			try
+			{
+				if(this.getLocation().getEast() instanceof TowerSpace)
+				{
+					return ((TowerSpace) (this.getLocation().getEast())).getTower();
+				}
+			}
+			catch (BoundaryException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	
 }//end of class
