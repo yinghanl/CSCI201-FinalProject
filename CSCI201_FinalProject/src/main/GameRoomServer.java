@@ -25,11 +25,11 @@ public class GameRoomServer {
 		try
 		{
 			ss = new ServerSocket(8000);
-		
+			System.out.println("Waiting for connection");
 			while(true)
 			{
 				Socket s = ss.accept();
-				
+				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
 				gmt.start();
 			}

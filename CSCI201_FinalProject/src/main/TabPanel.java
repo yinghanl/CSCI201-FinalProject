@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -26,7 +27,7 @@ import javax.swing.table.TableModel;
 
 // TabPanel is used to store the information for each difficulty
 //The table and buttons for the gamelobby are stored here
-public class TabPanel extends JPanel implements Runnable{
+public class TabPanel extends JPanel {
 	JTable gameListTable;
 	DefaultTableModel gameListModel;
 	Object tableData[][];
@@ -49,40 +50,7 @@ public class TabPanel extends JPanel implements Runnable{
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		
-		try 
-		{
-			s = new Socket("192.168.1.143", 6789); //should take in IP address of host
-			ois = new ObjectInputStream( ( s.getInputStream() )  );
-			oos = new ObjectOutputStream(s.getOutputStream());
-			
-			try {
-				while (ois.readObject() != null)
-				{
-					try {
-						games = (Vector<Game>) ois.readObject();
-						//update all the games of the user's gameLobby table
-						updateGames(games);
-					}
-					catch (ClassCastException cce) {cce.printStackTrace();} 
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
-		catch (IOException ioe)
-		{
-			ioe.printStackTrace();
-		}
-		finally {
-			try{
-				oos.close();
-				ois.close();
-				s.close();
-			} catch (IOException ioe) { ioe.printStackTrace(); }
-		}
-	
+		new GameRoomClient(this).start();
 		
 		initializeComponents();
 		createGUI();
@@ -209,11 +177,6 @@ public class TabPanel extends JPanel implements Runnable{
 		
 		gameListTable = new JTable(tableModel);
 		
-	}
-
-	
-	public void run() {
-
 	}
 	
 	
