@@ -528,6 +528,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						t.shoot();
 					}
 				}
+				else if(key == ke.VK_SHIFT)
+				{
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+					}
+				}
 				else if(key == ke.VK_1)
 				{
 					options[0].setBackground(Color.GREEN);
@@ -732,7 +739,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	{
 		BasicTower b = new BasicTower(x, y);
 		
-		testTower = b;
 		BufferedImage img = b.getTowerImages();
 		
 		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
