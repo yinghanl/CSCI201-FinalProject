@@ -16,5 +16,9 @@ public class TowerSpace extends ClickableSpace{
 		//deposit the salvage value
 		
 	}
+	public Tower getTower()
+	{
+		return tower;
+	}
 
 }

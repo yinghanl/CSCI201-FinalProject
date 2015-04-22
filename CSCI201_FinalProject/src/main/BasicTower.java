@@ -17,6 +17,7 @@ public class BasicTower extends Tower{
 	{
 		this.x = x;
 		this.y = y;
+		direction = 0;
 		try
 		{
 			sprite = ImageIO.read(new File("basicTower.png"));
@@ -29,5 +30,68 @@ public class BasicTower extends Tower{
 	public BufferedImage getTowerImages()
 	{
 		return sprite;
+	}
+	public void rotate()
+	{
+		if(direction == 0)
+		{
+			direction = 4;
+		}
+		else if(direction == 1)
+		{
+			direction = 7;
+		}
+		else if(direction == 2)
+		{
+			direction = 6;
+		}
+		else if(direction == 3)
+		{
+			direction = 5;
+		}
+		else if(direction == 4)
+		{
+			
+		}
+		
+		try
+		{	
+			if(direction == 0)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerN.png"));	
+			}
+			else if (direction == 1)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerS.png"));
+			}
+			else if (direction == 2)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerW.png"));
+			}
+			else if (direction == 3)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerE.png"));
+			}
+			else if (direction == 4)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerNE.png"));
+			}
+			else if (direction == 5)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerNW.png"));
+			}
+			else if (direction == 6)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerSE.png"));
+			}
+			else if (direction == 7)
+			{
+				sprite = ImageIO.read(new File("images/BasicTowerSW.png"));
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

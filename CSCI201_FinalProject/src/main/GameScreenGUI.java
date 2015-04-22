@@ -82,7 +82,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private boolean msgSent = false;
 
-	private Tower testTower;
+	private Tower currentTower;
 		
 	private ArrayList<Player> players;
 	
@@ -520,9 +520,20 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						e.printStackTrace();
 					}
 				}
-				else if(key == ke.VK_W)
+				else if(key == ke.VK_SPACE)
 				{
-					testTower.shoot();
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+						t.shoot();
+					}
+				}
+				else if(key == ke.VK_SHIFT)
+				{
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+					}
 				}
 				else if(key == ke.VK_1)
 				{
@@ -712,6 +723,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
+					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
+						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
+							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
+							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
+							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+						}
+					}
 					if(backendBoard.getSpace(i,j).getMoveable().getMoveableImage() != null)
 					{
 						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
@@ -728,7 +747,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	{
 		BasicTower b = new BasicTower(x, y);
 		
-		testTower = b;
 		BufferedImage img = b.getTowerImages();
 		
 		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
