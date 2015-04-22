@@ -533,6 +533,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					if(currentPlayer.playerOperatingTower() != null)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
+						t.rotate();
+						
+						if(t instanceof BasicTower)
+						{
+							
+						}
 					}
 				}
 				else if(key == ke.VK_1)

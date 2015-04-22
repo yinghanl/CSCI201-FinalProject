@@ -29,31 +29,6 @@ public class BasicTower extends Tower{
 	}
 	public BufferedImage getTowerImages()
 	{
-		return sprite;
-	}
-	public void rotate()
-	{
-		if(direction == 0)
-		{
-			direction = 4;
-		}
-		else if(direction == 1)
-		{
-			direction = 7;
-		}
-		else if(direction == 2)
-		{
-			direction = 6;
-		}
-		else if(direction == 3)
-		{
-			direction = 5;
-		}
-		else if(direction == 4)
-		{
-			
-		}
-		
 		try
 		{	
 			if(direction == 0)
@@ -92,6 +67,14 @@ public class BasicTower extends Tower{
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		return sprite;
+	}
+	public int getX()
+	{
+		return x;
+	}
+	public int getY()
+	{
+		return y;
 	}
 }
