@@ -38,7 +38,6 @@ public class Player extends Moveable implements Serializable{
 	}
 	public Tower playerOperatingTower()
 	{
-		System.out.println(this.getLocation().getX() + " " + this.getLocation().getY());
 		
 		
 		if(playerDirection.equals("NORTH"))

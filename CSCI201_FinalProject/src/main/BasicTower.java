@@ -10,14 +10,12 @@ import javax.imageio.ImageIO;
 public class BasicTower extends Tower{
 
 	BufferedImage sprite;
-	int x;
-	int y;
+
 	
-	public BasicTower(int x, int y)
+	public BasicTower(Space s)
 	{
-		this.x = x;
-		this.y = y;
-		direction = 0;
+		super(s);
+		
 		try
 		{
 			sprite = ImageIO.read(new File("basicTower.png"));
@@ -69,12 +67,5 @@ public class BasicTower extends Tower{
 		}
 		return sprite;
 	}
-	public int getX()
-	{
-		return x;
-	}
-	public int getY()
-	{
-		return y;
-	}
+	
 }

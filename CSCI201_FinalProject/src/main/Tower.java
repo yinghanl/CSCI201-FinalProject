@@ -3,6 +3,13 @@ package main;
 public class Tower {
 	private Space location;
 	protected int cost, salvage, damage, direction;
+	protected int x;
+	protected int y;
+	
+	public Tower(Space s){
+		location = s;
+		direction = 0;
+	}
 	
 	public void shoot(){
 		new Bullet(location, direction, damage).start();
@@ -45,6 +52,15 @@ public class Tower {
 	
 	public Space getLocation(){
 		return location;
+	}
+	
+	public int getX()
+	{
+		return x;
+	}
+	public int getY()
+	{
+		return y;
 	}
 	
 }

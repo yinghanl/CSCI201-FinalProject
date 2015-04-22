@@ -768,7 +768,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	public void placeTower(int x, int y)
 	{
-		BasicTower b = new BasicTower(x, y);
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
 		BufferedImage img = b.getTowerImages();
 		
@@ -781,7 +781,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 			
 		spaces[x][y].setIcon(new ImageIcon(resizedImage));
-		backendBoard.placeTower(x, y);
+		backendBoard.placeTower(backendBoard.getSpace(x,y));
 
 		
 		//int count = 0;

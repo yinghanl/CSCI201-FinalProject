@@ -6,7 +6,6 @@ public class Bullet extends Moveable{
 	
 	public Bullet(Space loc, int direction, int val){
 		super(loc);
-		System.out.println(loc);
 		this.direction = direction;
 		damage = val;
 	}
@@ -22,7 +21,7 @@ public class Bullet extends Moveable{
 						space.getCreep().hit(damage);
 					}
 				}
-				sleep(500);
+				sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
