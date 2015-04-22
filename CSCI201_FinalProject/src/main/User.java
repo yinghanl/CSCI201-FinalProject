@@ -2,12 +2,24 @@ package main;
 
 public class User extends AbstractUser
 {
-
+	
+	private static final long serialVersionUID = 1L;
 	private int creepsKilled;
 	private int goldEarned;
 	private int gamesPlayed;
 	private int gamesWon;
 	private int gamesLost;
+	
+	public User(int userID)
+	{
+		super(userID);
+		this.username = "user" + userID;
+		this.creepsKilled = 0;
+		this.goldEarned = 0;
+		this.gamesPlayed = 0;
+		this.gamesWon = 0;
+		this.gamesLost = 0;
+	}
 	
 	public User(int userID, String username, int [] userData)
 	{
@@ -46,5 +58,6 @@ public class User extends AbstractUser
 	{
 		return true;
 	}
+	
 	
 }
