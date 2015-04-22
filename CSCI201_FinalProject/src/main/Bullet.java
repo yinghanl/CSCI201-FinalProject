@@ -14,7 +14,6 @@ public class Bullet extends Moveable{
 	public void run(){
 		while(true){
 			try {
-				sleep(250);
 				move(direction);
 				//if there is a creep in that location, hit it
 				if(currentLocation instanceof PathSpace){
@@ -23,6 +22,7 @@ public class Bullet extends Moveable{
 						space.getCreep().hit(damage);
 					}
 				}
+				sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
