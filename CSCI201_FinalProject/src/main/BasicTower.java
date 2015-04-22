@@ -41,11 +41,11 @@ public class BasicTower extends Tower{
 			}
 			else if (direction == 2)
 			{
-				sprite = ImageIO.read(new File("images/BasicTowerW.png"));
+				sprite = ImageIO.read(new File("images/BasicTowerE.png"));
 			}
 			else if (direction == 3)
 			{
-				sprite = ImageIO.read(new File("images/BasicTowerE.png"));
+				sprite = ImageIO.read(new File("images/BasicTowerW.png"));
 			}
 			else if (direction == 4)
 			{

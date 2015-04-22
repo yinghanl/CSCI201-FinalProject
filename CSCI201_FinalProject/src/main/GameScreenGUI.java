@@ -538,6 +538,22 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						
 						if(t instanceof BasicTower)
 						{
+							int x = ((BasicTower) t).getX();
+							int y = ((BasicTower) t).getY();
+							BufferedImage image = ((BasicTower) t).getTowerImages();
+							Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+							spaces[x][y].setIcon(new ImageIcon(icon));
+							
+							Command c = new Command(currentPlayer, "RotateTower", x, y);
+							try
+							{
+								oos.writeObject(c);
+								oos.flush();
+							}
+							catch (IOException e)
+							{
+								e.printStackTrace();
+							}
 							
 						}
 					}
@@ -879,6 +895,28 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									int x = c.getX();
 									int y = c.getY();
 									placeTower(x, y);
+								}
+								else if(command.equals("RotateTower"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									//Tower t = currentPlayer.playerOperatingTower();
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										t.rotate();
+										
+										if(t instanceof BasicTower)
+										{
+											BufferedImage image = ((BasicTower) t).getTowerImages();
+											Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+											spaces[x][y].setIcon(new ImageIcon(icon));
+										}
+									}								
+
 								}
 							}
 						}
