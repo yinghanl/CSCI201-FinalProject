@@ -151,16 +151,16 @@ public class Board implements Serializable {
 		}
 		map[x][y] = new TowerSpace(x, y);
 		if(x>0){
-			map[x-1][y].setSouth(null);
+			map[x-1][y].setSouth(map[x][y]);
 		}
 		if(y>0){
-			map[x][y-1].setEast(null);
+			map[x][y-1].setEast(map[x][y]);
 		}
 		if(y<31){
-			map[x][y+1].setWest(null);
+			map[x][y+1].setWest(map[x][y]);
 		}
 		if(x<19){
-			map[x+1][y].setNorth(null);
+			map[x+1][y].setNorth(map[x][y]);
 		}
 		
 	}
