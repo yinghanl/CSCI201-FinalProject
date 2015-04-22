@@ -4,9 +4,9 @@ public class Bullet extends Moveable{
 	int direction;
 	int damage;
 	
-	
 	public Bullet(Space loc, int direction, int val){
 		super(loc);
+		System.out.println(loc);
 		this.direction = direction;
 		damage = val;
 	}

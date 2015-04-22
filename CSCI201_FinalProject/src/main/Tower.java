@@ -5,7 +5,7 @@ public class Tower {
 	protected int cost, salvage, damage, direction;
 	
 	public void shoot(){
-		Bullet b = new Bullet(location, direction, damage);
+		new Bullet(location, direction, damage).start();
 	}
 	public void rotate()
 	{
@@ -41,6 +41,10 @@ public class Tower {
 		{
 			direction = 3;
 		}
+	}
+	
+	public Space getLocation(){
+		return location;
 	}
 	
 }

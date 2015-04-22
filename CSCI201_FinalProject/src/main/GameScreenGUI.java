@@ -525,6 +525,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					if(currentPlayer.playerOperatingTower() != null)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
+						System.out.println("Tower " + t.getLocation());
 						t.shoot();
 					}
 				}
