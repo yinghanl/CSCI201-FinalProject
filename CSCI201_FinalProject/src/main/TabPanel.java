@@ -50,11 +50,16 @@ public class TabPanel extends JPanel {
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		
-		new GameRoomClient(this).start();
-		
+		GameRoomClient gmc = new GameRoomClient(this);
+		System.out.println("created gameroomClient");
+		gmc.start();
+		System.out.println("started gameroomclientthread");
 		initializeComponents();
+		System.out.println("initialized components");
 		createGUI();
+		System.out.println("createdGUI");
 		addActionListeners();
+		System.out.println("added Actionlisteners");
 
 	}
 	

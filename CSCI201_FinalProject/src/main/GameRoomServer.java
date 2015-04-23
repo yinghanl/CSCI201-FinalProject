@@ -14,7 +14,6 @@ public class GameRoomServer {
 
 	private Vector<Game> gamesOpen;
 	private ServerSocket ss;
-	private Socket s;
 	private Vector<GameRoomThread> gmtVector;
 	private int gameIndex;
 	
@@ -22,6 +21,8 @@ public class GameRoomServer {
 	{
 		gamesOpen = new Vector<Game>();
 		gmtVector = new Vector<GameRoomThread>();
+		UpdateGameRoomThread ugrt = new UpdateGameRoomThread(this);
+		ugrt.start();
 		try
 		{
 			ss = new ServerSocket(8000);
@@ -29,9 +30,14 @@ public class GameRoomServer {
 			while(true)
 			{
 				Socket s = ss.accept();
+				//ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+				//ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
+				System.out.println("Started gmt1");
+				gmtVector.add(gmt);
 				gmt.start();
+				System.out.println("Started gmt2");
 			}
 		}
 		catch(IOException ioe)
@@ -42,8 +48,11 @@ public class GameRoomServer {
 		{
 			try 
 			{
-				s.close();
-				ss.close();
+				if(ss != null)
+				{
+					ss.close();
+				}
+				
 				
 			} 
 			catch (IOException e) 
@@ -104,20 +113,21 @@ public class GameRoomServer {
 		gmtVector.remove(gmt);
 	}
 	
-	public class updateGameRoomThread extends Thread
+	public class UpdateGameRoomThread extends Thread
 	{
 		private GameRoomServer grs;
-		public updateGameRoomThread(GameRoomServer grs)
+		public UpdateGameRoomThread(GameRoomServer grs)
 		{
 			this.grs = grs;
 		}
 		public void run()
 		{
+			System.out.println("UpdateGameRoomThread started");
 			try
 			{
 				while(true)
 				{
-					Thread.sleep(500);
+					Thread.sleep(10000);
 					grs.updateUsers();
 				}
 			}
@@ -138,30 +148,20 @@ public class GameRoomServer {
 		
 		public GameRoomThread(GameRoomServer grs, Socket s)
 		{
+			System.out.println(s.getPort());
 			this.grs = grs;
 			try
 			{
-				this.s = s;
-				ois = new ObjectInputStream(s.getInputStream());
+				this.s = s;	
 				oos = new ObjectOutputStream(s.getOutputStream());
+				ois = new ObjectInputStream(s.getInputStream());
+			
+
 			}
 			catch(IOException ioe)
 			{
-				System.out.println("IOE: " + ioe.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					oos.close();
-					ois.close();
-					s.close();
-				}
-				catch(IOException ioe)
-				{
-					System.out.println("IOE: " + ioe.getMessage());
-				}
-				
+				System.out.println("IOE in GameRoomThread constructor: ");
+				ioe.printStackTrace();
 			}
 			
 		}
@@ -170,8 +170,13 @@ public class GameRoomServer {
 		{
 			try
 			{
-				oos.writeObject(grs.getGameVector());
-				oos.flush();
+				if(oos != null)
+				{
+					System.out.println("in function update Cleint");
+					oos.writeObject(grs.getGameVector());
+					oos.flush();
+				}
+				
 			}
 			catch(IOException ioe)
 			{
@@ -184,19 +189,26 @@ public class GameRoomServer {
 		public void run() {
 			try 
 			{
+				System.out.println("Started gameroomserver thread");
+				Object newObj;
 				while (true) 
 				{
-					Object newObj = ois.readObject();
-					if(newObj instanceof Game)
+					if(ois != null)
 					{
-						Game newGame = (Game)newObj;
-						grs.gameUpdate(newGame);
+						newObj = ois.readObject();
+						if(newObj instanceof Game)
+						{
+							Game newGame = (Game)newObj;
+							grs.gameUpdate(newGame);
+						}
+						else
+						{
+							Integer gameID = (Integer)newObj;
+							grs.deleteGame(gameID);
+						}
+						
 					}
-					else
-					{
-						Integer gameID = (Integer)newObj;
-						grs.deleteGame(gameID);
-					}
+					
 					
 				}
 			} 
