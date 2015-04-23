@@ -146,7 +146,7 @@ public class TabPanel extends JPanel {
 				//recreate table to update
 				gameListModel.fireTableDataChanged();
 				
-				new GameRoomGUI(u, true, "localhost", 8000, u.getUsername() + "'s Room");
+				new GameRoomGUI(u, true, "localhost", 8001, u.getUsername() + "'s Room");
 			}	
 		});
 		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
