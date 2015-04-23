@@ -124,44 +124,44 @@ public class GameRoomGUI extends JFrame {
 		getRootPane().setDefaultButton(sendButton);
 		
 		setVisible(true);
-			
-		if(isHost){
-			userLabelIndex = 0;
-			setupHost();
-			try {
-				System.out.println("Starting Chat Server");
-				ss = new ServerSocket(6789);
-				while (true) {
-					System.out.println("Waiting for client to connect...");
-					Socket s = ss.accept();
-					System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
-					ChatThread ct = new ChatThread(s, this);
-					ctVector.add(ct);
-					ct.start();
-				}
-			} catch (IOException ioe) {
-				System.out.println("IOE: " + ioe.getMessage());
-			} finally {
-				if (ss != null) {
-					try {
-						ss.close();
-					} catch (IOException ioe) {
-						System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
-					}
-				}
-			}//end of finally
-
-		}//end of if host
-		else{
-			try {
-				s = new Socket("localhost", 6789);
-				oos = new ObjectOutputStream(s.getOutputStream());
-				ois = new ObjectInputStream(s.getInputStream());
-				new ReadObject().start();
-				} catch (IOException ioe) {
-					System.out.println("IOE client: " + ioe.getMessage());
-				}
-			}
+		new CreateConnections().start();
+//		if(isHost){
+//			userLabelIndex = 0;
+//			setupHost();
+//			try {
+//				System.out.println("Starting Chat Server");
+//				ss = new ServerSocket(6789);
+//				while (true) {
+//					System.out.println("Waiting for client to connect...");
+//					Socket s = ss.accept();
+//					System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+//					ChatThread ct = new ChatThread(s, this);
+//					ctVector.add(ct);
+//					ct.start();
+//				}
+//			} catch (IOException ioe) {
+//				System.out.println("IOE: " + ioe.getMessage());
+//			} finally {
+//				if (ss != null) {
+//					try {
+//						ss.close();
+//					} catch (IOException ioe) {
+//						System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
+//					}
+//				}
+//			}//end of finally
+//
+//		}//end of if host
+//		else{
+//			try {
+//				s = new Socket("localhost", 6789);
+//				oos = new ObjectOutputStream(s.getOutputStream());
+//				ois = new ObjectInputStream(s.getInputStream());
+//				new ReadObject().start();
+//				} catch (IOException ioe) {
+//					System.out.println("IOE client: " + ioe.getMessage());
+//				}
+//			}
 	}//end of constructor
 	
 	
@@ -424,10 +424,10 @@ public class GameRoomGUI extends JFrame {
 		//private BufferedReader br;
 		private ObjectOutputStream oos;
 		private ObjectInputStream ois;
-		private GameRoomGUI grg;
+		//private GameRoomGUI grg;
 		private Socket s;
-		public ChatThread(Socket s, GameRoomGUI grg) {
-			this.grg = grg;
+		public ChatThread(Socket s) {
+			//this.grg = grg;
 			this.s = s;
 			try {
 				ois = new ObjectInputStream(s.getInputStream());
@@ -545,6 +545,7 @@ public class GameRoomGUI extends JFrame {
 						}//end of else if obj is a string
 						else if(obj instanceof JLabel[][]){
 							for(int i=1; i < 4; i++){
+								//userLabels = (JLabel[][])obj;
 								userLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 								userLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
 							}//end of for
@@ -574,5 +575,51 @@ public class GameRoomGUI extends JFrame {
 				}
 			}//end of run
 		}//end of inner class read object
+		
+		
+	class CreateConnections extends Thread{
+		public CreateConnections(){
+			
+		}
+		public void run(){
+			if(isHost){
+				userLabelIndex = 0;
+				setupHost();
+				try {
+					System.out.println("Starting Chat Server");
+					ss = new ServerSocket(6789);
+					while (true) {
+						System.out.println("Waiting for client to connect...");
+						Socket s = ss.accept();
+						System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+						ChatThread ct = new ChatThread(s);
+						ctVector.add(ct);
+						ct.start();
+					}
+				} catch (IOException ioe) {
+					System.out.println("IOE: " + ioe.getMessage());
+				} finally {
+					if (ss != null) {
+						try {
+							ss.close();
+						} catch (IOException ioe) {
+							System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
+						}
+					}
+				}//end of finally
+
+			}//end of if host
+			else{
+				try {
+					s = new Socket("localhost", 6789);
+					oos = new ObjectOutputStream(s.getOutputStream());
+					ois = new ObjectInputStream(s.getInputStream());
+					new ReadObject().start();
+					} catch (IOException ioe) {
+						System.out.println("IOE client: " + ioe.getMessage());
+					}
+				}
+		}
+	}
 	
 }//end of class
