@@ -30,6 +30,8 @@ public class GameRoomServer {
 			while(true)
 			{
 				Socket s = ss.accept();
+				//ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+				//ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
 				System.out.println("Started gmt1");
@@ -146,40 +148,20 @@ public class GameRoomServer {
 		
 		public GameRoomThread(GameRoomServer grs, Socket s)
 		{
+			System.out.println(s.getPort());
 			this.grs = grs;
 			try
 			{
-				this.s = s;
-				ois = new ObjectInputStream(s.getInputStream());
+				this.s = s;	
 				oos = new ObjectOutputStream(s.getOutputStream());
+				ois = new ObjectInputStream(s.getInputStream());
+			
+
 			}
 			catch(IOException ioe)
 			{
-				System.out.println("IOE: " + ioe.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					if(oos != null)
-					{
-						oos.close();
-					}
-					if(ois != null)
-					{
-						ois.close();
-					}
-					if(s != null)
-					{
-						s.close();
-					}
-					
-				}
-				catch(IOException ioe)
-				{
-					System.out.println("IOE: " + ioe.getMessage());
-				}
-				
+				System.out.println("IOE in GameRoomThread constructor: ");
+				ioe.printStackTrace();
 			}
 			
 		}
