@@ -32,7 +32,7 @@ public class Game implements Serializable{
 	
 	public int getNumJoined()
 	{
-		return this.playersJoined;
+		return playersJoined;
 	}
 	
 	public void joinGame(AbstractUser au)
