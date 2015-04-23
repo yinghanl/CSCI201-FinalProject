@@ -5,6 +5,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -31,16 +38,24 @@ public class TabPanel extends JPanel {
 	JButton joinButton;
 	JButton returnButton;
 	AbstractUser u;
-	private Vector<Game> gamesOpen;
 	
-	
+	private GameRoomClient grc;
+
 	public TabPanel(AbstractUser user, GameLobbyGUI gameLobbyWindow){
-		gamesOpen = new Vector<Game>();
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
+		
+		grc = new GameRoomClient(this);
+		System.out.println("created gameroomClient");
+		grc.start();
+		System.out.println("started gameroomclientthread");
 		initializeComponents();
+		System.out.println("initialized components");
 		createGUI();
+		System.out.println("createdGUI");
 		addActionListeners();
+		System.out.println("added Actionlisteners");
+
 	}
 	
 	public void initializeComponents(){
@@ -55,22 +70,6 @@ public class TabPanel extends JPanel {
 		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
 		gameListModel = new DefaultTableModel(tableData, columnNames);
 		gameListTable = new JTable(gameListModel);
-		System.out.println(gamesOpen.size());
-		
-		//populate with games already open
-		for (int i = 0; i < gamesOpen.size(); i++){
-					
-					String host = gamesOpen.get(i).getGameHost().getUsername();
-					int playersJoined = gamesOpen.get(i).getNumJoined();
-					
-					
-					gameListModel.addRow(new Object[] { host, playersJoined });
-					
-					//recreate table to update
-					gameListModel.fireTableDataChanged();
-					
-		}
-		
 		
 		gameListTable.setSelectionForeground(Color.WHITE);
 		gameListTable.setSelectionBackground(Color.RED);
@@ -98,24 +97,6 @@ public class TabPanel extends JPanel {
 		add(jsp,BorderLayout.CENTER);
 		add(buttonPanel,BorderLayout.SOUTH);
 
-		/*
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridheight = 10;
-		gbc.gridwidth = 3;
-		add(jsp,gbc);
-		
-		gbc.gridheight = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 11;
-		
-		
-		add(buttonPanel,gbc);
-		*/
-		//add(jsp);
-		//add(buttonPanel);
 	}
 	
 	public void addActionListeners()
@@ -123,60 +104,48 @@ public class TabPanel extends JPanel {
 		
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				gameLobbyWindow.setVisible(false);
-				int row = gameListTable.getSelectedRow();
-				
-				/*
-				int row = gameListTable.getSelectedRow();
-				
-				//check that there are less than 4 players 
-				if ( gameListTable.getValueAt(row,1).equals(4) ) { return; } 
-				
-				//if there are less than 4 players, join the game and update the table
-				else {
-					String gameToJoincreator = (String) gameListTable.getValueAt(row, 0);
-					//find the game in the vector of games to join the right one
-					Game toJoin = null;
-					for (int i = 0; i < GameLobbyGUI.gamesOpen.size(); i++)
-					{
-						if (GameLobbyGUI.gamesOpen.get(i).getGameCreator().equals(gameToJoincreator))
-						{
-							toJoin = GameLobbyGUI.gamesOpen.get(i);
-							
-							//join game
-							toJoin.joinGame(u.getUsername());
-							
-							//update table (1) is the index of  column NumJoined
-							gameListTable.setValueAt(toJoin.getNumJoined(), row, 1);
-							DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
-							gameListTable = new JTable(tableModel);
-							
-							break;
-						}
-					}
-					
-				}
-			*/	
+		
 			}
 		});
 		
 		
 		createButton.addActionListener(new ActionListener (){
 			public void actionPerformed(ActionEvent e) {
-						
-				//create new game and add it to the table's model
-				Game newgame = new Game(u);
-				gamesOpen.add(newgame);
-				System.out.println(gamesOpen.size());
+				Game newGame = new Game(u);
+				grc.newGame(newGame);
 				
-				
-				gameListModel.addRow(new Object[] { newgame.getGameHost().getUsername(), newgame.getNumJoined() });
-				
-				//recreate table to update
-				gameListModel.fireTableDataChanged();
+				new GameRoomGUI(u, true, "localhost", 8001, u.getUsername() + "'s Room");
 			}	
 		});
+		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		buttonPanel.add(joinButton);
+		buttonPanel.add(Box.createGlue());
+		buttonPanel.add(createButton);
+		buttonPanel.add(Box.createGlue());
+		buttonPanel.add(returnButton);
+		
+		JScrollPane jsp = new JScrollPane(gameListTable);
+		gameListTable.setFillsViewportHeight(true);
+		
+		add(jsp,BorderLayout.CENTER);
+		add(buttonPanel,BorderLayout.SOUTH);
+
+	}
+	
+	public void updateGames(Vector<Game> games){
+		
+		int numGames = games.size();
+		
+		gameListModel.setRowCount(0);
+		for (int i = 0; i < numGames; i++){
+			Game g = games.elementAt(i);
+			gameListModel.addRow(new Object[] { g.getGameHost().getUsername(), g.getNumJoined() });
+		}
+		
+		gameListModel.fireTableDataChanged();
+		
 	}
 	
 	

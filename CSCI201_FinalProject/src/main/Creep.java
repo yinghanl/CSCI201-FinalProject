@@ -9,7 +9,7 @@ public class Creep extends Moveable{
 		super(p); //may cause error
 		currentPathLocation = p;
 		currentPathLocation.setOccupant(this);
-		health = 100;
+		health = 10;
 		
 	}
 	

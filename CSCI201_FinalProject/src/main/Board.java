@@ -144,24 +144,92 @@ public class Board implements Serializable {
 		map[p.getLocation().getX()][p.getLocation().getY()].setOccupant(p);
 	}
 	
-	public void placeTower(int x, int y)
+	public void placeTower(Space s)
 	{
+		int x = s.getX();
+		int y = s.getY();
 		if(map[x][y] instanceof PathSpace){
 			return;
 		}
 		map[x][y] = new TowerSpace(x, y);
+		
+		setAdjacency(map[x][y], x, y);
+		
 		if(x>0){
-			map[x-1][y].setSouth(null);
+			map[x-1][y].setSouth(map[x][y]);
 		}
 		if(y>0){
-			map[x][y-1].setEast(null);
+			map[x][y-1].setEast(map[x][y]);
 		}
 		if(y<31){
-			map[x][y+1].setWest(null);
+			map[x][y+1].setWest(map[x][y]);
 		}
 		if(x<19){
-			map[x+1][y].setNorth(null);
+			map[x+1][y].setNorth(map[x][y]);
+		}
+		if(x<19 && y>0){
+			map[x+1][y-1].setNorthEast(map[x][y]);
+		}
+		if(x<19 && y<31){
+			map[x+1][y+1].setNorthWest(map[x][y]);
+		}
+		if(x>0 && y<31){
+			map[x-1][y+1].setSouthWest(map[x][y]);
+		}
+		if(x>0 && y>0){
+			map[x-1][y-1].setSouthEast(map[x][y]);
 		}
 		
+		
+	}
+	
+	private void setAdjacency(Space s, int i, int j){
+		//north
+		if(i != 0)
+			s.setNorth(map[i-1][j]);
+		else
+			s.setNorth(null);
+		
+		//south
+		if(i != 19)
+			s.setSouth(map[i+1][j]);
+		else
+			s.setSouth(null);
+		
+		//west
+		if(j != 0)
+			s.setWest(map[i][j-1]);
+		else
+			s.setWest(null);
+		
+		//east
+		if(j <30 )
+			s.setEast(map[i][j+1]);
+		else
+			s.setEast(null);
+		
+		//northwest
+		if(i != 0 && j != 0)
+			s.setNorthWest(map[i-1][j-1]);
+		else
+			s.setNorthWest(null);
+		
+		//northeast
+		if(i != 0 && j != 31)
+			s.setNorthEast(map[i-1][j+1]);
+		else
+			s.setNorthEast(null);
+		
+		//southeast
+		if(i != 19 && j != 31)
+			s.setSouthEast(map[i+1][j+1]);
+		else
+			s.setSouthEast(null);
+		
+		//southwest
+		if(i != 19 && j != 0)
+			s.setSouthWest(map[i+1][j-1]);
+		else
+			s.setSouthWest(null); 
 	}
 }

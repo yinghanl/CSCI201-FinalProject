@@ -21,7 +21,6 @@ abstract class Moveable extends Thread implements Serializable{
 		
 		previousLocation = currentLocation;
 		//currentLocation.removeOccupant();
-		Space s;
 		try{
 			switch(direction){
 				//0 = up
@@ -57,15 +56,20 @@ abstract class Moveable extends Thread implements Serializable{
 					currentLocation = currentLocation.getSouthWest();
 					break;
 			}
-			if(currentLocation instanceof TowerSpace || currentLocation.isOccupied() || currentLocation instanceof PathSpace){
+			if(currentLocation instanceof TowerSpace || currentLocation.isOccupied() || currentLocation instanceof PathSpace && !(this instanceof Bullet)){
 				throw new BoundaryException();
 			}
 			couldMove = true;
 		}
 		catch(BoundaryException be){
+			System.out.println("Boundary exception in Moveable.move()");
 			currentLocation = previousLocation;
 			couldMove = false;
-			System.out.println("Boundary exception in Moveable.move()");
+			if(this instanceof Bullet){
+				//currentLocation.removeOccupant();
+				//previousLocation.removeOccupant();
+				throw new BoundaryException();
+			}
 		}
 		previousLocation.removeOccupant();
 		currentLocation.setOccupant(this);

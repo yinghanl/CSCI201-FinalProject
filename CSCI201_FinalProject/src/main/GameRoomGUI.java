@@ -109,7 +109,7 @@ public class GameRoomGUI extends JFrame {
 		resetLabels = false;
 		usersReady = 1;
 		users_in_room = 0;
-		usersConnected = new User[4];
+		usersConnected = new AbstractUser[4];
 		
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(2,1));
@@ -208,12 +208,13 @@ public class GameRoomGUI extends JFrame {
 		return IPAddress;
 	}
 	
-	public void usersConnected(User u){
+	public void usersConnected(AbstractUser u){
 		usersConnected[users_in_room] = u;
 		users_in_room++;
 		chatbox.append("\n" + u.getUsername()+" connected!");
 	}//end of user connected to host game room
 	
+<<<<<<< HEAD
 //	public void setupHost(){
 //		users_in_room++;
 //		usersConnected[0] = user;
@@ -224,6 +225,18 @@ public class GameRoomGUI extends JFrame {
 //	public void connectToRoom(User user){
 //		chatclient = new Chatclient(IPAddress, user, port);
 //	}//end of setting up the chat client
+=======
+	public void setupHost(){
+		users_in_room++;
+		usersConnected[0] = user;
+		IPAddress = "localhost";
+		new Chatserver(port).start();
+	}//end of setuphost
+	
+	public void connectToRoom(AbstractUser user){
+		chatclient = new Chatclient(IPAddress, user, port);
+	}//end of setting up the chat client
+>>>>>>> 3c8677545cb391b509049a74f6bb9fd0bdfe6638
 	
 	public String getTitle(){
 		return roomTitle;
@@ -599,10 +612,33 @@ public class GameRoomGUI extends JFrame {
 					obj = ois.readObject();
 				}//end of while	
 			}catch(IOException ioe){
+<<<<<<< HEAD
 				System.out.println("IOE in chatthread run: " + ioe.getMessage());
 			} catch(ClassNotFoundException cnfe){
 				System.out.println("CNFE in chatthread run: " + cnfe.getMessage());
 			}
+=======
+				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+			} finally{
+				try {
+					if(br != null)
+					{
+						br.close();
+					}
+					if(s != null)
+					{
+						s.close();
+					}
+					if(ss != null)
+					{
+						ss.close();
+					}
+					
+				} catch (IOException e) {
+					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
+				}
+			}//end of finally block
+>>>>>>> 3c8677545cb391b509049a74f6bb9fd0bdfe6638
 		}//end of run
 	}//end of chathread
 	
@@ -616,8 +652,8 @@ public class GameRoomGUI extends JFrame {
 					obj = ois.readObject();
 					System.out.println(obj.getClass());
 					while(obj != null){
-						if(obj instanceof User){
-							usersConnected((User)obj);
+						if(obj instanceof AbstractUser){
+							usersConnected((AbstractUser)obj);
 							updateuserLabels();
 							while(!updated){}
 							oos.writeObject(userLabels);
@@ -659,6 +695,7 @@ public class GameRoomGUI extends JFrame {
 				}
 			}//end of run
 		}//end of inner class read object
+<<<<<<< HEAD
 //	}//end of chat server class
 //	
 //	public class Chatclient extends Thread{
@@ -718,6 +755,67 @@ public class GameRoomGUI extends JFrame {
 //				System.out.println("CNFE in chatclient reading object: "+e.getMessage());
 //			}
 //		}//end of constructor
+=======
+	}//end of chat server class
+	
+	public class Chatclient extends Thread{
+		private Socket s;
+		private BufferedReader br;
+		private ObjectInputStream ois;
+		private ObjectOutputStream oos;
+		private String IPAddress;
+		private int port;
+		private AbstractUser u;
+		
+		public Chatclient(String IPAddress, AbstractUser u, int port){
+			this.IPAddress = IPAddress;
+			this.u = u;
+			this.port = port;
+			try{
+				s = new Socket(IPAddress, port);
+				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+				oos = new ObjectOutputStream(s.getOutputStream());
+				ois = new ObjectInputStream(s.getInputStream());
+				this.start();
+				
+				oos.writeObject(user);
+				oos.flush();
+				
+				Object ob = ois.readObject();
+				while(ob != null){
+					if(ob instanceof String){
+						chatbox.append("\n"+((String)ob));
+					}//end of if ob is String
+					else if(ob instanceof JLabel[][]){
+						for(int i=0; i < 4; i++){
+							userLabels[i][0].setText(((JLabel[][])ob)[i][0].getText());
+							userLabels[i][1].setText(((JLabel[][])ob)[i][1].getText());
+						}//end of forloop updating userLabels
+					}//end of else jlabel
+					else if(ob instanceof Integer){
+						if((Integer)ob == -1){
+							Board b = new Board();
+							new GameScreenGUI(b, user.toPlayer(), false);
+							setVisible(false);
+							loadGameScreen = false;
+						}
+						else{
+							userLabelIndex = (Integer)ob;
+						}
+					}//end of else integer
+					else{
+						System.out.println(ob.getClass());
+					}//end of else 
+					ob = ois.readObject();
+				}//end of while	
+				
+			}catch(IOException ioe){
+				System.out.println("IOE in chatclient constructor: " + ioe.getMessage());
+			} catch (ClassNotFoundException e) {
+				System.out.println("CNFE in chatclient reading object: "+e.getMessage());
+			}
+		}//end of constructor
+>>>>>>> 3c8677545cb391b509049a74f6bb9fd0bdfe6638
 		
 //		public synchronized void run(){
 //			String line = typefield.getText();

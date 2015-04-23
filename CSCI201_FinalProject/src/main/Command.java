@@ -24,7 +24,6 @@ public class Command implements Serializable {
 		this.x = x;
 		this.y = y;
 	}
-	
 	public Player getPlayer()
 	{
 		return player;

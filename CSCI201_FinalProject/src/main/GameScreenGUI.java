@@ -82,7 +82,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private boolean msgSent = false;
 
-	private Tower testTower;
+	private Tower currentTower;
 		
 	private ArrayList<Player> players;
 	
@@ -520,9 +520,42 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						e.printStackTrace();
 					}
 				}
-				else if(key == ke.VK_W)
+				else if(key == ke.VK_SPACE)
 				{
-					testTower.shoot();
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+						t.shoot();
+					}
+				}
+				else if(key == ke.VK_SHIFT)
+				{
+					if(currentPlayer.playerOperatingTower() != null)
+					{
+						Tower t = currentPlayer.playerOperatingTower();
+						t.rotate();
+						
+						if(t instanceof BasicTower)
+						{
+							int x = ((BasicTower) t).getX();
+							int y = ((BasicTower) t).getY();
+							BufferedImage image = ((BasicTower) t).getTowerImages();
+							Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+							spaces[x][y].setIcon(new ImageIcon(icon));
+							
+							Command c = new Command(currentPlayer, "RotateTower", x, y);
+							try
+							{
+								oos.writeObject(c);
+								oos.flush();
+							}
+							catch (IOException e)
+							{
+								e.printStackTrace();
+							}
+							
+						}
+					}
 				}
 				else if(key == ke.VK_1)
 				{
@@ -712,6 +745,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
+					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
+						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
+							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
+							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
+							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+						}
+					}
 					if(backendBoard.getSpace(i,j).getMoveable().getMoveableImage() != null)
 					{
 						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
@@ -726,9 +767,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	public void placeTower(int x, int y)
 	{
-		BasicTower b = new BasicTower(x, y);
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
-		testTower = b;
 		BufferedImage img = b.getTowerImages();
 		
 		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
@@ -740,7 +780,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 			
 		spaces[x][y].setIcon(new ImageIcon(resizedImage));
-		backendBoard.placeTower(x, y);
+		backendBoard.placeTower(backendBoard.getSpace(x,y));
 
 		
 		//int count = 0;
@@ -854,6 +894,28 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									int x = c.getX();
 									int y = c.getY();
 									placeTower(x, y);
+								}
+								else if(command.equals("RotateTower"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									//Tower t = currentPlayer.playerOperatingTower();
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										t.rotate();
+										
+										if(t instanceof BasicTower)
+										{
+											BufferedImage image = ((BasicTower) t).getTowerImages();
+											Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+											spaces[x][y].setIcon(new ImageIcon(icon));
+										}
+									}								
+
 								}
 							}
 						}
