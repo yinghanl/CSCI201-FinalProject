@@ -118,6 +118,7 @@ public class LogInGUI extends JFrame
 		backgroundPanel.add(centerPanel, BorderLayout.CENTER);
 		backgroundPanel.add(southPanel, BorderLayout.SOUTH);
 		*/
+		
 		JPanel contentPanel = new LoginPanel();
 		FlowLayout bgPanelLayout = new FlowLayout(FlowLayout.CENTER);
 		bgPanelLayout.setVgap((int)(height *.6));
