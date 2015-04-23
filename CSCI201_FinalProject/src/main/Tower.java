@@ -9,6 +9,7 @@ public class Tower {
 	public Tower(Space s){
 		location = s;
 		direction = 0;
+		damage = 10;
 	}
 	
 	public void shoot(){
