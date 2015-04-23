@@ -286,7 +286,7 @@ public class GameRoomGUI extends JFrame {
 		jp.setLayout(new GridLayout(5,5));
 		JLabel jl;
 		Border border = LineBorder.createBlackLineBorder();
-		jl = new JLabel("  user name");
+		jl = new JLabel("  User Name");
 		jl.setBorder(border);
 		jp.add(jl);
 		jl = new JLabel("  Status");
