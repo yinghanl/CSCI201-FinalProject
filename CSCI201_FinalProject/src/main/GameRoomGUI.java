@@ -127,7 +127,7 @@ public class GameRoomGUI extends JFrame {
 			
 		if(isHost){
 			userLabelIndex = 0;
-			//setupHost();
+			setupHost();
 			try {
 				System.out.println("Starting Chat Server");
 				ss = new ServerSocket(6789);
@@ -155,7 +155,6 @@ public class GameRoomGUI extends JFrame {
 		else{
 			try {
 				s = new Socket("localhost", 6789);
-				//br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 				oos = new ObjectOutputStream(s.getOutputStream());
 				ois = new ObjectInputStream(s.getInputStream());
 				new ReadObject().start();
@@ -456,6 +455,7 @@ public class GameRoomGUI extends JFrame {
 				while(obj != null){
 					System.out.println("in while: "+obj.getClass());
 					if(obj instanceof User){
+						System.out.println("instance of user: "+obj.getClass());
 						usersConnected((User)obj);
 						updateuserLabels();
 						while(!updated){}
@@ -527,6 +527,9 @@ public class GameRoomGUI extends JFrame {
 					System.out.println("obj = ois.readObject()");
 					obj = ois.readObject();
 					System.out.println(obj.getClass());
+					System.out.println((String)obj);
+					oos.writeObject(user);
+					oos.flush();
 					while(obj != null){
 						if(obj instanceof AbstractUser){
 							usersConnected((AbstractUser)obj);
@@ -573,4 +576,3 @@ public class GameRoomGUI extends JFrame {
 		}//end of inner class read object
 	
 }//end of class
-
