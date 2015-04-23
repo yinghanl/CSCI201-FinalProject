@@ -89,6 +89,7 @@ public class GameRoomServer {
 		}
 	}
 	
+	
 	public void gameUpdate(Game g)
 	{
 		System.out.println("Checking if new game");
@@ -201,10 +202,19 @@ public class GameRoomServer {
 						Game newGame = (Game)newObj;
 						grs.gameUpdate(newGame);
 					}
-					else
+					else if(newObj instanceof String)
 					{
-						Integer gameID = (Integer)newObj;
-						grs.deleteGame(gameID);
+						for (Game g : grs.getGameVector()) {
+							if(g.getGameHost().getUsername().equals(newObj))
+							{
+								oos.writeObject(g);
+								oos.flush();
+								break;
+							}
+						}
+						oos.writeObject(null);
+						oos.flush();
+		
 					}
 					
 					

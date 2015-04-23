@@ -54,6 +54,30 @@ public class GameRoomClient extends Thread
 		
 	}
 	
+	public Game getGameFromHost(String username)
+	{
+		Game hostGame = null;
+		try
+		{
+			oos.writeObject(username);
+			oos.flush();
+			
+			hostGame = (Game)ois.readObject();
+			
+			
+		}
+		catch(ClassNotFoundException cnfe)
+		{
+			System.out.println("CNFE in GameRoomCLient: " + cnfe.getMessage());
+		}
+		catch(IOException ioe)
+		{
+			System.out.println("IOE in GameRoomClient: " + ioe.getMessage());
+		}
+		return hostGame;
+		
+	}
+	
 	public void run()
 	{
 		try
