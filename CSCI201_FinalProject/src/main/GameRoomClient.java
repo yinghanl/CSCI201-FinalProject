@@ -20,10 +20,10 @@ public class GameRoomClient extends Thread
 		try 
 		{
 			s = new Socket("localhost", 8000); //should take in IP address of host
-			System.out.println("Client Connecting");
+			//System.out.println("Client Connecting");
 			ois = new ObjectInputStream(s.getInputStream());
 			oos = new ObjectOutputStream(s.getOutputStream());
-			System.out.println("opened streams");
+			//System.out.println("opened streams");
 		}
 		
 		catch (IOException ioe)
@@ -58,10 +58,11 @@ public class GameRoomClient extends Thread
 	{
 		try
 		{
-			System.out.println("Thread started");
+			//System.out.println("Thread started");
 			while(true)
 			{
 				Vector<Game> gamesOpen = (Vector<Game>)ois.readObject();
+				//System.out.println("gamesOpen.size = " + gamesOpen.size());
 				tp.updateGames(gamesOpen);
 			}
 		}

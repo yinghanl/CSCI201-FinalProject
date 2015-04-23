@@ -22,6 +22,7 @@ public class Game implements Serializable{
 	public Game(AbstractUser u)
 	{
 		this.host = u;
+		gameLobbyID = -1;
 	}
 	
 	public AbstractUser getGameHost()
