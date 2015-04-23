@@ -4,11 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -32,6 +38,8 @@ public class LogInGUI extends JFrame
 	
 	JLabel warningLabel;
 	
+	JPanel backgroundPanel;
+	
 	private void instantiateComponents()
 	{
 		
@@ -48,6 +56,8 @@ public class LogInGUI extends JFrame
 		warningLabel = new JLabel("The username or password is incorrect");
 		warningLabel.setForeground(Color.red);
 		
+		backgroundPanel = null;
+		
 		
 	}
 	
@@ -59,14 +69,19 @@ public class LogInGUI extends JFrame
 		setSize((int)(width * 0.8), (int)(height * 0.8));
 		setLocation(100, 100);
 		
+		backgroundPanel = new BGPanel();
+		backgroundPanel.setLayout(new BorderLayout());
+	
 		JPanel northPanel = new JPanel();
 		JLabel tdLabel = new JLabel("Tower Defense");
 		tdLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		northPanel.add(tdLabel);
+		northPanel.setOpaque(false);
 		
 		JPanel centerPanel = new JPanel();
 		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
 		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
+		centerPanel.setOpaque(false);
 		
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
@@ -75,6 +90,9 @@ public class LogInGUI extends JFrame
 		swPanel.setLayout(new BoxLayout(swPanel, BoxLayout.Y_AXIS));
 		JPanel sw1Panel = new JPanel();
 		JPanel sw2Panel = new JPanel();
+		swPanel.setOpaque(false);
+		sw1Panel.setOpaque(false);
+		sw2Panel.setOpaque(false);
 		sw1Panel.add(new JLabel("username:"));
 		sw1Panel.add(usernameJTF);
 		sw2Panel.add(new JLabel("password:"));
@@ -84,8 +102,10 @@ public class LogInGUI extends JFrame
 		swPanel.add(sw2Panel);
 		swPanel.add(Box.createGlue());
 		southPanel.add(swPanel);
+		southPanel.setOpaque(false);
 		
 		JPanel sePanel = new JPanel();
+		sePanel.setOpaque(false);
 		sePanel.setLayout(new BoxLayout(sePanel, BoxLayout.Y_AXIS));
 		sePanel.add(Box.createGlue());
 		sePanel.add(userLogInButton);
@@ -95,11 +115,11 @@ public class LogInGUI extends JFrame
 		sePanel.add(createUserButton);
 		sePanel.add(Box.createGlue());
 		southPanel.add(sePanel);
-		add(northPanel, BorderLayout.NORTH);
-		add(centerPanel, BorderLayout.CENTER);
-		add(southPanel, BorderLayout.SOUTH);
+		backgroundPanel.add(northPanel, BorderLayout.NORTH);
+		backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+		backgroundPanel.add(southPanel, BorderLayout.SOUTH);
 		
-		
+		setContentPane(backgroundPanel);
 	}
 	
 	private void addActionListeners()
@@ -170,6 +190,12 @@ public class LogInGUI extends JFrame
 		setVisible(true);
 	}
 	
-	
+	class BGPanel extends JPanel{
+		Image bg = new ImageIcon("images/loginImage.jpg").getImage();
+		
+		public void paintComponent(Graphics g){
+			g.drawImage(bg,0,0,getWidth(),getHeight(),this);
+		}
+	}
 	
 }
