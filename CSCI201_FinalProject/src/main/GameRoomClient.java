@@ -39,6 +39,7 @@ public class GameRoomClient extends Thread
 		try
 		{
 			oos.writeObject(g);
+			oos.flush();
 		}
 		catch(IOException ioe)
 		{

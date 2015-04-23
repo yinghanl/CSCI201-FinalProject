@@ -96,12 +96,11 @@ public class DataBaseUtils {
 			ps.setString(1, username); // set first variable in prepared statement
 			ps.setString(2, pass);
 			ps.executeUpdate();
-			PreparedStatement getIDps = conn.prepareStatement("SELECT userID FROM user WHERE username=?");
-			getIDps.setString(1, username);
+			PreparedStatement getIDps = conn.prepareStatement("SELECT LAST_INSERT_ID()");
 			ResultSet rs = getIDps.executeQuery();
 			if(rs.next())
 			{
-				userID = rs.getInt("userID");
+				userID = rs.getInt("LAST_INSERT_ID()");
 			}
 			else
 			{
@@ -208,8 +207,7 @@ public class DataBaseUtils {
 		Guest newGuest = new Guest(guestID);
 		return newGuest;
 	}
-	
-	
+
 	public static boolean deleteGuest(Guest g)
 	{
 		int guestID = g.getUserID();
