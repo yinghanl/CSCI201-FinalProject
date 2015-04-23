@@ -56,9 +56,8 @@ public class GameRoomClient extends Thread
 		
 	}
 	
-	public Game getGameFromHost(String username)
+	public void joinHostGame(String username)
 	{
-		Game hostGame = null;
 		try
 		{
 			oos.writeObject(username);
@@ -69,7 +68,6 @@ public class GameRoomClient extends Thread
 		{
 			System.out.println("IOE in GameRoomClient: " + ioe.getMessage());
 		}
-		return hostGame;
 		
 	}
 	

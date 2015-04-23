@@ -106,7 +106,7 @@ public class TabPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
-				grc.getGameFromHost(host);
+				grc.joinHostGame(host);
 				
 				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room");
 				gameLobbyWindow.setVisible(false);

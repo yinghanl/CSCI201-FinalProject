@@ -105,10 +105,11 @@ public class GameRoomServer {
 			System.out.println("gamesOpen.size()" + gamesOpen.size());
 			return;
 		}
-		for (Game oldG : gamesOpen) {
-			if(g.getID() == oldG.getID())
+		for (int i = 0; i < gamesOpen.size(); i++) {
+			if(g.getID() == gamesOpen.get(i).getID())
 			{
-				oldG = g;
+				System.out.println("updated game");
+				gamesOpen.set(i, g);
 			}
 		}
 		System.out.println("gamesOpen.size()" + gamesOpen.size());
