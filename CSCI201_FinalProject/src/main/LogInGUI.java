@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -118,6 +119,9 @@ public class LogInGUI extends JFrame
 					newUser = DataBaseUtils.createUser(userID);
 					new GameLobbyGUI(newUser);
 					setVisible(false);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Username password combination does not exist");
 				}
 			}
 		});
