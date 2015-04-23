@@ -21,8 +21,8 @@ public class GameRoomClient extends Thread
 		{
 			s = new Socket("localhost", 8000); //should take in IP address of host
 			System.out.println("Client Connecting");
-			ois = new ObjectInputStream(s.getInputStream());
-			oos = new ObjectOutputStream(s.getOutputStream());
+			//ois = new ObjectInputStream(s.getInputStream());
+			//oos = new ObjectOutputStream(s.getOutputStream());
 			System.out.println("opened streams");
 		}
 		

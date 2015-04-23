@@ -32,8 +32,10 @@ public class GameRoomServer {
 				Socket s = ss.accept();
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
+				System.out.println("Started gmt1");
 				gmtVector.add(gmt);
 				gmt.start();
+				System.out.println("Started gmt2");
 			}
 		}
 		catch(IOException ioe)
@@ -124,7 +126,6 @@ public class GameRoomServer {
 				while(true)
 				{
 					Thread.sleep(10000);
-					System.out.println("Updating users");
 					grs.updateUsers();
 				}
 			}
@@ -187,8 +188,13 @@ public class GameRoomServer {
 		{
 			try
 			{
-				oos.writeObject(grs.getGameVector());
-				oos.flush();
+				if(oos != null)
+				{
+					System.out.println("in function update Cleint");
+					oos.writeObject(grs.getGameVector());
+					oos.flush();
+				}
+				
 			}
 			catch(IOException ioe)
 			{
@@ -203,18 +209,24 @@ public class GameRoomServer {
 			{
 				System.out.println("Started gameroomserver thread");
 				Object newObj;
-				while ((newObj = ois.readObject()) != null) 
+				while (true) 
 				{
-					if(newObj instanceof Game)
+					if(ois != null)
 					{
-						Game newGame = (Game)newObj;
-						grs.gameUpdate(newGame);
+						newObj = ois.readObject();
+						if(newObj instanceof Game)
+						{
+							Game newGame = (Game)newObj;
+							grs.gameUpdate(newGame);
+						}
+						else
+						{
+							Integer gameID = (Integer)newObj;
+							grs.deleteGame(gameID);
+						}
+						
 					}
-					else
-					{
-						Integer gameID = (Integer)newObj;
-						grs.deleteGame(gameID);
-					}
+					
 					
 				}
 			} 
