@@ -106,6 +106,7 @@ public class GameRoomGUI extends JFrame {
 		resetLabels = false;
 		usersReady = 1;
 		users_in_room = 0;
+		userLabelIndex = 0;
 		usersConnected = new AbstractUser[4];
 		
 		centerPanel = new JPanel();
@@ -125,43 +126,6 @@ public class GameRoomGUI extends JFrame {
 		
 		setVisible(true);
 		new CreateConnections().start();
-//		if(isHost){
-//			userLabelIndex = 0;
-//			setupHost();
-//			try {
-//				System.out.println("Starting Chat Server");
-//				ss = new ServerSocket(6789);
-//				while (true) {
-//					System.out.println("Waiting for client to connect...");
-//					Socket s = ss.accept();
-//					System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
-//					ChatThread ct = new ChatThread(s, this);
-//					ctVector.add(ct);
-//					ct.start();
-//				}
-//			} catch (IOException ioe) {
-//				System.out.println("IOE: " + ioe.getMessage());
-//			} finally {
-//				if (ss != null) {
-//					try {
-//						ss.close();
-//					} catch (IOException ioe) {
-//						System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
-//					}
-//				}
-//			}//end of finally
-//
-//		}//end of if host
-//		else{
-//			try {
-//				s = new Socket("localhost", 6789);
-//				oos = new ObjectOutputStream(s.getOutputStream());
-//				ois = new ObjectInputStream(s.getInputStream());
-//				new ReadObject().start();
-//				} catch (IOException ioe) {
-//					System.out.println("IOE client: " + ioe.getMessage());
-//				}
-//			}
 	}//end of constructor
 	
 	
@@ -411,7 +375,6 @@ public class GameRoomGUI extends JFrame {
 	}
 	public void sendMessageToClients(Object obj) {
 		if(isHost){
-			System.out.println("ctvector: "+ctVector.size());
 			for (ChatThread ct1 : ctVector) {
 				//if (!ct.equals(ct1)) {
 					ct1.sendMessage(obj);
@@ -453,24 +416,20 @@ public class GameRoomGUI extends JFrame {
 			try {
 				obj = ois.readObject();
 				while(obj != null){
-					System.out.println("in while: "+obj.getClass());
 					if(obj instanceof User){
-						System.out.println("instance of user: "+obj.getClass());
 						usersConnected((User)obj);
 						updateuserLabels();
 						while(!updated){}
-						oos.writeObject(userLabels);
-						oos.flush();
+						sendMessageToClients(userLabels);
 						oos.writeObject(new Integer(users_in_room-1));
-						oos.flush();
+						//oos.flush();
 					}//end of if user object
 					else if(obj instanceof String){
-						System.out.println("instance of string");
 						sendMessageToClients(obj);
-						System.out.println("msgs sent out");
 						chatbox.append(((String)obj));
 					}//end of else if obj is a string
 					else if(obj instanceof JLabel[][]){
+						sendMessageToClients(obj);
 						for(int i=1; i < 4; i++){
 							userLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 							userLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
@@ -524,10 +483,7 @@ public class GameRoomGUI extends JFrame {
 			
 			public synchronized void run(){
 				try {
-					System.out.println("obj = ois.readObject()");
 					obj = ois.readObject();
-					System.out.println(obj.getClass());
-					System.out.println((String)obj);
 					oos.writeObject(user);
 					oos.flush();
 					while(obj != null){
@@ -535,20 +491,16 @@ public class GameRoomGUI extends JFrame {
 							usersConnected((AbstractUser)obj);
 							updateuserLabels();
 							while(!updated){}
-							oos.writeObject(userLabels);
-							oos.flush();
-							oos.writeObject(new Integer(users_in_room-1));
-							oos.flush();
+
 						}//end of if user object
 						else if(obj instanceof String){
 							chatbox.append(((String)obj));
 						}//end of else if obj is a string
 						else if(obj instanceof JLabel[][]){
-							for(int i=1; i < 4; i++){
-								//userLabels = (JLabel[][])obj;
+							for(int i=0; i < 4; i++){
 								userLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 								userLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
-							}//end of for
+							}
 						}//end of updating labels
 						else if(obj instanceof Integer){
 							if((Integer)obj == -2){
@@ -564,9 +516,7 @@ public class GameRoomGUI extends JFrame {
 								userLabelIndex = (Integer)obj;
 							}
 						}//end of else integer
-						System.out.println("before");
 						obj = ois.readObject();
-						System.out.println("after");
 					}//end of while	
 				}catch(IOException ioe){
 					System.out.println("IOE in readobject.run: " + ioe.getMessage());
