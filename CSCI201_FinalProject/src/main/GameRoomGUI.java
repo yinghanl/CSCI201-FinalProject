@@ -230,13 +230,7 @@ public class GameRoomGUI extends JFrame {
 		startGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				loadGameScreen = true;
-				try {
-					oos.writeObject(new Integer(-1));
-					oos.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				sendMessageToClients(new Integer(-1));
 				
 				Board b = new Board();
 				new GameScreenGUI(b, user.toPlayer(), true);
@@ -438,13 +432,10 @@ public class GameRoomGUI extends JFrame {
 					else if(obj instanceof Integer){
 						if((Integer)obj == -2){
 							usersReady++;
+							if(usersReady == 4){
+								startGameButton.setEnabled(true);
+							}
 						}//end of if  == 2
-						else if((Integer)obj == -1){
-							Board b = new Board();
-							new GameScreenGUI(b, user.toPlayer(), false);
-							setVisible(false);
-							loadGameScreen = false;
-						}
 						else{
 							userLabelIndex = (Integer)obj;
 						}
