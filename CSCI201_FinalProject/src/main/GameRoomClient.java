@@ -34,6 +34,25 @@ public class GameRoomClient extends Thread
 	
 	}
 	
+	public void newGame(Game g)
+	{
+		try
+		{
+			oos.writeObject(g);
+		}
+		catch(IOException ioe)
+		{
+			System.out.println("IOE in GameRoomClient NewGame: " + ioe.getMessage());
+			ioe.getStackTrace();
+		}
+		
+	}
+	
+	public void deleteGame(Game g)
+	{
+		
+	}
+	
 	public void run()
 	{
 		try

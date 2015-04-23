@@ -38,21 +38,16 @@ public class TabPanel extends JPanel {
 	JButton joinButton;
 	JButton returnButton;
 	AbstractUser u;
-	Vector<Game> games;
-	private Vector<Game> gamesOpen;
 	
-	private Socket s;
-	private ObjectInputStream ois;
-	private ObjectOutputStream oos;
-	
+	private GameRoomClient grc;
+
 	public TabPanel(AbstractUser user, GameLobbyGUI gameLobbyWindow){
-		gamesOpen = new Vector<Game>();
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		
-		GameRoomClient gmc = new GameRoomClient(this);
+		grc = new GameRoomClient(this);
 		System.out.println("created gameroomClient");
-		gmc.start();
+		grc.start();
 		System.out.println("started gameroomclientthread");
 		initializeComponents();
 		System.out.println("initialized components");
@@ -75,22 +70,6 @@ public class TabPanel extends JPanel {
 		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
 		gameListModel = new DefaultTableModel(tableData, columnNames);
 		gameListTable = new JTable(gameListModel);
-		System.out.println(gamesOpen.size());
-		
-		//populate with games already open
-		for (int i = 0; i < gamesOpen.size(); i++){
-					
-					String host = gamesOpen.get(i).getGameHost().getUsername();
-					int playersJoined = gamesOpen.get(i).getNumJoined();
-					
-					
-					gameListModel.addRow(new Object[] { host, playersJoined });
-					
-					//recreate table to update
-					gameListModel.fireTableDataChanged();
-					
-		}
-		
 		
 		gameListTable.setSelectionForeground(Color.WHITE);
 		gameListTable.setSelectionBackground(Color.RED);
@@ -125,7 +104,7 @@ public class TabPanel extends JPanel {
 		
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				gameLobbyWindow.setVisible(false);
 		
 			}
@@ -134,17 +113,8 @@ public class TabPanel extends JPanel {
 		
 		createButton.addActionListener(new ActionListener (){
 			public void actionPerformed(ActionEvent e) {
-						
-				//create new game and add it to the table's model
-				Game newgame = new Game(u);
-				gamesOpen.add(newgame);
-				System.out.println(gamesOpen.size());
-				
-				
-				gameListModel.addRow(new Object[] { u.getUsername(), newgame.getNumJoined() });
-				
-				//recreate table to update
-				gameListModel.fireTableDataChanged();
+				Game newGame = new Game(u);
+				grc.newGame(newGame);
 				
 				new GameRoomGUI(u, true, "localhost", 8001, u.getUsername() + "'s Room");
 			}	
@@ -167,20 +137,14 @@ public class TabPanel extends JPanel {
 	public void updateGames(Vector<Game> games){
 		
 		int numGames = games.size();
-		tableData = new Object[0][0];
 		
-		String [] columnNames = {"Host Name", "Players in Room"};
-		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
-		gameListTable = new JTable(new DefaultTableModel(tableData, columnNames));
-		
-		DefaultTableModel tableModel = (DefaultTableModel) gameListTable.getModel();
-		
+		gameListModel.setRowCount(0);
 		for (int i = 0; i < numGames; i++){
 			Game g = games.elementAt(i);
-			tableModel.addRow(new Object[] { g.getGameHost().getUsername(), g.getNumJoined() });
+			gameListModel.addRow(new Object[] { g.getGameHost().getUsername(), g.getNumJoined() });
 		}
 		
-		gameListTable = new JTable(tableModel);
+		gameListModel.fireTableDataChanged();
 		
 	}
 	
