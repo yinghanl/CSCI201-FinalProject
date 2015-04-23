@@ -93,7 +93,7 @@ public class GameRoomGUI extends JFrame {
 		resetLabels = false;
 		usersReady = 1;
 		users_in_room = 0;
-		usersConnected = new User[4];
+		usersConnected = new AbstractUser[4];
 		
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(2,1));
@@ -127,7 +127,7 @@ public class GameRoomGUI extends JFrame {
 		return IPAddress;
 	}
 	
-	public void usersConnected(User u){
+	public void usersConnected(AbstractUser u){
 		usersConnected[users_in_room] = u;
 		users_in_room++;
 		chatbox.append("\n" + u.getUsername()+" connected!");
@@ -140,7 +140,7 @@ public class GameRoomGUI extends JFrame {
 		new Chatserver(port).start();
 	}//end of setuphost
 	
-	public void connectToRoom(User user){
+	public void connectToRoom(AbstractUser user){
 		chatclient = new Chatclient(IPAddress, user, port);
 	}//end of setting up the chat client
 	
@@ -386,9 +386,19 @@ public class GameRoomGUI extends JFrame {
 				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
 			} finally{
 				try {
-					br.close();
-					s.close();
-					ss.close();
+					if(br != null)
+					{
+						br.close();
+					}
+					if(s != null)
+					{
+						s.close();
+					}
+					if(ss != null)
+					{
+						ss.close();
+					}
+					
 				} catch (IOException e) {
 					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
 				}
@@ -402,8 +412,8 @@ public class GameRoomGUI extends JFrame {
 				try {
 					obj = ois.readObject();
 					while(obj != null){
-						if(obj instanceof User){
-							usersConnected((User)obj);
+						if(obj instanceof AbstractUser){
+							usersConnected((AbstractUser)obj);
 							updateuserLabels();
 							while(!updated){}
 							oos.writeObject(userLabels);
@@ -443,9 +453,9 @@ public class GameRoomGUI extends JFrame {
 		private ObjectOutputStream oos;
 		private String IPAddress;
 		private int port;
-		private User u;
+		private AbstractUser u;
 		
-		public Chatclient(String IPAddress, User u, int port){
+		public Chatclient(String IPAddress, AbstractUser u, int port){
 			this.IPAddress = IPAddress;
 			this.u = u;
 			this.port = port;

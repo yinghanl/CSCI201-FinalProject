@@ -31,24 +31,6 @@ public class GameRoomClient extends Thread
 			System.out.println("IOE in GameRoomClient: " + ioe.getMessage());
 			ioe.printStackTrace();
 		}
-		finally {
-			try{
-				System.out.println("Closing everything");
-				if(oos != null)
-				{
-					oos.close();
-				}
-				if(ois != null)
-				{
-					ois.close();
-				}
-				if(s != null)
-				{
-					s.close();
-				}
-				
-			} catch (IOException ioe) { ioe.printStackTrace(); }
-		}
 	
 	}
 	
@@ -70,6 +52,24 @@ public class GameRoomClient extends Thread
 		catch(IOException ioe)
 		{
 			System.out.println("IOE: " + ioe.getMessage());
+		}
+		finally {
+			try{
+				System.out.println("Closing everything");
+				if(oos != null)
+				{
+					oos.close();
+				}
+				if(ois != null)
+				{
+					ois.close();
+				}
+				if(s != null)
+				{
+					s.close();
+				}
+				
+			} catch (IOException ioe) { ioe.printStackTrace(); }
 		}
 	}
 }

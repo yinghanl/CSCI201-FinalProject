@@ -170,12 +170,8 @@ public class GameRoomServer {
 		{
 			try
 			{
-				if(oos != null)
-				{
-					System.out.println("in function update Cleint");
-					oos.writeObject(grs.getGameVector());
-					oos.flush();
-				}
+				oos.writeObject(grs.getGameVector());
+				oos.flush();
 				
 			}
 			catch(IOException ioe)
