@@ -14,7 +14,6 @@ public class GameRoomServer {
 
 	private Vector<Game> gamesOpen;
 	private ServerSocket ss;
-	private Socket s;
 	private Vector<GameRoomThread> gmtVector;
 	private int gameIndex;
 	
@@ -22,6 +21,8 @@ public class GameRoomServer {
 	{
 		gamesOpen = new Vector<Game>();
 		gmtVector = new Vector<GameRoomThread>();
+		UpdateGameRoomThread ugrt = new UpdateGameRoomThread(this);
+		ugrt.start();
 		try
 		{
 			ss = new ServerSocket(8000);
@@ -31,6 +32,7 @@ public class GameRoomServer {
 				Socket s = ss.accept();
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
+				gmtVector.add(gmt);
 				gmt.start();
 			}
 		}
@@ -42,8 +44,11 @@ public class GameRoomServer {
 		{
 			try 
 			{
-				s.close();
-				ss.close();
+				if(ss != null)
+				{
+					ss.close();
+				}
+				
 				
 			} 
 			catch (IOException e) 
@@ -104,20 +109,22 @@ public class GameRoomServer {
 		gmtVector.remove(gmt);
 	}
 	
-	public class updateGameRoomThread extends Thread
+	public class UpdateGameRoomThread extends Thread
 	{
 		private GameRoomServer grs;
-		public updateGameRoomThread(GameRoomServer grs)
+		public UpdateGameRoomThread(GameRoomServer grs)
 		{
 			this.grs = grs;
 		}
 		public void run()
 		{
+			System.out.println("UpdateGameRoomThread started");
 			try
 			{
 				while(true)
 				{
-					Thread.sleep(500);
+					Thread.sleep(10000);
+					System.out.println("Updating users");
 					grs.updateUsers();
 				}
 			}
@@ -153,9 +160,19 @@ public class GameRoomServer {
 			{
 				try
 				{
-					oos.close();
-					ois.close();
-					s.close();
+					if(oos != null)
+					{
+						oos.close();
+					}
+					if(ois != null)
+					{
+						ois.close();
+					}
+					if(s != null)
+					{
+						s.close();
+					}
+					
 				}
 				catch(IOException ioe)
 				{
@@ -184,9 +201,10 @@ public class GameRoomServer {
 		public void run() {
 			try 
 			{
-				while (true) 
+				System.out.println("Started gameroomserver thread");
+				Object newObj;
+				while ((newObj = ois.readObject()) != null) 
 				{
-					Object newObj = ois.readObject();
 					if(newObj instanceof Game)
 					{
 						Game newGame = (Game)newObj;

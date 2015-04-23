@@ -23,19 +23,30 @@ public class GameRoomClient extends Thread
 			System.out.println("Client Connecting");
 			ois = new ObjectInputStream(s.getInputStream());
 			oos = new ObjectOutputStream(s.getOutputStream());
-			this.start();
+			System.out.println("opened streams");
 		}
 		
 		catch (IOException ioe)
 		{
+			System.out.println("IOE in GameRoomClient: " + ioe.getMessage());
 			ioe.printStackTrace();
 		}
 		finally {
 			try{
 				System.out.println("Closing everything");
-				oos.close();
-				ois.close();
-				s.close();
+				if(oos != null)
+				{
+					oos.close();
+				}
+				if(ois != null)
+				{
+					ois.close();
+				}
+				if(s != null)
+				{
+					s.close();
+				}
+				
 			} catch (IOException ioe) { ioe.printStackTrace(); }
 		}
 	
@@ -45,6 +56,7 @@ public class GameRoomClient extends Thread
 	{
 		try
 		{
+			System.out.println("Thread started");
 			while(true)
 			{
 				Vector<Game> gamesOpen = (Vector<Game>)ois.readObject();
