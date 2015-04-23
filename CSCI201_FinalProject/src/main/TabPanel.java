@@ -105,8 +105,11 @@ public class TabPanel extends JPanel {
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
+				Game g = grc.getGameFromHost(host);
+				g.joinGame(u);
+				grc.newGame(g);
+				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room");
 				gameLobbyWindow.setVisible(false);
-		
 			}
 		});
 		
@@ -117,6 +120,7 @@ public class TabPanel extends JPanel {
 				grc.newGame(newGame);
 				
 				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room");
+				gameLobbyWindow.setVisible(false);
 			}	
 		});
 		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
