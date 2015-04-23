@@ -3,6 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -71,7 +72,7 @@ public class LogInGUI extends JFrame
 		
 		backgroundPanel = new BGPanel();
 		backgroundPanel.setLayout(new BorderLayout());
-	
+	/*
 		JPanel northPanel = new JPanel();
 		JLabel tdLabel = new JLabel("Tower Defense");
 		tdLabel.setFont(new Font("Arial", Font.BOLD, 30));
@@ -79,8 +80,6 @@ public class LogInGUI extends JFrame
 		northPanel.setOpaque(false);
 		
 		JPanel centerPanel = new JPanel();
-		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
-		//centerPanel.add(new JLabel(new ImageIcon("usc.gif")));
 		centerPanel.setOpaque(false);
 		
 		JPanel southPanel = new JPanel();
@@ -118,7 +117,13 @@ public class LogInGUI extends JFrame
 		backgroundPanel.add(northPanel, BorderLayout.NORTH);
 		backgroundPanel.add(centerPanel, BorderLayout.CENTER);
 		backgroundPanel.add(southPanel, BorderLayout.SOUTH);
+		*/
 		
+		JPanel contentPanel = new LoginPanel();
+		FlowLayout bgPanelLayout = new FlowLayout(FlowLayout.CENTER);
+		bgPanelLayout.setVgap((int)(height *.6));
+		backgroundPanel.setLayout(bgPanelLayout);
+		backgroundPanel.add(contentPanel);
 		setContentPane(backgroundPanel);
 	}
 	
@@ -195,6 +200,47 @@ public class LogInGUI extends JFrame
 		
 		public void paintComponent(Graphics g){
 			g.drawImage(bg,0,0,getWidth(),getHeight(),this);
+		}
+	}
+	
+	class LoginPanel extends JPanel{
+		LoginPanel(){
+			setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+			
+			JPanel usernameLine = new JPanel();
+			JPanel passwordLine = new JPanel();
+			JPanel buttonLine = new JPanel();
+			
+			usernameLine.setLayout(new BoxLayout(usernameLine,BoxLayout.X_AXIS));
+			passwordLine.setLayout(new BoxLayout(passwordLine,BoxLayout.X_AXIS));
+			buttonLine.setLayout(new BoxLayout(buttonLine,BoxLayout.X_AXIS));
+			
+			JLabel usernameLabel = new JLabel("USERNAME: ");
+			usernameLabel.setForeground(Color.WHITE);
+			usernameLabel.setPreferredSize(new Dimension(85,25));
+			JLabel passwordLabel = new JLabel("PASSWORD: ");
+			passwordLabel.setForeground(Color.WHITE);
+			passwordLabel.setPreferredSize(new Dimension(85,25));
+			
+			usernameLine.add(usernameLabel);
+			usernameLine.add(usernameJTF);
+			passwordLine.add(passwordLabel);
+			passwordLine.add(passwordJPF);
+			
+			buttonLine.add(createUserButton);
+			buttonLine.add(guestLogInButton);
+			buttonLine.add(userLogInButton);
+			
+			add(usernameLine);
+			add(passwordLine);
+			add(Box.createGlue());
+			add(buttonLine);
+			
+			setOpaque(false);
+			usernameLine.setOpaque(false);
+			passwordLine.setOpaque(false);
+			buttonLine.setOpaque(false);
+			
 		}
 	}
 	

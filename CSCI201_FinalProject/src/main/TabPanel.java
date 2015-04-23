@@ -116,7 +116,7 @@ public class TabPanel extends JPanel {
 				Game newGame = new Game(u);
 				grc.newGame(newGame);
 				
-				new GameRoomGUI(u, true, "localhost", 8001, u.getUsername() + "'s Room");
+				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room");
 			}	
 		});
 		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
@@ -135,9 +135,9 @@ public class TabPanel extends JPanel {
 	}
 	
 	public void updateGames(Vector<Game> games){
-		
+		//System.out.println("Trying to update game");
 		int numGames = games.size();
-		
+		//System.out.println("number of games: " + numGames);
 		gameListModel.setRowCount(0);
 		for (int i = 0; i < numGames; i++){
 			Game g = games.elementAt(i);
@@ -147,6 +147,5 @@ public class TabPanel extends JPanel {
 		gameListModel.fireTableDataChanged();
 		
 	}
-	
 	
 }
