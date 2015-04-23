@@ -30,8 +30,7 @@ public class GameRoomServer {
 			while(true)
 			{
 				Socket s = ss.accept();
-				//ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-				//ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+				
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
 				System.out.println("Started gmt1");
@@ -155,8 +154,8 @@ public class GameRoomServer {
 				this.s = s;	
 				oos = new ObjectOutputStream(s.getOutputStream());
 				ois = new ObjectInputStream(s.getInputStream());
-			
-
+				updateClient();
+				
 			}
 			catch(IOException ioe)
 			{
@@ -170,12 +169,8 @@ public class GameRoomServer {
 		{
 			try
 			{
-				if(oos != null)
-				{
-					System.out.println("in function update Cleint");
-					oos.writeObject(grs.getGameVector());
-					oos.flush();
-				}
+				oos.writeObject(grs.getGameVector());
+				oos.flush();
 				
 			}
 			catch(IOException ioe)

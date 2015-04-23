@@ -1,13 +1,16 @@
 package main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class Game {
+public class Game implements Serializable{
 
+	
+	private static final long serialVersionUID = 1L;
 	private int gameLobbyID;
 	private AbstractUser host;
 	private int playersJoined = 1;
