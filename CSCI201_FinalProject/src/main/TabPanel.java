@@ -45,7 +45,7 @@ public class TabPanel extends JPanel {
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		
-		grc = new GameRoomClient(this);
+		grc = new GameRoomClient(this, u);
 		System.out.println("created gameroomClient");
 		grc.start();
 		System.out.println("started gameroomclientthread");
@@ -104,10 +104,10 @@ public class TabPanel extends JPanel {
 		
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
+				
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
-				Game g = grc.getGameFromHost(host);
-				g.joinGame(u);
-				grc.newGame(g);
+				grc.getGameFromHost(host);
+				
 				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room");
 				gameLobbyWindow.setVisible(false);
 			}

@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Game implements Serializable{
 
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2;
 	private int gameLobbyID;
 	private AbstractUser host;
 	private int playersJoined = 1;

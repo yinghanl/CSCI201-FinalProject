@@ -10,13 +10,15 @@ public class GameRoomClient extends Thread
 {
 
 	private TabPanel tp;
+	private AbstractUser au;
 	private Socket s;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	
-	public GameRoomClient(TabPanel tp)
+	public GameRoomClient(TabPanel tp, AbstractUser au)
 	{
 		this.tp = tp;
+		this.au = au;
 		try 
 		{
 			s = new Socket("localhost", 8000); //should take in IP address of host
@@ -62,13 +64,6 @@ public class GameRoomClient extends Thread
 			oos.writeObject(username);
 			oos.flush();
 			
-			hostGame = (Game)ois.readObject();
-			
-			
-		}
-		catch(ClassNotFoundException cnfe)
-		{
-			System.out.println("CNFE in GameRoomCLient: " + cnfe.getMessage());
 		}
 		catch(IOException ioe)
 		{
@@ -85,18 +80,30 @@ public class GameRoomClient extends Thread
 			//System.out.println("Thread started");
 			while(true)
 			{
-				Vector<Game> gamesOpen = (Vector<Game>)ois.readObject();
-				//System.out.println("gamesOpen.size = " + gamesOpen.size());
-				tp.updateGames(gamesOpen);
+				Object readObj = ois.readObject();
+				if(readObj instanceof Vector<?>)
+				{
+					Vector<Game> gamesOpen = (Vector<Game>)readObj;
+					//System.out.println("gamesOpen.size = " + gamesOpen.size());
+					tp.updateGames(gamesOpen);
+				}
+				else if(readObj instanceof Game)
+				{
+					Game hostGame = (Game)readObj;
+					hostGame.joinGame(au);
+					newGame(hostGame);
+					
+				}
+				
 			}
 		}
 		catch(ClassNotFoundException cnfe)
 		{
-			System.out.println("CNFE: " + cnfe.getMessage());
+			System.out.println("CNFE in GRC run: " + cnfe.getMessage());
 		}
 		catch(IOException ioe)
 		{
-			System.out.println("IOE: " + ioe.getMessage());
+			System.out.println("IOE in GRC run: " + ioe.getMessage());
 		}
 		finally {
 			try{

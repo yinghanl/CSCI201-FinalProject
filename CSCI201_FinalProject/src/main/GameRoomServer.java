@@ -204,16 +204,20 @@ public class GameRoomServer {
 					}
 					else if(newObj instanceof String)
 					{
+						boolean gameFound = false;
 						for (Game g : grs.getGameVector()) {
 							if(g.getGameHost().getUsername().equals(newObj))
 							{
 								oos.writeObject(g);
 								oos.flush();
-								break;
+								gameFound = true;
 							}
 						}
-						oos.writeObject(null);
-						oos.flush();
+						if(gameFound == false)
+						{
+							oos.writeObject(null);
+							oos.flush();
+						}
 		
 					}
 					
