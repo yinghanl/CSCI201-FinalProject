@@ -56,6 +56,10 @@ abstract class Moveable extends Thread implements Serializable{
 					currentLocation = currentLocation.getSouthWest();
 					break;
 			}
+//			if(this instanceof Bullet && currentLocation.isOccupied() && currentLocation instanceof PathSpace){
+//				this.hit((Creep)currentLocation.getMoveable());
+//				System.out.println(((Creep)currentLocation.getMoveable()).isDead());
+//			}
 			if(currentLocation instanceof TowerSpace || currentLocation.isOccupied() || currentLocation instanceof PathSpace && !(this instanceof Bullet)){
 				throw new BoundaryException();
 			}
@@ -92,5 +96,7 @@ abstract class Moveable extends Thread implements Serializable{
 	public boolean moveableCouldMove(){
 		return couldMove;
 	}
+	
+	abstract public void hit(Creep c);
 	
 }

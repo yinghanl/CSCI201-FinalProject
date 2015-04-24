@@ -47,5 +47,9 @@ public class Creep extends Moveable{
 		currentPathLocation.removeOccupant();
 		
 	}
+	
+	public void hit(Creep c){
+		
+	}
 
 }

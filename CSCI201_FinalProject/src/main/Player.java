@@ -132,5 +132,9 @@ public class Player extends Moveable implements Serializable{
 		
 	}
 	
+	public void hit(Creep c){
+		
+	}
+	
 	
 }//end of class
