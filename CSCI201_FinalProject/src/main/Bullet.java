@@ -19,6 +19,7 @@ public class Bullet extends Moveable{
 				if(currentLocation instanceof PathSpace){
 					PathSpace space = (PathSpace)currentLocation;
 					if(space.isOccupied()){
+						System.out.println("H");
 						//space.getCreep().hit(damage);
 					}
 				}

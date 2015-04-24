@@ -8,7 +8,8 @@ public class Creep extends Moveable{
 	public Creep(PathSpace p){
 		super(p); //may cause error
 		currentPathLocation = p;
-		currentPathLocation.setOccupant(this);
+		currentPathLocation.setCreep(this);
+		//currentPathLocation.setOccupant(this);
 		health = 10;
 		
 	}
@@ -31,10 +32,11 @@ public class Creep extends Moveable{
 					//decrease the team's health, have reached the end
 				}
 				else{
-					//previousLocation = currentPathLocation;
-					currentPathLocation.removeOccupant();
+					//currentPathLocation.removeOccupant();
+					currentPathLocation.removeCreep();
 					currentPathLocation = currentPathLocation.getNext();
-					currentPathLocation.setOccupant(this);
+					currentPathLocation.setCreep(this);
+					//currentPathLocation.setOccupant(this);
 					//System.out.println(currentPathLocation.hashCode());
 				}
 				
