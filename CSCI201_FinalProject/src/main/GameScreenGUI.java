@@ -126,22 +126,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 		this.setVisible(true);
 			
-		lvlTimer = new Timer(1000, new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae) {
-				
-				timerInt--;
-				if(timerInt<0){
-					restartLevelTimer();
-				}
-				levelTimer.setText("" + timerInt);
-			}
-			
-			
-		});
-		
-		lvlTimer.start();
-				
 		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
@@ -196,7 +180,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			if(oos != null)
 			{
 				this.createActions();
-				System.out.println("Hello");
 				oos.writeObject(currentPlayer);
 				oos.flush();
 			}
@@ -204,6 +187,39 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			System.out.println("Exception sending player to server");
 		}
 
+		
+		lvlTimer = new Timer(1000, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent ae) {
+				
+				timerInt--;
+				if(timerInt<0){
+					restartLevelTimer();
+				}
+				
+				try{
+					Command c = new Command(currentPlayer, "Timer", timerInt, 0);
+					oos.writeObject(c);
+					oos.flush();
+					
+				}
+				catch(IOException ioe)
+				{
+					ioe.printStackTrace();
+				}
+				
+				levelTimer.setText("" + timerInt);
+			}
+			
+			
+		});
+		
+		if(isHost == true)
+		{
+			lvlTimer.start();
+		}
+		
+		
 		
 	}
 	
@@ -944,6 +960,15 @@ public class GameScreenGUI extends JFrame implements Runnable{
 											t.shoot();
 										}
 									}
+								}
+								else if(command.equals("Timer"))
+								{
+									Command c = (Command)obj;
+									int timer = c.getX();
+									
+									timerInt = timer;
+									levelTimer.setText("" + timerInt);
+									
 								}
 							}
 						}
