@@ -967,27 +967,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					obj = ois.readObject();
 				}//end of while	
 			}catch(IOException ioe){
-				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+				System.out.println("IOE in chatthread.run: " + ioe.getMessage());
 			} catch(ClassNotFoundException cnfe){
-				System.out.println("CNFE in readobject.run: " + cnfe.getMessage());	
-			} finally{
-				try {
-					if(br != null)
-					{
-						br.close();
-					}
-					if(s != null)
-					{
-						s.close();
-					}
-					if(ss != null)
-					{
-						ss.close();
-					}
-					
-				} catch (IOException e) {
-					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
-				}
+				System.out.println("CNFE in chatthread.run: " + cnfe.getMessage());	
 			}//end of finally block
 		}//end of run
 	}//end of chathread
@@ -1127,9 +1109,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					obj = ois.readObject();
 				}//end of while	
 			}catch(IOException ioe){
-				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+				System.out.println("IOE in readobject.run: " + ioe.getMessage());
 			} catch(ClassNotFoundException cnfe){
-				System.out.println("CNFE in chatserver constructor: " + cnfe.getMessage());
+				System.out.println("CNFE in IOE in  readobject.run: " + cnfe.getMessage());
 			}
 		}//end of run
 	}//end of inner class read object
