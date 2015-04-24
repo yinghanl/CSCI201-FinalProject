@@ -20,11 +20,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.Vector;
-=======
 import java.util.HashMap;
->>>>>>> 1861d460f9bd535653b4ea0b98cd6eca6113d05c
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -151,17 +148,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		new CreateConnections().start();
 		
 		
-		try
-		{
-			if(oos != null)
-			{
-				this.createActions();
-				oos.writeObject(currentPlayer);
-				oos.flush();
-			}
-		} catch (IOException e1) {
-			System.out.println("Exception sending player to server");
-		}
 
 		
 		lvlTimer = new Timer(1000, new ActionListener()
@@ -1148,6 +1134,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}//end of inner class read object
 	class CreateConnections extends Thread{
 		public CreateConnections(){
+			createActions();
 			if(!isHost){
 				try {
 					s = new Socket("localhost", 8970);
@@ -1158,6 +1145,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					System.out.println("IOE client: " + ioe.getMessage());
 				}
 			}//end of if not host
+			try
+			{
+				if(oos != null)
+				{
+					oos.writeObject(currentPlayer);
+					oos.flush();
+				}
+			} catch (IOException e1) {
+				System.out.println("Exception sending player to server");
+			}
 		}//end of constructor
 		public void run(){
 			if(isHost){
