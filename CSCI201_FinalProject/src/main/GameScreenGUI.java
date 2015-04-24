@@ -757,13 +757,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			int playerx = p.getLocation().getX();
 			int playery = p.getLocation().getY();
 			
-			spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			//spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			
+			Image image = p.getIcon().getScaledInstance(spaces[playerx][playery].getWidth(), spaces[playerx][playery].getHeight(), Image.SCALE_SMOOTH);
+			
+			spaces[playerx][playery].setIcon(new ImageIcon(image));
 			
 			if(p.getPrevious() != null && p.moveableCouldMove())
 			{
 				int x = p.getPrevious().getX();
 				int y = p.getPrevious().getY();
-				spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				spaces[x][y].setIcon(null);
 			}
 		}
 		for(int i = 0; i < 20; i++)
@@ -879,7 +884,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("NORTH");
 										p.move(0);
+
 									}
 									catch (BoundaryException e) {
 										e.printStackTrace();
@@ -889,6 +896,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("SOUTH");
 										p.move(1);
 									}
 									catch (BoundaryException e) {
@@ -899,6 +907,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("EAST");
 										p.move(2);
 									}
 									catch (BoundaryException e) {
@@ -909,6 +918,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("WEST");
 										p.move(3);
 									}
 									catch (BoundaryException e) {

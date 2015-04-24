@@ -10,10 +10,10 @@ public class Main {
 		//System.out.println("unchange");
 
 		Board b = new Board();
-		User u1 = new User(1);
-		User u2 = new User(2);
-		User u3 = new User(3);
-		User u4 = new User(4);
+		//User u1 = new User(1);
+		//User u2 = new User(2);
+		//User u3 = new User(3);
+		//User u4 = new User(4);
 //		GameRoomGUI grg1 = new GameRoomGUI(u1, true, "localhost", 6789, "Test Game Room");
 		//GameRoomGUI grg2 = new GameRoomGUI(u2, false, "localhost", 6789, "Test Game Room");
 //		GameRoomGUI grg3 = new GameRoomGUI(u3, false, "localhost", 6789, "Test Game Room");

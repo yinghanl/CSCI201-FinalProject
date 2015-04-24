@@ -1,6 +1,11 @@
 package main;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+
+import javax.imageio.ImageIO;
 
 public class Player extends Moveable implements Serializable{
 	
@@ -15,6 +20,7 @@ public class Player extends Moveable implements Serializable{
 		this.name = name;
 		readyStatus = false;
 		playerDirection = "SOUTH";
+		
 	}//end of constructor
 	
 	public String getPlayerName(){
@@ -95,6 +101,35 @@ public class Player extends Moveable implements Serializable{
 			}
 		}
 		return null;
+	}
+	public BufferedImage getIcon()
+	{
+		BufferedImage toReturn = null;
+	
+		try{
+			if(playerDirection.equals("NORTH"))
+			{
+				toReturn = ImageIO.read(new File("images/PlayerN.png"));
+			}
+			else if(playerDirection.equals("SOUTH"))
+			{
+				toReturn = ImageIO.read(new File("images/PlayerS.png"));
+			}
+			else if(playerDirection.equals("WEST"))
+			{
+				toReturn = ImageIO.read(new File("images/PlayerW.png"));
+			}
+			else if(playerDirection.equals("EAST"))
+			{
+				toReturn = ImageIO.read(new File("images/PlayerE.png"));
+			}
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		return toReturn;
+		
 	}
 	
 	

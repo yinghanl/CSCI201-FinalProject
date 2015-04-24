@@ -17,7 +17,7 @@ public class BasicTower extends Tower{
 		
 		try
 		{
-			sprite = ImageIO.read(new File("basicTower.png"));
+			sprite = ImageIO.read(new File("images/BasicTowerS.png"));
 		}
 		catch(IOException ioe)
 		{
