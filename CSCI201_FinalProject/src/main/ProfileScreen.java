@@ -20,7 +20,7 @@ public class ProfileScreen extends JFrame{
 	public ProfileScreen(User u)
 	{
 		super ("Profile");
-		setSize(200,200);
+		setSize(200,150);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		this.u = u;
 		
@@ -41,8 +41,8 @@ public class ProfileScreen extends JFrame{
 		userStats = new JTable(tableData, columnNames);
 		user_stats_panel.add(userStats);
 		
-		add(change_pass, BorderLayout.NORTH);
-		add(user_stats_panel, BorderLayout.CENTER);
+		add(change_pass, BorderLayout.SOUTH);
+		add(userStats, BorderLayout.CENTER);
 		
 		
 		setVisible(true);

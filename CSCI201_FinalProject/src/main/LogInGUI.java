@@ -26,10 +26,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.OceanTheme;
 
 public class LogInGUI extends JFrame
 {
-
 	JTextField usernameJTF;
 	JPasswordField passwordJPF;
 	
@@ -41,8 +45,11 @@ public class LogInGUI extends JFrame
 	
 	JPanel backgroundPanel;
 	
+	LogInGUI self;
+	
 	private void instantiateComponents()
 	{
+		self = this;
 		
 		usernameJTF = new JTextField(20);
 		passwordJPF = new JPasswordField(20);
@@ -96,7 +103,7 @@ public class LogInGUI extends JFrame
 				{
 					int userID = DataBaseUtils.getUserID(username);
 					newUser = DataBaseUtils.createUser(userID);
-					new GameLobbyGUI(newUser);
+					new GameLobbyGUI(newUser,self);
 					setVisible(false);
 				}
 				else{
@@ -110,7 +117,7 @@ public class LogInGUI extends JFrame
 			public void actionPerformed(ActionEvent ae)
 			{
 				Guest newGuest = DataBaseUtils.createGuest();
-				new GameLobbyGUI(newGuest);
+				new GameLobbyGUI(newGuest,self);
 				setVisible(false);
 				
 				//User newUser = DataBaseUtils.createGuest();
@@ -128,7 +135,7 @@ public class LogInGUI extends JFrame
 				{
 					int userID = DataBaseUtils.createNewUser(username, password);
 					User newUser = DataBaseUtils.createUser(userID);
-					new GameLobbyGUI(newUser);
+					new GameLobbyGUI(newUser,self);
 					setVisible(false);
 				}
 				else{
@@ -145,6 +152,17 @@ public class LogInGUI extends JFrame
 	
 	public LogInGUI()
 	{
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
 		instantiateComponents();
 		createGUI();
 		addActionListeners();
