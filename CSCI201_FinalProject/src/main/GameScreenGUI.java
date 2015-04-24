@@ -30,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -41,17 +42,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private ImagePanel board;
 	private JPanel chatBox;
-	private JPanel optionsPanel;
+	private JPanel progressPanel;
 	private JTextArea chat;
 	private JTextField chatEdit;
 	private JLabel[][] spaces;
-	private JButton[] options;
-	private JButton previous = new JButton("<-");
-	private JButton next = new JButton("->");
-	private JPanel buttonsPanel;
-	private Timer timer;
-	
-	private JLayeredPane[] optionsLayer;
+	private Timer progressTimer;
+	private JProgressBar progressBar;
+	private JLabel task;	
 	
 	private JLabel levelTimer;
 	private JLabel teamGold;
@@ -115,12 +112,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		chatBox = this.getChatBox();
 		
 		this.add(chatBox, BorderLayout.EAST);
-		
-		this.createButtons(5);
-		
-		optionsPanel = this.getOptions();
 				
-		this.add(optionsPanel, BorderLayout.SOUTH);
+		progressPanel = this.getProgressPanel();
+				
+		this.add(progressPanel, BorderLayout.SOUTH);
 		
 		this.add(getTopPanel(), BorderLayout.NORTH);
 				
@@ -306,149 +301,42 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		return toReturn;
 	}
 	
-	private void createButtons(int k)
-	{
-		options = new JButton[k];
-		
-		for(int i = 0; i < k; i++)
-		{
-			if(i == 0)
-			{
-				options[i] = new JButton("1. Build Tower");
-			}
-			else
-			{
-				options[i] = new JButton("" + i);
-			}
-			
-			
-			options[i].setSize(10,10);
-			options[i].setPreferredSize(options[i].getPreferredSize());
-		}
-	}
 	
-	private JPanel getOptions()
+	private JPanel getProgressPanel()
 	{
 		JPanel toReturn = new JPanel();
 		toReturn.setSize(100,50);
 		toReturn.setPreferredSize(toReturn.getSize());
-		toReturn.setLayout(new BorderLayout());
+		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.Y_AXIS));
 		
-		optionsLayer = new JLayeredPane[5];
+		JPanel topPanel = new JPanel();
+		task = new JLabel("Task in Progress");
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		topPanel.add(Box.createGlue());
+		topPanel.add(task);
+		topPanel.add(Box.createGlue());
 		
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setString("No Task");
+		progressBar.setStringPainted(true);
+		progressBar.setBackground(new Color(139,69,19));
+		progressBar.setForeground(new Color(0, 100, 0));
+		bottomPanel.add(Box.createGlue());
+		bottomPanel.add(progressBar);
+		bottomPanel.add(Box.createGlue());
 		
-		buttonsPanel = new JPanel();
-		buttonsPanel.setSize(100,50);
-		buttonsPanel.setPreferredSize(buttonsPanel.getSize());
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+		toReturn.add(topPanel);
+		toReturn.add(bottomPanel);
 
-		
-		toReturn.add(previous, BorderLayout.WEST);
-
-		buttonsPanel.add(javax.swing.Box.createGlue());
-		
-		for(int i = 0; i < 5; i++)
-		{
-			buttonsPanel.add(options[i]);
-			buttonsPanel.add(javax.swing.Box.createGlue());
-		}
-		
-		toReturn.add(buttonsPanel, BorderLayout.CENTER);
-		toReturn.add(next, BorderLayout.EAST);
-
-		nextIndex = 5;
-		previousIndex = 0;
-		
 		return toReturn;
 	}
 	
-	private JPanel updateOptionsNext()
-	{
-		JPanel toReturn = new JPanel();
-		
-		toReturn.setSize(100,50);
-		toReturn.setPreferredSize(toReturn.getSize());
-		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.X_AXIS));
-
-		toReturn.add(javax.swing.Box.createGlue());
-		int counter = 0;
-		
-		for(int i = nextIndex; i < nextIndex + 5; i++)
-		{
-			if(i < options.length)
-			{
-				toReturn.add(options[i]);
-				counter++;
-			}
-			toReturn.add(javax.swing.Box.createGlue());
-		}
-		
-		nextIndex = nextIndex + counter;
-		previousIndex = previousIndex + 5;
-				
-		return toReturn;
-	}
-	
-	private JPanel updateOptionsPrevious()
-	{
-		JPanel toReturn = new JPanel();
-		
-		toReturn.setSize(100,50);
-		toReturn.setPreferredSize(toReturn.getSize());
-		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.X_AXIS));
-
-		toReturn.add(javax.swing.Box.createGlue());
-		int counter = 0;
-
-		for(int i = previousIndex-5; i < previousIndex; i++)
-		{
-			if(i < options.length)
-			{
-				toReturn.add(options[i]);
-				counter++;
-			}
-			toReturn.add(javax.swing.Box.createGlue());
-		}
-		
-		previousIndex = previousIndex - 5;
-		nextIndex = previousIndex + 5;
-		
-		return toReturn;
-	}
 	
 	private void createActions()
 	{
-		next.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae) {
-				
-				if(nextIndex != options.length)
-				{
-					JPanel newOptionsPanel = updateOptionsNext();
-					buttonsPanel.setVisible(false);
-					optionsPanel.remove(buttonsPanel);	
-					optionsPanel.add(newOptionsPanel, BorderLayout.CENTER);
-					buttonsPanel = newOptionsPanel;
-				}
-			}
-			
-		});
-		
-		previous.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae)
-			{
-				if(previousIndex != 0)
-				{
-					JPanel newOptionsPanel = updateOptionsPrevious();
-					buttonsPanel.setVisible(false);
-					optionsPanel.remove(buttonsPanel);	
-					optionsPanel.add(newOptionsPanel, BorderLayout.CENTER);
-					buttonsPanel = newOptionsPanel;
-				}
-			}
-		});
-		
+	
 		board.addKeyListener(new KeyAdapter()
 		{
 			public void keyPressed(KeyEvent ke) {
@@ -585,14 +473,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}
 				else if(key == ke.VK_1)
-				{
-					options[0].setBackground(Color.GREEN);
-					
+				{					
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
 						{
-							placeTower(playerx+1, playery);
+							placeTower(playerx+1, playery, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx+1, playery);
 							try {
 								oos.writeObject(c);
@@ -606,7 +492,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(playerx-1 > 0)
 						{
-							placeTower(playerx-1, playery);
+							placeTower(playerx-1, playery, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx-1, playery);
 							try {
 								oos.writeObject(c);
@@ -622,7 +508,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(playery-1 > 0)
 						{
-							placeTower(playerx, playery-1);
+							placeTower(playerx, playery-1, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery-1);
 							try {
 								oos.writeObject(c);
@@ -636,7 +522,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(playery+1 < 32)
 						{
-							placeTower(playerx, playery+1);
+							placeTower(playerx, playery+1, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery+1);
 							try {
 								oos.writeObject(c);
@@ -797,8 +683,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 	}
 	
-	public void placeTower(int x, int y)
-	{
+	public void placeTower(int x, int y, boolean maker)
+	{	
+		
 		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
 		BufferedImage img = b.getTowerImages();
@@ -811,8 +698,37 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			return;
 		}
 			
-		spaces[x][y].setIcon(new ImageIcon(resizedImage));
-		backendBoard.placeTower(backendBoard.getSpace(x,y));
+		progressTimer = new Timer(1000, new ActionListener()
+		{
+			int timer = 10;
+			public void actionPerformed(ActionEvent e) {
+				
+				if(timer > 0)
+				{
+					if(maker == true)
+					{
+						progressBar.setString("Building Tower (" + timer + "s)");
+						progressBar.setStringPainted(true);
+						progressBar.setValue(progressBar.getValue() + 10);
+					}
+					timer--;
+				}
+				else
+				{
+					if(maker == true)
+					{
+						progressBar.setString("No Task");
+						progressBar.setValue(0);
+					}
+					progressTimer.stop();
+					spaces[x][y].setIcon(new ImageIcon(resizedImage));
+					backendBoard.placeTower(backendBoard.getSpace(x,y));
+				}
+				
+			}
+		});
+		progressTimer.start();
+
 
 		
 		//int count = 0;
@@ -930,7 +846,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTower(x, y);
+									placeTower(x, y, false);
 								}
 								else if(command.equals("RotateTower"))
 								{
