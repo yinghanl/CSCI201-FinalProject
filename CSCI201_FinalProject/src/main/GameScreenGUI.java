@@ -650,8 +650,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			
 		}
 	
-		for(Player p: players)
+		for(int i=0; i < players.size(); i++)
 		{
+			Player p = players.get(i);
 			int playerx = p.getLocation().getX();
 			int playery = p.getLocation().getY();
 			
