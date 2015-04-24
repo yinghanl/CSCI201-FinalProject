@@ -1,12 +1,10 @@
 package main;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 abstract class Space implements Serializable{
 	private static final long serialVersionUID = 1;
 	private Moveable occupant;
-	//private ArrayList<Moveable> occupants;
 	private Space north, south, east, west, northWest, northEast, southWest, southEast;
 	private int x, y;
 	
@@ -14,7 +12,6 @@ abstract class Space implements Serializable{
 		this.x = x;
 		this.y = y;
 		occupant = null;
-		//occupants = new ArrayList<Moveable>();
 	}
 	
 	public int getX(){
@@ -26,12 +23,10 @@ abstract class Space implements Serializable{
 	}
 	
 	public Moveable getMoveable(){
-		//return occupants.get(0);
 		return occupant;
 	}
 	
 	public void setOccupant(Moveable m){
-		//occupants.add(moveable);
 		occupant = m;
 	}
 	
@@ -39,16 +34,7 @@ abstract class Space implements Serializable{
 		occupant = null;
 	}
 	
-//	public void removeOccupant(Moveable moveable){
-//		occupants.remove(moveable);
-//	}
-//	
-//	public ArrayList<Moveable> getOccupants(){
-//		return occupants;
-//	}
-	
 	public boolean isOccupied(){
-		//return (occupants.size()>0);
 		return (occupant != null);
 	}
 	
