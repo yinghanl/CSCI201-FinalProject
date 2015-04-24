@@ -87,14 +87,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 
 	private Tower currentTower;
 		
-	private ArrayList<Player> players; 
+	private Vector<Player> players; 
 	private HashMap<Integer, Creep> creeps;
 	
 	private int MAX_CREEPS = 10;
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
-		players = new ArrayList<Player>();
+		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
 		this.setSize(825,510);
