@@ -21,17 +21,21 @@ public class GameLobbyGUI extends JFrame {
 	ProfileScreen ps;
 	private JButton profileButton;
 	public static ArrayList<Game> gamesOpen;
+	private LogInGUI parentFrame;
+	private GameLobbyGUI self;
 	
-	public GameLobbyGUI(AbstractUser u){
+	public GameLobbyGUI(AbstractUser u,LogInGUI parentFrame){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
-		setSize(600, 600);
+		setSize((int)(width*.4), (int)(height));
 		setLocation (0, 0);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.user = u;
+		this.parentFrame = parentFrame;
 		gamesOpen = new ArrayList<Game>();
+		self = this;
 		
 		initializeComponents();
 		createGUI();
@@ -39,20 +43,19 @@ public class GameLobbyGUI extends JFrame {
 	}
 	
 	private void initializeComponents(){
-		lobby = new TabPanel(user, this);
+		lobby = new TabPanel(user, this, parentFrame);
 		if(user instanceof User)
 		{
 			ps = new ProfileScreen((User)user);
 			ps.setVisible(false);
 		}
 		
-		
 	}
 	
 	private void createGUI(){
 		setLayout(new BorderLayout());
 		
-		this.profileButton = new JButton("Profile");
+		this.profileButton = new JButton("View Profile");
 		if(!user.isUser())
 		{
 			profileButton.setVisible(false);
@@ -65,15 +68,10 @@ public class GameLobbyGUI extends JFrame {
 			
 		});
 		
-		getContentPane().add(lobby);
+		add(lobby);
 		
-		add(profileButton, BorderLayout.SOUTH);
+		add(profileButton, BorderLayout.NORTH);
 		
-	}
-	
-	public static void main(String [] args){
-		//Player p = new Player("awesome");
-		//new GameLobbyGUI(user);
 	}
 	
 	

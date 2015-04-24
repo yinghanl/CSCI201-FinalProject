@@ -1,8 +1,11 @@
 package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -39,11 +42,16 @@ public class TabPanel extends JPanel {
 	JButton returnButton;
 	AbstractUser u;
 	
+	private LogInGUI loginWindow;
+	
+	
+	
 	private GameRoomClient grc;
 
-	public TabPanel(AbstractUser user, GameLobbyGUI gameLobbyWindow){
+	public TabPanel(AbstractUser user, GameLobbyGUI gameLobbyWindow, LogInGUI loginWindow){
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
+		this.loginWindow = loginWindow;
 		
 		grc = new GameRoomClient(this, u);
 		System.out.println("created gameroomClient");
@@ -64,6 +72,12 @@ public class TabPanel extends JPanel {
 		joinButton = new JButton("Join Game");
 		returnButton = new JButton("Return Button");
 		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int buttonWidth = (int)(.33*screenSize.getWidth());
+		createButton.setPreferredSize(new Dimension(buttonWidth,25));
+		joinButton.setPreferredSize(new Dimension(buttonWidth,25));
+		returnButton.setPreferredSize(new Dimension(buttonWidth,25));
+		
 		
 		String [] columnNames = {"Host Name", "Players in Room"};
 		
@@ -79,24 +93,24 @@ public class TabPanel extends JPanel {
 	}
 	
 	public void createGUI(){
-		//setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		//setLayout(new GridBagLayout());
 		
 		
 
-		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		//buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		buttonPanel.setLayout(new FlowLayout());
 		buttonPanel.add(joinButton);
-		buttonPanel.add(Box.createGlue());
 		buttonPanel.add(createButton);
-		buttonPanel.add(Box.createGlue());
 		buttonPanel.add(returnButton);
 		
 		JScrollPane jsp = new JScrollPane(gameListTable);
 		gameListTable.setFillsViewportHeight(true);
 		
-		add(jsp,BorderLayout.CENTER);
-		add(buttonPanel,BorderLayout.SOUTH);
-
+		//add(jsp,BorderLayout.CENTER);
+		//add(buttonPanel,BorderLayout.SOUTH);
+		add(jsp);
+		add(buttonPanel);
 	}
 	
 	public void addActionListeners()
@@ -123,18 +137,14 @@ public class TabPanel extends JPanel {
 				gameLobbyWindow.setVisible(false);
 			}	
 		});
-		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
-		buttonPanel.add(joinButton);
-		buttonPanel.add(Box.createGlue());
-		buttonPanel.add(createButton);
-		buttonPanel.add(Box.createGlue());
-		buttonPanel.add(returnButton);
 		
-		JScrollPane jsp = new JScrollPane(gameListTable);
-		gameListTable.setFillsViewportHeight(true);
-		
-		add(jsp,BorderLayout.CENTER);
-		add(buttonPanel,BorderLayout.SOUTH);
+		returnButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				loginWindow.setVisible(true);
+				gameLobbyWindow.dispose();
+			}
+		});
+
 
 	}
 	
