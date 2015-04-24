@@ -126,22 +126,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 		this.setVisible(true);
 			
-		lvlTimer = new Timer(1000, new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae) {
-				
-				timerInt--;
-				if(timerInt<0){
-					restartLevelTimer();
-				}
-				levelTimer.setText("" + timerInt);
-			}
-			
-			
-		});
-		
-		lvlTimer.start();
-				
 		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
@@ -196,7 +180,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			if(oos != null)
 			{
 				this.createActions();
-				System.out.println("Hello");
 				oos.writeObject(currentPlayer);
 				oos.flush();
 			}
@@ -204,6 +187,39 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			System.out.println("Exception sending player to server");
 		}
 
+		
+		lvlTimer = new Timer(1000, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent ae) {
+				
+				timerInt--;
+				if(timerInt<0){
+					restartLevelTimer();
+				}
+				
+				try{
+					Command c = new Command(currentPlayer, "Timer", timerInt, 0);
+					oos.writeObject(c);
+					oos.flush();
+					
+				}
+				catch(IOException ioe)
+				{
+					ioe.printStackTrace();
+				}
+				
+				levelTimer.setText("" + timerInt);
+			}
+			
+			
+		});
+		
+		if(isHost == true)
+		{
+			lvlTimer.start();
+		}
+		
+		
 		
 	}
 	
@@ -526,6 +542,17 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						Tower t = currentPlayer.playerOperatingTower();
 						t.shoot();
+						
+						Command c = new Command(currentPlayer, "Shoot", t.getX(), t.getY());
+						try
+						{
+							oos.writeObject(c);
+							oos.flush();
+						}
+						catch(IOException ioe)
+						{
+							ioe.printStackTrace();
+						}
 					}
 				}
 				else if(key == ke.VK_SHIFT)
@@ -736,13 +763,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			int playerx = p.getLocation().getX();
 			int playery = p.getLocation().getY();
 			
-			spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			//spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			
+			Image image = p.getIcon().getScaledInstance(spaces[playerx][playery].getWidth(), spaces[playerx][playery].getHeight(), Image.SCALE_SMOOTH);
+			
+			spaces[playerx][playery].setIcon(new ImageIcon(image));
 			
 			if(p.getPrevious() != null && p.moveableCouldMove())
 			{
 				int x = p.getPrevious().getX();
 				int y = p.getPrevious().getY();
-				spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				spaces[x][y].setIcon(null);
 			}
 		}
 		for(int i = 0; i < 20; i++)
@@ -858,7 +890,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("NORTH");
 										p.move(0);
+
 									}
 									catch (BoundaryException e) {
 										e.printStackTrace();
@@ -868,6 +902,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("SOUTH");
 										p.move(1);
 									}
 									catch (BoundaryException e) {
@@ -878,6 +913,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("EAST");
 										p.move(2);
 									}
 									catch (BoundaryException e) {
@@ -888,6 +924,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								{
 									try
 									{
+										p.setPlayerDirection("WEST");
 										p.move(3);
 									}
 									catch (BoundaryException e) {
@@ -922,6 +959,32 @@ public class GameScreenGUI extends JFrame implements Runnable{
 										}
 									}								
 
+								}
+								else if(command.equals("Shoot"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										
+										if(t instanceof BasicTower)
+										{
+											t.shoot();
+										}
+									}
+								}
+								else if(command.equals("Timer"))
+								{
+									Command c = (Command)obj;
+									int timer = c.getX();
+									
+									timerInt = timer;
+									levelTimer.setText("" + timerInt);
+									
 								}
 							}
 						}

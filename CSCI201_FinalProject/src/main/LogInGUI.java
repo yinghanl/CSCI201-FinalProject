@@ -72,53 +72,7 @@ public class LogInGUI extends JFrame
 		
 		backgroundPanel = new BGPanel();
 		backgroundPanel.setLayout(new BorderLayout());
-	/*
-		JPanel northPanel = new JPanel();
-		JLabel tdLabel = new JLabel("Tower Defense");
-		tdLabel.setFont(new Font("Arial", Font.BOLD, 30));
-		northPanel.add(tdLabel);
-		northPanel.setOpaque(false);
-		
-		JPanel centerPanel = new JPanel();
-		centerPanel.setOpaque(false);
-		
-		JPanel southPanel = new JPanel();
-		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
-		southPanel.setPreferredSize(new Dimension((int)(width * 0.4), (int)(height * 0.3)));
-		JPanel swPanel = new JPanel();
-		swPanel.setLayout(new BoxLayout(swPanel, BoxLayout.Y_AXIS));
-		JPanel sw1Panel = new JPanel();
-		JPanel sw2Panel = new JPanel();
-		swPanel.setOpaque(false);
-		sw1Panel.setOpaque(false);
-		sw2Panel.setOpaque(false);
-		sw1Panel.add(new JLabel("username:"));
-		sw1Panel.add(usernameJTF);
-		sw2Panel.add(new JLabel("password:"));
-		sw2Panel.add(passwordJPF);
-		swPanel.add(Box.createGlue());
-		swPanel.add(sw1Panel);
-		swPanel.add(sw2Panel);
-		swPanel.add(Box.createGlue());
-		southPanel.add(swPanel);
-		southPanel.setOpaque(false);
-		
-		JPanel sePanel = new JPanel();
-		sePanel.setOpaque(false);
-		sePanel.setLayout(new BoxLayout(sePanel, BoxLayout.Y_AXIS));
-		sePanel.add(Box.createGlue());
-		sePanel.add(userLogInButton);
-		sePanel.add(Box.createGlue());
-		sePanel.add(guestLogInButton);
-		sePanel.add(Box.createGlue());
-		sePanel.add(createUserButton);
-		sePanel.add(Box.createGlue());
-		southPanel.add(sePanel);
-		backgroundPanel.add(northPanel, BorderLayout.NORTH);
-		backgroundPanel.add(centerPanel, BorderLayout.CENTER);
-		backgroundPanel.add(southPanel, BorderLayout.SOUTH);
-		*/
-		
+
 		JPanel contentPanel = new LoginPanel();
 		FlowLayout bgPanelLayout = new FlowLayout(FlowLayout.CENTER);
 		bgPanelLayout.setVgap((int)(height *.6));
@@ -176,6 +130,9 @@ public class LogInGUI extends JFrame
 					User newUser = DataBaseUtils.createUser(userID);
 					new GameLobbyGUI(newUser);
 					setVisible(false);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Username already exists, try again!");
 				}
 				//calls DatabaseUtils.createNewUser
 				//if true, creates new user and logs in
