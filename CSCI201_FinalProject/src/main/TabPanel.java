@@ -84,7 +84,7 @@ public class TabPanel extends JPanel {
 		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
 		gameListModel = new DefaultTableModel(tableData, columnNames);
 		gameListTable = new JTable(gameListModel);
-		
+		gameListTable.setOpaque(false);	
 		gameListTable.setSelectionForeground(Color.WHITE);
 		gameListTable.setSelectionBackground(Color.RED);
 		gameListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -106,6 +106,7 @@ public class TabPanel extends JPanel {
 		
 		JScrollPane jsp = new JScrollPane(gameListTable);
 		gameListTable.setFillsViewportHeight(true);
+		jsp.getViewport().setBackground(new Color(204,240,248));
 		
 		//add(jsp,BorderLayout.CENTER);
 		//add(buttonPanel,BorderLayout.SOUTH);

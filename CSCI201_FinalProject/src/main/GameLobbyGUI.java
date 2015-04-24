@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -51,12 +52,12 @@ public class GameLobbyGUI extends JFrame {
 			ps.setVisible(false);
 		}
 		
+		this.profileButton = new JButton("View Player Statistics");
 	}
 	
 	private void createGUI(){
 		setLayout(new BorderLayout());
 		
-		this.profileButton = new JButton("View Player Statistics");
 		if(!user.isUser())
 		{
 			profileButton.setVisible(false);

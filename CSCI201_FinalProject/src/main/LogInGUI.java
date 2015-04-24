@@ -47,6 +47,34 @@ public class LogInGUI extends JFrame
 	
 	LogInGUI self;
 	
+	public LogInGUI()
+	{
+		
+		UIManager.put("nimbusBase", new Color(25,25,112));
+		UIManager.put("nimbusBlueGrey", new Color(46,139,87));
+		//UIManager.put("nimbusBlueGrey", new Color(204,240,248));
+		UIManager.put("control",new Color(204,240,248));
+		//UIManager.put("control", new Color(240,255,240));
+
+		
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
+		instantiateComponents();
+		createGUI();
+		addActionListeners();
+		
+		setVisible(true);
+	}
+	
 	private void instantiateComponents()
 	{
 		self = this;
@@ -148,26 +176,6 @@ public class LogInGUI extends JFrame
 		});
 		
 		
-	}
-	
-	public LogInGUI()
-	{
-		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
-		}
-		
-		instantiateComponents();
-		createGUI();
-		addActionListeners();
-		
-		setVisible(true);
 	}
 	
 	class BGPanel extends JPanel{
