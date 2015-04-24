@@ -20,6 +20,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -84,11 +85,15 @@ public class GameScreenGUI extends JFrame implements Runnable{
 
 	private Tower currentTower;
 		
-	private ArrayList<Player> players;
+	private ArrayList<Player> players; 
+	private HashMap<Integer, Creep> creeps;
+	
+	private int MAX_CREEPS = 10;
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		players = new ArrayList<Player>();
+		creeps = new HashMap<Integer, Creep>();
 		
 		this.setSize(825,510);
 		this.setLocation(0,0);
@@ -685,7 +690,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		while(numCreeps>0){ //there are remaining creeps
 			try {
 				Thread.sleep(2000);
-				new Creep(backendBoard.getPathSpace(0)).start();
+				Creep c = new Creep(backendBoard.getPathSpace(0));
+				creeps.put(numCreeps, c);
+				c.start();
+				//new Creep(backendBoard.getPathSpace(0)).start();
 				numCreeps--;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -737,18 +745,28 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	
 	public void updateBoard()
-	{
+	{/*
 		//update creeps
 		for(int i = 0; i<backendBoard.getCreepPathSize(); i++){
-			if(backendBoard.getPathSpace(i).isOccupied()){
+			if(backendBoard.getPathSpace(i).getCreep()!=null){
 				int p = backendBoard.getPathSpace(i).getX();
 				int q = backendBoard.getPathSpace(i).getY();
-				spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
+//				if(backendBoard.getPathSpace(i).getCreep().isDead()){
+//					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
+//					backendBoard.getPathSpace(i).removeCreep();
+//					continue;
+//				}
+//				if {
+					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
+//				}
+				
+				//null pointer exception?
 				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null && !backendBoard.getPathSpace(i).getMoveable().getPrevious().isOccupied()){
 					int x = backendBoard.getPathSpace(i).getMoveable().getPrevious().getX();
 					int y = backendBoard.getPathSpace(i).getMoveable().getPrevious().getY();
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				}
+
 				
 //				if(i>0 && !backendBoard.getPathSpace(i-1).isOccupied()){
 //					int x = backendBoard.getPathSpace(i-1).getX();
@@ -756,6 +774,28 @@ public class GameScreenGUI extends JFrame implements Runnable{
 //					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 //				}
 			}
+		}*/
+		
+		for(int i = 0; i<MAX_CREEPS; i++){
+			if(creeps.containsKey(i)){
+				Creep c = creeps.get(i);
+				int x = c.getPathLocation().getX();
+				int y = c.getPathLocation().getY();
+				if(c.isDead()){
+					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					creeps.remove(i);
+				}
+				else{
+					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED));
+				}
+				
+				if(c.getPrevious() !=null){
+					int p = c.getPrevious().getX();
+					int q = c.getPrevious().getY();
+					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				}
+			}
+			
 		}
 	
 		for(Player p: players)
@@ -777,6 +817,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				spaces[x][y].setIcon(null);
 			}
 		}
+		
+		//bullets
 		for(int i = 0; i < 20; i++)
 		{
 			for(int j = 0; j < 32; j++)
@@ -785,19 +827,29 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
 						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+						//normal movement
 						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null ){//&& !backendBoard.getSpace(i,j).getMoveable().getPrevious().isOccupied()){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
 							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							
 						}
+						//bullet reaching end of map
+						if(!backendBoard.getSpace(i, j).getMoveable().moveableCouldMove()){	
+							int x = backendBoard.getSpace(i, j).getMoveable().getLocation().getX();
+							int y = backendBoard.getSpace(i, j).getMoveable().getLocation().getY();
+							backendBoard.getSpace(i, j).removeOccupant();
+							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+						}
+						
 					}
-					if(backendBoard.getSpace(i,j).getMoveable().getMoveableImage() != null)
-					{
-						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
-					
-						spaces[i][j].setIcon(icon);
-					
-					}
+//					if(backendBoard.getSpace(i,j).getMoveable().getMoveableImage() != null)
+//					{
+//						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
+//					
+//						spaces[i][j].setIcon(icon);
+//					
+//					}
 				}
 			}
 		}
