@@ -20,5 +20,15 @@ public class PathSpace extends Space{
 	public PathSpace getNext(){
 		return nextPathSpace;
 	}
+	
+	public void setCreep(Creep c){
+		creep = c;
+		setOccupant(c);
+	}
+	
+	public void removeCreep(){
+		creep = null;
+		removeOccupant();
+	}
 
 }
