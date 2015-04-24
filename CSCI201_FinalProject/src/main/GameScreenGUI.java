@@ -717,11 +717,17 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int p = backendBoard.getPathSpace(i).getX();
 				int q = backendBoard.getPathSpace(i).getY();
 				spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
-				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null){
+				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null && !backendBoard.getPathSpace(i).getMoveable().getPrevious().isOccupied()){
 					int x = backendBoard.getPathSpace(i).getMoveable().getPrevious().getX();
 					int y = backendBoard.getPathSpace(i).getMoveable().getPrevious().getY();
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				}
+				
+//				if(i>0 && !backendBoard.getPathSpace(i-1).isOccupied()){
+//					int x = backendBoard.getPathSpace(i-1).getX();
+//					int y = backendBoard.getPathSpace(i-1).getY();
+//					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//				}
 			}
 		}
 	
@@ -747,7 +753,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
 						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
-						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null ){//&& !backendBoard.getSpace(i,j).getMoveable().getPrevious().isOccupied()){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
 							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));

@@ -97,5 +97,9 @@ public class Player extends Moveable implements Serializable{
 		return null;
 	}
 	
+	public void hit(Creep c){
+		
+	}
+	
 	
 }//end of class

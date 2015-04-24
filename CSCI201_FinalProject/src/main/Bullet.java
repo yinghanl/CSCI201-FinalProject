@@ -10,17 +10,26 @@ public class Bullet extends Moveable{
 		damage = val;
 	}
 	
+	public void hit(Creep c){
+		c.hit(damage);
+	}
+	
 	public void run(){
 		while(true){
 			try {
-				sleep(1000);
+				sleep(200);
 				move(direction);
 				//if there is a creep in that location, hit it
 				if(currentLocation instanceof PathSpace){
 					PathSpace space = (PathSpace)currentLocation;
-					if(space.isOccupied()){
-						System.out.println("H");
-						//space.getCreep().hit(damage);
+//					for(Moveable m: space.getMoveable()){
+//						if(m instanceof Creep){
+//							System.out.println("H");
+//						}
+//					}
+					if(space.getCreep() != null){
+						space.getCreep().hit(damage);
+						System.out.println(space.getCreep().isDead());
 					}
 				}
 			} catch (InterruptedException e) {

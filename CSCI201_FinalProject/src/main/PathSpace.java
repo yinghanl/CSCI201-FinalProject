@@ -7,6 +7,7 @@ public class PathSpace extends Space{
 	
 	public PathSpace(int x, int y){
 		super(x, y);
+		creep = null;
 	}
 	
 	public Creep getCreep(){
@@ -27,8 +28,9 @@ public class PathSpace extends Space{
 	}
 	
 	public void removeCreep(){
-		creep = null;
 		removeOccupant();
+		creep = null;
+		
 	}
 
 }
