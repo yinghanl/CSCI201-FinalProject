@@ -12,24 +12,18 @@ package main;
 //import ChatThread;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,16 +31,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
 
-
-import com.sun.prism.paint.Color;
 
 public class GameRoomGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -66,14 +56,11 @@ public class GameRoomGUI extends JFrame {
 	private AbstractUser usersConnected[];
 	private AbstractUser user;
 	private boolean isHost;
-	private boolean msgSent;
+
 	private boolean updated;
-	private boolean labelChange;
-	private boolean resetLabels;
 	private String message;
 	private String IPAddress;
 	private String roomTitle;
-	private boolean loadGameScreen;
 	private int port;
 	private int userLabelIndex;
 	private int usersReady;
@@ -100,10 +87,7 @@ public class GameRoomGUI extends JFrame {
 		
 		
 		message = null;
-		msgSent = false;
 		updated = false;
-		loadGameScreen = false;
-		resetLabels = false;
 		usersReady = 1;
 		users_in_room = 0;
 		userLabelIndex = 0;
@@ -181,13 +165,12 @@ public class GameRoomGUI extends JFrame {
 				else{
 					try {
 						oos.writeObject(message);
-						sendMessageToClients(message);
+						//sendMessageToClients(message);
 						oos.flush();
 					} catch (IOException e) {
 						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
 					}//end of try-catch
 				}	
-				msgSent = true;
 			}
 		});
 		
@@ -197,7 +180,6 @@ public class GameRoomGUI extends JFrame {
 					//readyButton.setText("Unready");
 					userLabels[userLabelIndex][1].setText("   Ready");
 					user.setReadyStatus(true);
-					labelChange = true;
 					try {
 						oos.writeObject(userLabels);
 						oos.flush();
@@ -222,20 +204,16 @@ public class GameRoomGUI extends JFrame {
 						System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
 					}//end of try-catch
 
-					labelChange = true;
 				}
 			}
 		});
 		
 		startGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				loadGameScreen = true;
 				sendMessageToClients(new Integer(-1));
-				
 				Board b = new Board();
 				new GameScreenGUI(b, user.toPlayer(), true);
 				setVisible(false);
-				loadGameScreen = false;
 			}
 		});
 		buttonPanel.add(typefield);
@@ -244,6 +222,9 @@ public class GameRoomGUI extends JFrame {
 		buttonPanel.add(readyButton);
 		add(buttonPanel, BorderLayout.SOUTH);
 		startGameButton.setEnabled(false);
+		if(isHost){
+			readyButton.setEnabled(false);
+		}
 	}//end of ceating the button
 	
 	public void createPicturePanel(){
@@ -501,7 +482,6 @@ public class GameRoomGUI extends JFrame {
 								Board b = new Board();
 								new GameScreenGUI(b, user.toPlayer(), false);
 								setVisible(false);
-								loadGameScreen = false;
 							}
 							else{
 								userLabelIndex = (Integer)obj;

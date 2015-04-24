@@ -20,6 +20,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -36,6 +37,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.text.DefaultCaret;
+
+import main.GameRoomGUI.ChatThread;
+import main.GameRoomGUI.ReadObject;
 
 public class GameScreenGUI extends JFrame implements Runnable{
 
@@ -68,8 +72,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private Player currentPlayer;
 	private boolean isHost;
-	private boolean messageSent;
 	
+	private Vector<ChatThread> ctVector = new Vector<ChatThread>();
+	private ChatThread ct;
 	private ServerSocket ss;
 	private Socket s;
 	private BufferedReader br;
@@ -94,7 +99,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		this.setLayout(new BorderLayout());
 		this.setResizable(false);
 		
-		messageSent = false;
 		message = "";
 
 		this.backendBoard = b;
@@ -136,39 +140,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
             }
 		});
 		
-		if(isHost == true)
-		{
-			try {
-				ss = new ServerSocket(6789);
-				chat.append("Waiting for players to connect...");
-				s = ss.accept();   //blocking line waits till accepted to proceed to next lines of code
-				chat.append("Connection established!\n");
-				br = new BufferedReader( new InputStreamReader(s.getInputStream()));
-				ois = new ObjectInputStream(s.getInputStream());
-				oos = new ObjectOutputStream(s.getOutputStream());
-				oos.writeObject(new String("Connected to Game Room!"));
-				oos.flush();
-				new ReadObject().start();
-			} catch (IOException e) {
-				System.out.println("IOE in gamescreengui.constructor.setting up host: "+e.getMessage());
-			}
-		}
-		else{
-			try {
-				s = new Socket("localhost",6789 );
-				br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-				oos = new ObjectOutputStream(s.getOutputStream());
-				ois = new ObjectInputStream(s.getInputStream());
-				new ReadObject().start();
-			} catch (UnknownHostException e) {
-				System.out.println("unknownhost in gamescreengui.constructor.setting up client: "+e.getMessage());
-				e.printStackTrace();
-				//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-	} catch (IOException e) {
-				System.out.println("IOE in gamescreengui.constructor.setting up client: "+e.getMessage());
-			}
-			
-		}//end else
+		new CreateConnections().start();
+		
 		
 		try
 		{
@@ -194,8 +167,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 				try{
 					Command c = new Command(currentPlayer, "Timer", timerInt, 0);
-					oos.writeObject(c);
-					oos.flush();
+					if(!isHost){
+						oos.writeObject(c);
+						oos.flush();	
+					}
 					
 				}
 				catch(IOException ioe)
@@ -215,8 +190,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 		
 		
-		
-	}
+	}//end of constructor
 	
 	private JPanel getTopPanel()
 	{
@@ -544,20 +518,23 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int key = ke.getKeyCode();
 				
 				if(key == ke.VK_ENTER && chatEdit.getText() != null){
-					messageSent = true;
-					System.out.println("setting messageSent to true");
-					String playerName = currentPlayer.getPlayerName();
-					 
+					//System.out.println("setting messageSent to true");					 
 					String toAppend = "\n"+currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
 					message = toAppend;
-					chat.append(toAppend);
-					chatEdit.setText(null);
-					try {
-						oos.writeObject(message);
-						oos.flush();
-					} catch (IOException e) {
-						System.out.println("IOE when trying to write string object");
-					}
+					chatEdit.setText("");
+					System.out.println("enter was hit, sending message: " + message);
+					if(isHost){
+						chat.append(message);
+						sendMessageToClients(message);
+					}	
+					else{
+						try {
+							oos.writeObject(message);
+							oos.flush();
+						} catch (IOException e) {
+							System.out.println("IOE in GameRoom.Chatclient.run() in while loop writing string object");
+						}//end of try-catch
+					}	
 					
 				}
 				
@@ -774,6 +751,205 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		timerInt = 60;
 	}
 	
+	public void removeChatThread(ChatThread ct) {
+		ctVector.remove(ct);
+	}
+	public void sendMessageToClients(Object obj) {
+		if(isHost){
+			for (ChatThread ct1 : ctVector) {
+				//if (!ct.equals(ct1)) {
+					ct1.sendMessage(obj);
+				//}
+			}
+		}	
+	}
+	
+	class ChatThread extends Thread {
+		//private BufferedReader br;
+		private ObjectOutputStream oos;
+		private ObjectInputStream ois;
+		//private GameRoomGUI grg;
+		private Socket s;
+		public ChatThread(Socket s) {
+			//this.grg = grg;
+			this.s = s;
+			try {
+				ois = new ObjectInputStream(s.getInputStream());
+				oos = new ObjectOutputStream(s.getOutputStream());
+				oos.writeObject("Connected to server!\n");
+				oos.flush();
+			} catch (IOException ioe) {
+				System.out.println("IOE in ChatThread constructor: " + ioe.getMessage());
+			}
+		}//end of chat thread
+
+		public void sendMessage(Object obj) {
+			try {
+				oos.writeObject(obj);
+				oos.flush();
+			} catch (IOException e) {
+				System.out.println("IOE from ChatThread.sendMessage(): "+e.getMessage());
+			}
+		}//end of send message
+
+		public synchronized void run(){
+			try {
+				obj = ois.readObject();
+				while(obj != null){
+					if(obj instanceof String){				
+						chat.append(((String)obj));
+						System.out.println("sending chat message to other clients: "+(String)obj);
+						sendMessageToClients(obj);
+					}//end of if ob is String
+					else if(obj instanceof Player)
+					{						
+						backendBoard.setPlayer((Player)obj);
+						players.add((Player)obj);
+						sendMessageToClients(obj);
+						
+					}
+					else if(obj instanceof Command)
+					{
+						Player player = ((Command)obj).getPlayer();
+						
+						String command = ((Command)obj).getCommand();
+						
+						for(Player p : players)
+						{
+							if(player.getPlayerName() == p.getPlayerName())
+							{
+								if(command.equals("Move(0)"))
+								{
+									try
+									{
+										p.setPlayerDirection("NORTH");
+										p.move(0);
+
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(1)"))
+								{
+									try
+									{
+										p.setPlayerDirection("SOUTH");
+										p.move(1);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(2)"))
+								{
+									try
+									{
+										p.setPlayerDirection("EAST");
+										p.move(2);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("Move(3)"))
+								{
+									try
+									{
+										p.setPlayerDirection("WEST");
+										p.move(3);
+									}
+									catch (BoundaryException e) {
+										e.printStackTrace();
+									}
+								}
+								else if(command.equals("PlaceTower"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									placeTower(x, y, false);
+								}
+								else if(command.equals("RotateTower"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									//Tower t = currentPlayer.playerOperatingTower();
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										t.rotate();
+										
+										if(t instanceof BasicTower)
+										{
+											BufferedImage image = ((BasicTower) t).getTowerImages();
+											Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+											spaces[x][y].setIcon(new ImageIcon(icon));
+										}
+									}								
+
+								}
+								else if(command.equals("Shoot"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										
+										if(t instanceof BasicTower)
+										{
+											t.shoot();
+										}
+									}
+								}
+								else if(command.equals("Timer"))
+								{
+									Command c = (Command)obj;
+									int timer = c.getX();
+									
+									timerInt = timer;
+									levelTimer.setText("" + timerInt);
+									
+								}
+							}
+						}
+						sendMessageToClients(obj);
+					}//end of else command object
+					obj = ois.readObject();
+				}//end of while	
+			}catch(IOException ioe){
+				System.out.println("IOE in chatserver constructor: " + ioe.getMessage());
+			} catch(ClassNotFoundException cnfe){
+				System.out.println("CNFE in readobject.run: " + cnfe.getMessage());	
+			} finally{
+				try {
+					if(br != null)
+					{
+						br.close();
+					}
+					if(s != null)
+					{
+						s.close();
+					}
+					if(ss != null)
+					{
+						ss.close();
+					}
+					
+				} catch (IOException e) {
+					System.out.println("IOE in server.run() in finally block: "+e.getMessage());
+				}
+			}//end of finally block
+		}//end of run
+	}//end of chathread
+	
 	public class ReadObject extends Thread{
 		ReadObject(){
 		}
@@ -782,7 +958,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			try {
 				obj = ois.readObject();
 				while(obj != null){
-					//System.out.println("ob not null in client: "+obj.getClass());
+					System.out.println("ob not null in client: "+obj.getClass());
 					if(obj instanceof String){
 						chat.append(((String)obj));
 					}//end of if ob is String
@@ -915,5 +1091,44 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}
 		}//end of run
 	}//end of inner class read object
-	
+	class CreateConnections extends Thread{
+		public CreateConnections(){
+			if(!isHost){
+				try {
+					s = new Socket("localhost", 8970);
+					oos = new ObjectOutputStream(s.getOutputStream());
+					ois = new ObjectInputStream(s.getInputStream());
+					new ReadObject().start();
+				} catch (IOException ioe) {
+					System.out.println("IOE client: " + ioe.getMessage());
+				}
+			}//end of if not host
+		}//end of constructor
+		public void run(){
+			if(isHost){
+				try {
+					System.out.println("Starting Chat Server");
+					ss = new ServerSocket(8970);
+					while (true) {
+						System.out.println("Waiting for client to connect...");
+						Socket s = ss.accept();
+						System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+						ChatThread ct = new ChatThread(s);
+						ctVector.add(ct);
+						ct.start();
+					}
+				} catch (IOException ioe) {
+					System.out.println("IOE: " + ioe.getMessage());
+				} finally {
+					if (ss != null) {
+						try {
+							ss.close();
+						} catch (IOException ioe) {
+							System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
+						}
+					}
+				}//end of finally
+			}//end of if host
+		}
+	}
 }//end of class
