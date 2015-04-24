@@ -526,6 +526,17 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						Tower t = currentPlayer.playerOperatingTower();
 						t.shoot();
+						
+						Command c = new Command(currentPlayer, "Shoot", t.getX(), t.getY());
+						try
+						{
+							oos.writeObject(c);
+							oos.flush();
+						}
+						catch(IOException ioe)
+						{
+							ioe.printStackTrace();
+						}
 					}
 				}
 				else if(key == ke.VK_SHIFT)
@@ -916,6 +927,23 @@ public class GameScreenGUI extends JFrame implements Runnable{
 										}
 									}								
 
+								}
+								else if(command.equals("Shoot"))
+								{
+									Command c = (Command)obj;
+									int x = c.getX();
+									int y = c.getY();
+									
+									if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+									{
+										TowerSpace ts = (TowerSpace) backendBoard.getSpace(x, y);
+										Tower t = ts.getTower();
+										
+										if(t instanceof BasicTower)
+										{
+											t.shoot();
+										}
+									}
 								}
 							}
 						}
