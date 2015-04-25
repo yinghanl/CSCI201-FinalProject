@@ -85,7 +85,6 @@ public class GameRoomServer {
 	public void newGame(Game g)
 	{
 		System.out.println("new game");
-		g.setID(gameIndex);
 		gamesOpen.add(g);
 		synchronized(this)
 		{
@@ -97,11 +96,20 @@ public class GameRoomServer {
 	
 	public void deleteGame(Game g)
 	{
-		gamesOpen.remove(g);
+		for (int i = 0; i < gamesOpen.size(); i++) {
+			if(g.getID() == gamesOpen.get(i).getID())
+			{
+				System.out.println("updated game");
+				gamesOpen.remove(i);
+			}
+		}
+		
+		System.out.println("Deleting game");
 		synchronized(this)
 		{
 			gameIndex--;
 		}
+		System.out.println("gamesOpen.size()" + gamesOpen.size());
 	}
 	
 	public void gameUpdate(Game g)
@@ -116,6 +124,12 @@ public class GameRoomServer {
 		System.out.println("gamesOpen.size()" + gamesOpen.size());
 		return;
 	}
+	
+	public int getGameIndex()
+	{
+		return gameIndex;
+	}
+	
 	public void removeGameRoomThread(GameRoomThread gmt)
 	{
 		gmtVector.remove(gmt);
@@ -210,7 +224,10 @@ public class GameRoomServer {
 						System.out.println("code = " + code);
 						if(code == 1) //change existing game
 						{
+							newGame.setID(grs.getGameIndex());
 							grs.newGame(newGame);
+							oos.writeObject(new GameRoomPacket(newGame, 5));
+							oos.flush();
 						}
 						else if(code == 2) //add new game
 						{
@@ -228,7 +245,7 @@ public class GameRoomServer {
 						for (Game g : grs.getGameVector()) {
 							if(g.getGameHost().getUsername().equals(newObj))
 							{
-								oos.writeObject(g);
+								oos.writeObject(new GameRoomPacket(g, 4));
 								oos.flush();
 								gameFound = true;
 							}

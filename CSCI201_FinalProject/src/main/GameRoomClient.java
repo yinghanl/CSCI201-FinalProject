@@ -14,6 +14,7 @@ public class GameRoomClient extends Thread
 	private Socket s;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
+	private Game g;
 	
 	public GameRoomClient(TabPanel tp, AbstractUser au)
 	{
@@ -38,18 +39,26 @@ public class GameRoomClient extends Thread
 	
 	public void newGame(Game g)
 	{
+		setGame(g);
 		sendGamePacket(new GameRoomPacket(g, 1));
 		
 	}
 	
 	public void updateGame(Game g)
 	{
+		setGame(g);
 		sendGamePacket(new GameRoomPacket(g, 2));
 	}
 	
-	public void deleteGame(Game g)
+	public void deleteGame()
 	{
+		
 		sendGamePacket(new GameRoomPacket(g, 3));
+	}
+	
+	public void setGame(Game newG)
+	{
+		g = newG;
 	}
 	
 	public void sendGamePacket(GameRoomPacket grp)
@@ -95,11 +104,21 @@ public class GameRoomClient extends Thread
 					//System.out.println("gamesOpen.size = " + gamesOpen.size());
 					tp.updateGames(gamesOpen);
 				}
-				else if(readObj instanceof Game)
+				else if(readObj instanceof GameRoomPacket)
 				{
-					Game hostGame = (Game)readObj;
-					hostGame.joinGame(au);
-					updateGame(hostGame);
+					GameRoomPacket grp = (GameRoomPacket)readObj;
+					Game hostGame = grp.getGame();
+					int code = grp.getCode();
+					if(code == 4)
+					{
+						hostGame.joinGame(au);
+						updateGame(hostGame);
+					}
+					else if(code == 5)
+					{
+						setGame(hostGame);
+					}
+					
 					
 				}
 				
