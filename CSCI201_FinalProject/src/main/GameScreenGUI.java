@@ -87,6 +87,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private int MAX_CREEPS = 10;
 	
 	private ImageIcon creepImage;
+	private ImageIcon bulletImage;
 	
 	private int timer = 1000;
 	
@@ -139,7 +140,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		{
 			ioe.printStackTrace();
 		}
-		
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/bulletSprite.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			bulletImage = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
 		
 		Timer time = new Timer(10, new ActionListener()
 		{
@@ -443,6 +453,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						t.shoot();
 						
 						Command c = new Command(currentPlayer, "Shoot", t.getX(), t.getY());
+						
+						
 						try
 						{
 							oos.writeObject(c);
@@ -654,12 +666,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
-						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+						//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+						spaces[i][j].setIcon(bulletImage);
 						//normal movement
 						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null ){//&& !backendBoard.getSpace(i,j).getMoveable().getPrevious().isOccupied()){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
-							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							spaces[x][y].setIcon(null);
 							
 						}
 						//bullet reaching end of map
@@ -667,7 +681,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							int x = backendBoard.getSpace(i, j).getMoveable().getLocation().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getLocation().getY();
 							backendBoard.getSpace(i, j).removeOccupant();
-							spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							spaces[x][y].setIcon(null);
 						}
 						
 					}

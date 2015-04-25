@@ -63,5 +63,8 @@ public class Tower {
 	{
 		return location.getY();
 	}
-	
+	public int getDirection()
+	{
+		return direction;
+	}
 }
