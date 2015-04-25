@@ -9,7 +9,7 @@ public class Main {
 
 =======
 
-		new LogInGUI();
+	//	new LogInGUI();
 		Board b = new Board();
 	//	User u1 = new User(1);
 	//	User u2 = new User(2);
@@ -24,8 +24,8 @@ public class Main {
 		Player p1 = new Player("Player 2", b.getSpace(0, 0));
 		b.setPlayer(p1);
 
-		//new GameScreenGUI(b, p1, true).run();
-		new GameScreenGUI(b, p1, false).run();
+		new GameScreenGUI(b, p1, true).run();
+	//	new GameScreenGUI(b, p1, false).run();
 	//	new LogInGUI();
 >>>>>>> 4be0fbeb19870c5b3ca4aa10b2fad932963772b9
 	}
