@@ -88,6 +88,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private ImageIcon creepImage;
 	
+	private int timer = 1000;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
 		
@@ -310,6 +312,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		return toReturn;
 	}
 	
+	private void cancelBuildingTower()
+	{
+		timer = 100;
+		progressTimer.stop();
+		progressBar.setString("No Task");
+		progressBar.setValue(0);
+	}
+	
 	
 	private void createActions()
 	{
@@ -328,6 +338,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				if(key == ke.VK_UP)
 				{
 					try {
+						
+						if(progressBar.getString().startsWith("Building Tower"))
+						{
+							cancelBuildingTower();
+						}
+						
 						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
 						if(currentPlayer.moveableCouldMove())
@@ -346,6 +362,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				else if(key == ke.VK_DOWN)
 				{
 					try {
+						if(progressBar.getString().startsWith("Building Tower"))
+						{
+							cancelBuildingTower();
+						}
+						
+						
 						currentPlayer.move(1);
 						currentPlayer.setPlayerDirection("SOUTH");
 						if(currentPlayer.moveableCouldMove())
@@ -366,6 +388,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				else if(key == ke.VK_RIGHT)
 				{
 					try {
+						if(progressBar.getString().startsWith("Building Tower"))
+						{
+							cancelBuildingTower();
+						}
+						
+						
 						currentPlayer.move(2);
 						currentPlayer.setPlayerDirection("EAST");
 						if(currentPlayer.moveableCouldMove())
@@ -385,6 +413,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				else if(key == ke.VK_LEFT)
 				{
 					try {
+						if(progressBar.getString().startsWith("Building Tower"))
+						{
+							cancelBuildingTower();
+						}
+						
+						
 						currentPlayer.move(3);
 						currentPlayer.setPlayerDirection("WEST");
 						if(currentPlayer.moveableCouldMove())
@@ -561,49 +595,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}	
 		}
 	}
-	/*
-	public void updateBoard()
-	{
-		for(int i = 0; i < 20; i++)
-		{
-			for(int j = 0; j < 32; j++)
-			{
-				if(backendBoard.getSpace(i, j).isOccupied())
-				{
-					if(backendBoard.getSpace(i, j).getMoveable() instanceof Player)
-					{	
-						//System.out.println(p.getPlayerName() + "(" + p.getLocation().getX() + "," + p.getLocation().getY() + ")");
-						
-						
-						spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-						
-						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null){
-							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
-							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
-							//check to see if currentlocation = previous location, if the player was unable to move
-							if(backendBoard.getSpace(i, j).getMoveable().moveableCouldMove()){
-								spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							}
-						}
-						
-						spaces[i][j].validate();
-						spaces[i][j].repaint();
-					}
-					else
-					{
-						ImageIcon icon = new ImageIcon(backendBoard.getSpace(i,j).getMoveable().getMoveableImage());
-					
-						spaces[i][j].setIcon(icon);
-					}
-
-					
-				}
-			}
-		}
-	}
-	*/
-	
-	
 	
 	public void updateBoard()
 	{
@@ -707,18 +698,19 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			return;
 		}
 			
-		progressTimer = new Timer(1000, new ActionListener()
+		timer = 100;
+		
+		progressTimer = new Timer(100, new ActionListener()
 		{
-			int timer = 10;
 			public void actionPerformed(ActionEvent e) {
 				
 				if(timer > 0)
 				{
 					if(maker == true)
 					{
-						progressBar.setString("Building Tower (" + timer + "s)");
+						progressBar.setString("Building Tower (" + timer/10 + "s)");
 						progressBar.setStringPainted(true);
-						progressBar.setValue(progressBar.getValue() + 10);
+						progressBar.setValue(progressBar.getValue() + 1);
 					}
 					timer--;
 				}
@@ -739,37 +731,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		progressTimer.start();
 
 
-		
-		//int count = 0;
-		
-		/*
-		for(int i = 0; i < 2; i++)
-		{
-			for(int j = 0; j < 2; j++)
-			{
-				if(x+i < 0 || y+j < 0 || x+i > 30 || y+j > 30)
-				{
-					System.out.println("Attempted to place tower outside of boundaries");
-					return;
-				}
-			}
-		}
-		
-		
-		for(int i = 0; i < 2; i++)
-		{
-			for(int j = 0; j < 2; j++)
-			{				
-				Image resizedImage = img[count].getScaledInstance(spaces[i][j].getWidth(), spaces[i][j].getHeight(), Image.SCALE_SMOOTH);
-				
-				spaces[x+i][y+j].setIcon(new ImageIcon(resizedImage));
-				
-				backendBoard.placeTower(x+i, y+j);
-				
-				count++;
-			}
-		}
-		*/
 	}
 	
 	public void restartLevelTimer()
