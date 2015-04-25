@@ -12,25 +12,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Vector;
 import java.util.HashMap;
+import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -38,9 +35,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.text.DefaultCaret;
-
-import main.GameRoomGUI.ChatThread;
-import main.GameRoomGUI.ReadObject;
 
 public class GameScreenGUI extends JFrame implements Runnable{
 
@@ -92,8 +86,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private int MAX_CREEPS = 10;
 	
+	private ImageIcon creepImage;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
+		
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
@@ -130,6 +127,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 		this.setVisible(true);
 			
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Creep.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			creepImage = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		
+		
 		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
@@ -597,36 +606,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	
 	public void updateBoard()
-	{/*
-		//update creeps
-		for(int i = 0; i<backendBoard.getCreepPathSize(); i++){
-			if(backendBoard.getPathSpace(i).getCreep()!=null){
-				int p = backendBoard.getPathSpace(i).getX();
-				int q = backendBoard.getPathSpace(i).getY();
-//				if(backendBoard.getPathSpace(i).getCreep().isDead()){
-//					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
-//					backendBoard.getPathSpace(i).removeCreep();
-//					continue;
-//				}
-//				if {
-					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.red));
-//				}
-				
-				//null pointer exception?
-				if(backendBoard.getPathSpace(i).getMoveable().getPrevious() != null && !backendBoard.getPathSpace(i).getMoveable().getPrevious().isOccupied()){
-					int x = backendBoard.getPathSpace(i).getMoveable().getPrevious().getX();
-					int y = backendBoard.getPathSpace(i).getMoveable().getPrevious().getY();
-					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				}
-
-				
-//				if(i>0 && !backendBoard.getPathSpace(i-1).isOccupied()){
-//					int x = backendBoard.getPathSpace(i-1).getX();
-//					int y = backendBoard.getPathSpace(i-1).getY();
-//					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//				}
-			}
-		}*/
+	{
 		
 		for(int i = 0; i<MAX_CREEPS; i++){
 			if(creeps.containsKey(i)){
@@ -635,16 +615,20 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int y = c.getPathLocation().getY();
 				if(c.isDead()){
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-					creeps.remove(i);
+					spaces[x][y].setIcon(null);
+
 				}
 				else{
-					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED));
+					//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED))
+					spaces[x][y].setIcon(creepImage);
+				
 				}
 				
 				if(c.getPrevious() !=null){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
-					spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					//spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					spaces[p][q].setIcon(null);
 				}
 			}
 			

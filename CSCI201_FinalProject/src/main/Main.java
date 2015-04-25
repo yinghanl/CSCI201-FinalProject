@@ -31,8 +31,8 @@ public class Main {
 		//Player p1 = new Player("Player 2", b.getSpace(7, 7));
 		b.setPlayer(p1);
 
-	//	new GameScreenGUI(b, p1, true).run();
-	new GameScreenGUI(b, p1, false).run();
+		//new GameScreenGUI(b, p1, true).run();
+		new GameScreenGUI(b, p1, false).run();
 
 		
 		
