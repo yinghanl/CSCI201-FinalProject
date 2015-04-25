@@ -3,12 +3,7 @@ package main;
 public class Main {
 	static boolean connect = false;
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//Test
-		//Ted's test
-		//System.out.println("change");
-		//System.out.println("unchange");
-
+		
 		Board b = new Board();
 	//	User u1 = new User(1);
 	//	User u2 = new User(2);
@@ -19,23 +14,12 @@ public class Main {
 //		GameRoomGUI grg3 = new GameRoomGUI(u3, false, "localhost", 6789, "Test Game Room");
 	//	GameRoomGUI grg4 = new GameRoomGUI(u4, false, "localhost", 6789, "Test Game Room");
 		
-		
-//		Player p1 = new Player("host", b.getSpace(0, 0));
-//		b = new Board();
-//		b.setPlayer(p1);
-//		new GameScreenGUI(b, p1, true);
-		Player p1 = new Player("player 1", b.getSpace(10, 10));
-//		Player p1 = new Player("Player 2", b.getSpace(15, 25));
-//		b.setPlayer(p1);
-		//Player p1 = new Player("player 1", b.getSpace(10, 10));
-		//Player p1 = new Player("Player 2", b.getSpace(7, 7));
+//		Player p1 = new Player("player 1", b.getSpace(10, 10));
+		Player p1 = new Player("Player 2", b.getSpace(15, 25));
 		b.setPlayer(p1);
 
 		//new GameScreenGUI(b, p1, true).run();
 		new GameScreenGUI(b, p1, false).run();
-
-		
-		
 	}
 }
 
