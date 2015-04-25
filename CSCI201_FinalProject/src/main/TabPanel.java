@@ -134,6 +134,9 @@ public class TabPanel extends JPanel {
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				
+				if (gameListTable.getSelectedRow()==-1){ return;} //if no row is selected
+				if ( (int) gameListModel.getValueAt(gameListTable.getSelectedRow(), 1) >= 2  ) return;//if there are already 2 players
+				
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
 				
