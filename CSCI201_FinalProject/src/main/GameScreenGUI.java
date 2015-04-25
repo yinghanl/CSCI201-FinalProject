@@ -56,7 +56,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private int timerInt = 60;
 	private int goldEarned = 0;
 	private String message;
-	private int livesInt;
+	private int livesInt = 10;
 	
 	private Timer lvlTimer;
 	
@@ -626,6 +626,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					spaces[x][y].setIcon(null);
 
+				}
+				else if(c.isOffGrid()){
+					creeps.remove(i);
+					livesInt--;
+					lives.setText("Lives: " + livesInt);
 				}
 				else{
 					//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED))

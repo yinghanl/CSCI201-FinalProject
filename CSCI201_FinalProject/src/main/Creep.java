@@ -4,6 +4,7 @@ public class Creep extends Moveable{
 	
 	private int health;
 	private PathSpace currentPathLocation;
+	private boolean offGrid;
 	
 	public Creep(PathSpace p){
 		super(p); //may cause error
@@ -11,11 +12,16 @@ public class Creep extends Moveable{
 		currentPathLocation.setCreep(this);
 		//currentPathLocation.setOccupant(this);
 		health = 10;
+		offGrid = false;
 		
 	}
 	
 	public boolean isDead(){
 		return (health == 0);
+	}
+	
+	public boolean isOffGrid(){
+		return offGrid;
 	}
 	
 	public void hit(int amt){
@@ -33,6 +39,8 @@ public class Creep extends Moveable{
 				previousLocation = currentPathLocation;
 				if(currentPathLocation.getNext() ==  null){
 					//decrease the team's health, have reached the end
+					offGrid = true;
+					break;
 				}
 				else{
 					currentPathLocation.removeCreep();
