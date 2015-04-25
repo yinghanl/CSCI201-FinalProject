@@ -17,15 +17,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import main.User;
 
 
 // TabPanel is used to store the information for each difficulty
@@ -70,7 +76,8 @@ public class TabPanel extends JPanel {
 		buttonPanel = new JPanel();
 		createButton = new JButton("Create Game");
 		joinButton = new JButton("Join Game");
-		returnButton = new JButton("Return Button");
+		if(u instanceof User) returnButton = new JButton("Logout");
+		else returnButton = new JButton("Return to Login Window");
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int buttonWidth = (int)(.33*screenSize.getWidth());
@@ -82,7 +89,11 @@ public class TabPanel extends JPanel {
 		String [] columnNames = {"Host Name", "Players in Room"};
 		
 		tableData = new Object[0][0]; //NOTE: May need to change so not hardcoded
-		gameListModel = new DefaultTableModel(tableData, columnNames);
+		gameListModel = new DefaultTableModel(tableData, columnNames){
+			public boolean isCellEditable(int row,int column){
+				return false;
+			}
+		};
 		gameListTable = new JTable(gameListModel);
 		gameListTable.setOpaque(false);	
 		gameListTable.setSelectionForeground(Color.WHITE);
@@ -104,7 +115,10 @@ public class TabPanel extends JPanel {
 		buttonPanel.add(createButton);
 		buttonPanel.add(returnButton);
 		
+		((DefaultTableCellRenderer)gameListTable.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		Border loweredBevel = BorderFactory.createRaisedBevelBorder();
 		JScrollPane jsp = new JScrollPane(gameListTable);
+		jsp.setBorder(loweredBevel);
 		gameListTable.setFillsViewportHeight(true);
 		jsp.getViewport().setBackground(new Color(204,240,248));
 		

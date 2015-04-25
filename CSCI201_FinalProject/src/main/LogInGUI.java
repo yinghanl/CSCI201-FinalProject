@@ -32,6 +32,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
 
+import main.DataBaseUtils;
+import main.GameLobbyGUI;
+import main.User;
+import main.LogInGUI.UserLoginActionListener;
+
 public class LogInGUI extends JFrame
 {
 	JTextField usernameJTF;
@@ -120,25 +125,9 @@ public class LogInGUI extends JFrame
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		userLogInButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent ae)
-			{
-				String username = usernameJTF.getText();
-				char [] password = passwordJPF.getPassword();
-				User newUser;
-				if(DataBaseUtils.verifyUser(username, password))
-				{
-					int userID = DataBaseUtils.getUserID(username);
-					newUser = DataBaseUtils.createUser(userID);
-					new GameLobbyGUI(newUser,self);
-					setVisible(false);
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "Username password combination does not exist");
-				}
-			}
-		});
+		userLogInButton.addActionListener(new UserLoginActionListener());
+		passwordJPF.addActionListener(new UserLoginActionListener());
+		
 		guestLogInButton.addActionListener(new ActionListener()
 		{
 			//creates guest user and logs in
@@ -224,6 +213,27 @@ public class LogInGUI extends JFrame
 			passwordLine.setOpaque(false);
 			buttonLine.setOpaque(false);
 			
+		}
+	}
+	
+	class UserLoginActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent ae)
+		{
+			String username = usernameJTF.getText();
+			char [] password = passwordJPF.getPassword();
+			User newUser;
+			if(DataBaseUtils.verifyUser(username, password))
+			{
+				int userID = DataBaseUtils.getUserID(username);
+				newUser = DataBaseUtils.createUser(userID);
+				new GameLobbyGUI(newUser,self);
+				setVisible(false);
+				usernameJTF.setText("");
+				passwordJPF.setText("");
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "Username password combination does not exist");
+			}
 		}
 	}
 	

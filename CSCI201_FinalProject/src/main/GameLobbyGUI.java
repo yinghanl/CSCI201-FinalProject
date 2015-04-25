@@ -26,7 +26,7 @@ public class GameLobbyGUI extends JFrame {
 	private GameLobbyGUI self;
 	
 	public GameLobbyGUI(AbstractUser u,LogInGUI parentFrame){
-		
+		super("Game Lobby");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -52,7 +52,7 @@ public class GameLobbyGUI extends JFrame {
 			ps.setVisible(false);
 		}
 		
-		this.profileButton = new JButton("View Player Statistics");
+		this.profileButton = new JButton("View Player Statistics & Profile Options");
 	}
 	
 	private void createGUI(){
