@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -21,11 +22,14 @@ public class GameRoomServer {
 	{
 		gamesOpen = new Vector<Game>();
 		gmtVector = new Vector<GameRoomThread>();
+		
 		UpdateGameRoomThread ugrt = new UpdateGameRoomThread(this);
 		ugrt.start();
 		try
 		{
+			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			ss = new ServerSocket(8000);
+		
 			System.out.println("Waiting for connection");
 			while(true)
 			{
@@ -33,10 +37,9 @@ public class GameRoomServer {
 				
 				System.out.println("Accepted user");
 				GameRoomThread gmt = new GameRoomThread(this, s);
-				System.out.println("Started gmt1");
 				gmtVector.add(gmt);
 				gmt.start();
-				System.out.println("Started gmt2");
+
 			}
 		}
 		catch(IOException ioe)
@@ -61,16 +64,6 @@ public class GameRoomServer {
 		}
 	}
 	
-	public void deleteGame(int gameID)
-	{
-		for (Game g : gamesOpen) {
-			if(g.getID() == gameID)
-			{
-				gamesOpen.remove(g);
-			}
-		}
-	}
-	
 	public int getNumGames()
 	{
 		return gamesOpen.size();
@@ -89,22 +82,30 @@ public class GameRoomServer {
 		}
 	}
 	
+	public void newGame(Game g)
+	{
+		System.out.println("new game");
+		g.setID(gameIndex);
+		gamesOpen.add(g);
+		synchronized(this)
+		{
+			gameIndex++;
+		}
+		System.out.println("gamesOpen.size()" + gamesOpen.size());
+		return;
+	}
+	
+	public void deleteGame(Game g)
+	{
+		gamesOpen.remove(g);
+		synchronized(this)
+		{
+			gameIndex--;
+		}
+	}
 	
 	public void gameUpdate(Game g)
 	{
-		System.out.println("Checking if new game");
-		if(g.getID() == -1)
-		{
-			System.out.println("new game");
-			g.setID(gameIndex);
-			gamesOpen.add(g);
-			synchronized(this)
-			{
-				gameIndex++;
-			}
-			System.out.println("gamesOpen.size()" + gamesOpen.size());
-			return;
-		}
 		for (int i = 0; i < gamesOpen.size(); i++) {
 			if(g.getID() == gamesOpen.get(i).getID())
 			{
@@ -113,6 +114,7 @@ public class GameRoomServer {
 			}
 		}
 		System.out.println("gamesOpen.size()" + gamesOpen.size());
+		return;
 	}
 	public void removeGameRoomThread(GameRoomThread gmt)
 	{
@@ -197,11 +199,28 @@ public class GameRoomServer {
 				{
 					newObj = ois.readObject();
 					//System.out.println(newObj.toString());
-					if(newObj instanceof Game)
+					if(newObj instanceof GameRoomPacket)
 					{
+						System.out.println("Reading in new GameRoomPacket");
+						GameRoomPacket grp = (GameRoomPacket)newObj;
 						//System.out.println("Read in a game");
-						Game newGame = (Game)newObj;
-						grs.gameUpdate(newGame);
+						Game newGame = grp.getGame();
+						System.out.println("newGame.id" + newGame.getID());
+						int code = grp.getCode();
+						System.out.println("code = " + code);
+						if(code == 1) //change existing game
+						{
+							grs.newGame(newGame);
+						}
+						else if(code == 2) //add new game
+						{
+							grs.gameUpdate(newGame);
+						}
+						else if(code == 3) //delete game
+						{
+							grs.deleteGame(newGame);
+						}
+						
 					}
 					else if(newObj instanceof String)
 					{

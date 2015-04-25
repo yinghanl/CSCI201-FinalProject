@@ -123,7 +123,7 @@ public class TabPanel extends JPanel {
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
 				
-				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room");
+				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room", grc);
 				gameLobbyWindow.setVisible(false);
 			}
 		});
@@ -134,7 +134,7 @@ public class TabPanel extends JPanel {
 				Game newGame = new Game(u);
 				grc.newGame(newGame);
 				
-				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room");
+				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room", grc);
 				gameLobbyWindow.setVisible(false);
 			}	
 		});

@@ -38,9 +38,25 @@ public class GameRoomClient extends Thread
 	
 	public void newGame(Game g)
 	{
+		sendGamePacket(new GameRoomPacket(g, 1));
+		
+	}
+	
+	public void updateGame(Game g)
+	{
+		sendGamePacket(new GameRoomPacket(g, 2));
+	}
+	
+	public void deleteGame(Game g)
+	{
+		sendGamePacket(new GameRoomPacket(g, 3));
+	}
+	
+	public void sendGamePacket(GameRoomPacket grp)
+	{
 		try
 		{
-			oos.writeObject(g);
+			oos.writeObject(grp);
 			oos.flush();
 		}
 		catch(IOException ioe)
@@ -48,12 +64,6 @@ public class GameRoomClient extends Thread
 			System.out.println("IOE in GameRoomClient NewGame: " + ioe.getMessage());
 			ioe.getStackTrace();
 		}
-		
-	}
-	
-	public void deleteGame(Game g)
-	{
-		
 	}
 	
 	public void joinHostGame(String username)
@@ -89,7 +99,7 @@ public class GameRoomClient extends Thread
 				{
 					Game hostGame = (Game)readObj;
 					hostGame.joinGame(au);
-					newGame(hostGame);
+					updateGame(hostGame);
 					
 				}
 				

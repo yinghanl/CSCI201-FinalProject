@@ -74,11 +74,14 @@ public class GameRoomGUI extends JFrame {
 	private ObjectOutputStream oos;
 	private Object obj;
 	
-	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title){
+	private GameRoomClient grc;
+	
+	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title, GameRoomClient grc){
 		this.user = u;
 		this.isHost = isHost;
 		this.port = port;
 		this.roomTitle = title;
+		this.grc = grc;
 		setTitle(title);
 		setSize(700, 500);
 		setLocation(300, 50);
