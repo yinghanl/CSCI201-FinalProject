@@ -761,7 +761,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	public void removeChatThread(ChatThread ct) {
 		ctVector.remove(ct);
 	}
-	public void sendMessageToClients(Object obj) {
+	public synchronized void sendMessageToClients(Object obj) {
 		if(isHost){
 			for (ChatThread ct1 : ctVector) {
 				//if (!ct.equals(ct1)) {
@@ -820,9 +820,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						Player player = ((Command)obj).getPlayer();
 						
 						String command = ((Command)obj).getCommand();
-						
-						for(Player p : players)
-						{
+
+						for(int i=0; i<players.size(); i++){
+							Player p = players.get(i);
 							if(player.getPlayerName() == p.getPlayerName())
 							{
 								if(command.equals("Move(0)"))
@@ -963,8 +963,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						
 						String command = ((Command)obj).getCommand();
 						
-						for(Player p : players)
-						{
+						for(int i=0; i<players.size(); i++){
+							Player p = players.get(i);
 							if(player.getPlayerName() == p.getPlayerName())
 							{
 								if(command.equals("Move(0)"))
