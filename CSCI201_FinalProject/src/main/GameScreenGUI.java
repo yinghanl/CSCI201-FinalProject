@@ -622,6 +622,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int x = c.getPathLocation().getX();
 				int y = c.getPathLocation().getY();
 				if(c.isDead()){
+					creeps.remove(i);
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					spaces[x][y].setIcon(null);
 
@@ -670,6 +671,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			{
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
+					
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
 						//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
 						spaces[i][j].setIcon(bulletImage);
@@ -678,7 +680,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
 							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							if(!(backendBoard.getSpace(i, j) instanceof TowerSpace)){
+							if(!(backendBoard.getSpace(i, j).getMoveable().getPrevious() instanceof TowerSpace)){
 								spaces[x][y].setIcon(null);
 							}
 							
@@ -710,7 +712,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	public void placeTower(int x, int y, boolean maker)
 	{	
-		
+		if(backendBoard.getSpace(x, y) instanceof PathSpace){
+			return;
+		}
 		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
 		BufferedImage img = b.getTowerImages();
