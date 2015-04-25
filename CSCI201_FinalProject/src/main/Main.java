@@ -4,6 +4,7 @@ public class Main {
 	static boolean connect = false;
 	public static void main(String[] args) {
 		
+<<<<<<< HEAD
 		Board b = new Board();
 	//	User u1 = new User(1);
 	//	User u2 = new User(2);
@@ -18,8 +19,17 @@ public class Main {
 		Player p1 = new Player("Player 2", b.getSpace(15, 25));
 		b.setPlayer(p1);
 
+<<<<<<< HEAD
 		new GameScreenGUI(b, p1, true).run();
 		//new GameScreenGUI(b, p1, false).run();
+=======
+		//new GameScreenGUI(b, p1, true).run();
+		new GameScreenGUI(b, p1, false).run();
+=======
+		new LogInGUI();
+		
+>>>>>>> jl
+>>>>>>> c10e568b63cc3995fd80220ca8e058484d589390
 	}
 }
 
