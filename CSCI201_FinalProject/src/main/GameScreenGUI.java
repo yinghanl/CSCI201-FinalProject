@@ -77,7 +77,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ObjectOutputStream oos;
 	private Object obj;
 	
-	private boolean msgSent = false;
+	private boolean isConnected = false;
 
 	private Tower currentTower;
 		
@@ -97,6 +97,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
+		this.setTitle(p.getPlayerName());
 		this.setSize(825,510);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -206,6 +207,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		
 		
 	}//end of constructor
+	
+	private boolean getIsConnected(){
+		return isConnected;
+	}
 	
 	private JPanel getTopPanel()
 	{
@@ -331,7 +336,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}
 	
 	
-	private void createActions()
+	private synchronized void createActions()
 	{
 	
 		board.addKeyListener(new KeyAdapter()
@@ -1087,6 +1092,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				} catch (IOException ioe) {
 					System.out.println("IOE client: " + ioe.getMessage());
 				}
+				isConnected = true;
 			}//end of if not host
 			try
 			{
