@@ -215,7 +215,9 @@ public class GameRoomGUI extends JFrame {
 			public void actionPerformed(ActionEvent ae){
 				sendMessageToClients(new Integer(-1));
 				Board b = new Board();
-				new GameScreenGUI(b, user.toPlayer(), true);
+				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
+				gs.setVisible(false);
+				gs = new GameScreenGUI(b, user.toPlayer(), false);
 				grc.deleteGame();
 				setVisible(false);
 			}
