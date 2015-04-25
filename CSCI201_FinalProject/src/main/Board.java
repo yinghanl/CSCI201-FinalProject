@@ -19,6 +19,12 @@ public class Board implements Serializable {
 		this.getMap();
 		this.setAdjacencies();
 		this.setPathSpaces();
+		this.setMinable();
+	}
+	
+	private void setMinable()
+	{
+		map[1][1]= new MineableSpace(1,1,10,1);
 	}
 	
 	private void getMap()
