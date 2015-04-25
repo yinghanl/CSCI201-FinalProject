@@ -16,7 +16,7 @@ public class DataBaseUtils {
 
 	private static String getConnectionString()
 	{
-		return("jdbc:mysql://localhost/towerdefense?user=root&password=Yinghan0826$");
+		return("jdbc:mysql://localhost/towerdefense?user=root&password=Gondwan1");
 	}
 	
 	public static boolean verifyUser(String username, char [] password)

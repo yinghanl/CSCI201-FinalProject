@@ -673,7 +673,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
 							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							spaces[x][y].setIcon(null);
+							if(!(backendBoard.getSpace(i, j) instanceof TowerSpace)){
+								spaces[x][y].setIcon(null);
+							}
+							
 							
 						}
 						//bullet reaching end of map
@@ -682,7 +685,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							int y = backendBoard.getSpace(i, j).getMoveable().getLocation().getY();
 							backendBoard.getSpace(i, j).removeOccupant();
 							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							spaces[x][y].setIcon(null);
+							if(!(backendBoard.getSpace(i, j) instanceof TowerSpace)){
+								spaces[x][y].setIcon(null);
+							}
 						}
 						
 					}
@@ -715,7 +720,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			
 		timer = 100;
 		
-		progressTimer = new Timer(100, new ActionListener()
+		progressTimer = new Timer(50, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) {
 				
