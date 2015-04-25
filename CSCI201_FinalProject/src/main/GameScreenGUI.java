@@ -374,9 +374,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
 						if(currentPlayer.moveableCouldMove())
-						{
-							oos.writeObject(new Command(currentPlayer, "Move(0)"));
-							oos.flush();
+						{	
+							if(isHost){
+								sendMessageToClients(new Command(currentPlayer, "Move(0)"));
+							}
+							else{
+								oos.writeObject(new Command(currentPlayer, "Move(0)"));
+								oos.flush();
+							}	
 						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
@@ -399,8 +404,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						currentPlayer.setPlayerDirection("SOUTH");
 						if(currentPlayer.moveableCouldMove())
 						{
-							oos.writeObject(new Command(currentPlayer, "Move(1)"));
-							oos.flush();
+							if(isHost){
+								sendMessageToClients(new Command(currentPlayer, "Move(1)"));
+							}
+							else{
+								oos.writeObject(new Command(currentPlayer, "Move(1)"));
+								oos.flush();
+							}	
 						}
 
 					}catch (BoundaryException e) {
@@ -425,8 +435,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						currentPlayer.setPlayerDirection("EAST");
 						if(currentPlayer.moveableCouldMove())
 						{
-							oos.writeObject(new Command(currentPlayer, "Move(2)"));
-							oos.flush();
+							if(isHost){
+								sendMessageToClients(new Command(currentPlayer, "Move(2)"));
+							}
+							else{
+								oos.writeObject(new Command(currentPlayer, "Move(2)"));
+								oos.flush();
+							}	
+							
 						}
 					} 
 					catch (BoundaryException e) {
@@ -450,8 +466,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						currentPlayer.setPlayerDirection("WEST");
 						if(currentPlayer.moveableCouldMove())
 						{
-							oos.writeObject(new Command(currentPlayer, "Move(3)"));
-							oos.flush();
+							if(isHost){
+								sendMessageToClients(new Command(currentPlayer, "Move(3)"));
+							}
+							else{
+								oos.writeObject(new Command(currentPlayer, "Move(3)"));
+								oos.flush();
+							}	
 						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
@@ -474,8 +495,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						
 						try
 						{
-							oos.writeObject(c);
-							oos.flush();
+							if(isHost){
+								sendMessageToClients(c);
+							}
+							else{
+								oos.writeObject(c);
+								oos.flush();
+							}	
 						}
 						catch(IOException ioe)
 						{
@@ -501,8 +527,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							Command c = new Command(currentPlayer, "RotateTower", x, y);
 							try
 							{
-								oos.writeObject(c);
-								oos.flush();
+								if(isHost){
+									sendMessageToClients(c);
+								}
+								else{
+									oos.writeObject(c);
+									oos.flush();
+								}	
 							}
 							catch (IOException e)
 							{
@@ -521,8 +552,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							placeTower(playerx+1, playery, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx+1, playery);
 							try {
-								oos.writeObject(c);
-								oos.flush();
+								if(isHost){
+									sendMessageToClients(c);
+								}
+								else{
+									oos.writeObject(c);
+									oos.flush();
+								}	
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -535,8 +571,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							placeTower(playerx-1, playery, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx-1, playery);
 							try {
-								oos.writeObject(c);
-								oos.flush();
+								if(isHost){
+									sendMessageToClients(c);
+								}
+								else{
+									oos.writeObject(c);
+									oos.flush();
+								}	
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -551,8 +592,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							placeTower(playerx, playery-1, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery-1);
 							try {
-								oos.writeObject(c);
-								oos.flush();
+								if(isHost){
+									sendMessageToClients(c);
+								}
+								else{
+									oos.writeObject(c);
+									oos.flush();
+								}	
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -565,8 +611,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							placeTower(playerx, playery+1, true);
 							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery+1);
 							try {
-								oos.writeObject(c);
-								oos.flush();
+								if(isHost){
+									sendMessageToClients(c);
+								}
+								else{
+									oos.writeObject(c);
+									oos.flush();
+								}	
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -791,9 +842,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	public synchronized void sendMessageToClients(Object obj) {
 		if(isHost){
 			for (ChatThread ct1 : ctVector) {
-				//if (!ct.equals(ct1)) {
-					ct1.sendMessage(obj);
-				//}
+				System.out.println("sending msg: " + obj.getClass());
+				ct1.sendMessage(obj);
 			}
 		}	
 	}
@@ -836,9 +886,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						sendMessageToClients(obj);
 					}//end of if ob is String
 					else if(obj instanceof Player)
-					{						
+					{	
+						sendMessageToClients(currentPlayer);
 						backendBoard.setPlayer((Player)obj);
 						players.add((Player)obj);
+						//System.out.println("sending player obj to all the other players");
 						sendMessageToClients(obj);
 						
 					}

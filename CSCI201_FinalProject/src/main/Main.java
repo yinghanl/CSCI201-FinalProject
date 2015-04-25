@@ -3,6 +3,11 @@ package main;
 public class Main {
 	static boolean connect = false;
 	public static void main(String[] args) {
+<<<<<<< HEAD
+		
+		new LogInGUI();
+
+=======
 
 	//	new LogInGUI();
 		Board b = new Board();
@@ -22,6 +27,7 @@ public class Main {
 		new GameScreenGUI(b, p1, true).run();
 	//	new GameScreenGUI(b, p1, false).run();
 	//	new LogInGUI();
+>>>>>>> 4be0fbeb19870c5b3ca4aa10b2fad932963772b9
 	}
 }
 

@@ -491,7 +491,7 @@ public class GameRoomGUI extends JFrame {
 							}//end of if  == 2
 							else if((Integer)obj == -1){
 								Board b = new Board();
-								Player p = new Player(user.getUsername(), b.getSpace(0, userLabelIndex));
+								Player p = new Player(user.getUsername(), b.getSpace(19,30));
 								b.setPlayer(p);
 								new GameScreenGUI(b, p, false);
 								setVisible(false);
