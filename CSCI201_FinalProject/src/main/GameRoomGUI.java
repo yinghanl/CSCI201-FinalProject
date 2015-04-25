@@ -213,11 +213,11 @@ public class GameRoomGUI extends JFrame {
 		
 		startGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				sendMessageToClients(new Integer(-1));
 				Board b = new Board();
 				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
 				gs.setVisible(false);
 				gs = new GameScreenGUI(b, user.toPlayer(), false);
+				sendMessageToClients(new Integer(-1));
 				grc.deleteGame();
 				setVisible(false);
 			}
@@ -354,10 +354,9 @@ public class GameRoomGUI extends JFrame {
 	public void removeChatThread(ChatThread ct) {
 		ctVector.remove(ct);
 	}
-	public void sendMessageToClients(Object obj) {
+	public synchronized void sendMessageToClients(Object obj) {
 		if(isHost){
 			for (ChatThread ct1 : ctVector) {
-				//if (!ct.equals(ct1)) {
 					ct1.sendMessage(obj);
 				//}
 			}

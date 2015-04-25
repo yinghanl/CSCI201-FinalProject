@@ -77,7 +77,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ObjectOutputStream oos;
 	private Object obj;
 	
-	private boolean msgSent = false;
+	private boolean isConnected = false;
 
 	private Tower currentTower;
 		
@@ -207,6 +207,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		
 		
 	}//end of constructor
+	
+	private boolean getIsConnected(){
+		return isConnected;
+	}
 	
 	private JPanel getTopPanel()
 	{
@@ -1088,6 +1092,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				} catch (IOException ioe) {
 					System.out.println("IOE client: " + ioe.getMessage());
 				}
+				isConnected = true;
 			}//end of if not host
 			try
 			{
