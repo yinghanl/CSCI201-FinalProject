@@ -219,10 +219,10 @@ public class GameRoomGUI extends JFrame {
 				Board b = new Board();
 				Player p = new Player(user.getUsername(), b.getSpace(0, userLabelIndex));
 				
-				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
-				gs.setVisible(false);
+//				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
+//				gs.setVisible(false);
 				b.setPlayer(p);
-				gs = new GameScreenGUI(b, p, false);
+				new GameScreenGUI(b, p, true);
 				sendMessageToClients(new Integer(-1));
 				grc.deleteGame();
 				setVisible(false);
@@ -424,7 +424,7 @@ public class GameRoomGUI extends JFrame {
 					else if(obj instanceof Integer){
 						if((Integer)obj == -2){
 							usersReady++;
-							if(usersReady == 4){
+							if(usersReady == 2){
 								startGameButton.setEnabled(true);
 							}
 						}//end of if  == 2
