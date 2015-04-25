@@ -97,6 +97,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
+		this.setTitle(p.getPlayerName());
 		this.setSize(825,510);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -331,7 +332,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}
 	
 	
-	private void createActions()
+	private synchronized void createActions()
 	{
 	
 		board.addKeyListener(new KeyAdapter()
