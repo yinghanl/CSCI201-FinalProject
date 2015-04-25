@@ -112,6 +112,9 @@ public class GameRoomGUI extends JFrame {
 		getRootPane().setDefaultButton(sendButton);
 		
 		setVisible(true);
+		if(!isHost){
+			System.out.println("player is not the host");
+		}
 		new CreateConnections().start();
 	}//end of constructor
 	
@@ -214,9 +217,12 @@ public class GameRoomGUI extends JFrame {
 		startGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				Board b = new Board();
-				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
-				gs.setVisible(false);
-				gs = new GameScreenGUI(b, user.toPlayer(), false);
+				Player p = new Player(user.getUsername(), b.getSpace(0, userLabelIndex));
+				
+//				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
+//				gs.setVisible(false);
+				b.setPlayer(p);
+				new GameScreenGUI(b, p, true);
 				sendMessageToClients(new Integer(-1));
 				grc.deleteGame();
 				setVisible(false);
@@ -358,7 +364,7 @@ public class GameRoomGUI extends JFrame {
 		if(isHost){
 			for (ChatThread ct1 : ctVector) {
 					ct1.sendMessage(obj);
-				//}
+				
 			}
 		}	
 	}
@@ -418,7 +424,7 @@ public class GameRoomGUI extends JFrame {
 					else if(obj instanceof Integer){
 						if((Integer)obj == -2){
 							usersReady++;
-							if(usersReady == 4){
+							if(usersReady == 2){
 								startGameButton.setEnabled(true);
 							}
 						}//end of if  == 2
@@ -485,7 +491,9 @@ public class GameRoomGUI extends JFrame {
 							}//end of if  == 2
 							else if((Integer)obj == -1){
 								Board b = new Board();
-								new GameScreenGUI(b, user.toPlayer(), false);
+								Player p = new Player(user.getUsername(), b.getSpace(0, userLabelIndex));
+								b.setPlayer(p);
+								new GameScreenGUI(b, p, false);
 								setVisible(false);
 							}
 							else{
