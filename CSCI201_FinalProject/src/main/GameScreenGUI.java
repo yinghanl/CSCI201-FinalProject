@@ -826,20 +826,19 @@ public class GameScreenGUI extends JFrame{
 	}
 	
 	public void startGame(){
-		new StartGameThread();
+		new StartGameThread().start();
+		System.out.println("game is started");
 	}
 	
-	class StartGameThread{
+	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
 			System.out.println("run");
 			l = levels[level];
 			numCreeps = l.getNumber();
-			this.run();
 		}
 		public void run(){
-			
-			if(numCreeps>0){ //there are remaining creeps
+			while(numCreeps>0){ //there are remaining creeps
 				try {
 					Thread.sleep(l.getFrequency());
 					Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
@@ -851,7 +850,7 @@ public class GameScreenGUI extends JFrame{
 					e.printStackTrace();
 				}	
 			}
-			if(creeps.size()>0){
+			while(creeps.size()>0){
 				System.out.println(creeps.size());
 				try {
 					Thread.sleep(1000);
@@ -859,7 +858,7 @@ public class GameScreenGUI extends JFrame{
 					e.printStackTrace();
 				}
 			}
-			if(creeps.size() == 0 && numCreeps == 0){
+			while(creeps.size() == 0 && numCreeps == 0){
 			
 				System.out.println("dead");
 				try {

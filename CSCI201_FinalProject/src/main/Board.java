@@ -25,6 +25,14 @@ public class Board implements Serializable {
 	public void setMineableSpaces()
 	{
 		this.setMineable(map[1][1]);
+		this.setMineable(map[7][1]);
+		this.setMineable(map[15][3]);
+		this.setMineable(map[17][5]);
+		this.setMineable(map[16][9]);
+		this.setMineable(map[2][21]);
+		this.setMineable(map[4][20]);
+		this.setMineable(map[5][23]);
+		
 	}
 	
 	public void setBlank(Space s)
