@@ -634,8 +634,11 @@ JPanel toReturn = new JPanel();
 					if(currentPlayer.playerOperatingTower() != null && cooldown == false)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
-						t.shoot();
 						
+						if(isHost)
+						{
+							t.shoot();
+						}
 						cooldown = true;
 						
 						cooldownTimer.start();
@@ -1076,8 +1079,12 @@ JPanel toReturn = new JPanel();
 			
 		timer = 100;
 		
+		
+		if(isHost)
+		{
 		goldEarned--;
 		teamGold.setText("Gold: " + goldEarned);
+		}
 		
 		Command c = new Command(currentPlayer, "BuyTower");
 		
@@ -1163,7 +1170,7 @@ JPanel toReturn = new JPanel();
 	
 	public void restartLevelTimer()
 	{
-		timerInt = 60;
+		timerInt = levels[level].getNumber();
 	}
 	
 	public void removeChatThread(ChatThread ct) {
