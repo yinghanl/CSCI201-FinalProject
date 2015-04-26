@@ -109,6 +109,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
+		
 		cooldownTimer = new Timer(500, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) {
@@ -619,9 +620,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}
 				else if(key == ke.VK_1)
-				{
-					System.out.println("Hello");
-					
+				{	
 					if(progressBar.getString().startsWith("Building Tower"))
 					{
 						return;
@@ -631,18 +630,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playerx+1 < 20)
 						{
 							placeTower(playerx+1, playery, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx+1, playery);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "NORTH")
@@ -650,19 +637,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playerx-1 > 0)
 						{
 							placeTower(playerx-1, playery, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx-1, playery);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							
 						}
 					}
 					
@@ -671,18 +645,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playery-1 > 0)
 						{
 							placeTower(playerx, playery-1, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery-1);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -690,18 +652,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playery+1 < 32)
 						{
 							placeTower(playerx, playery+1, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery+1);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 				}
@@ -989,16 +939,44 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						progressBar.setString("No Task");
 						progressBar.setValue(0);
 					}
-					progressTimer.stop();
+					Command c = new Command(currentPlayer, "PlaceTower", x, y);
+					try {
+						if(!isHost)
+						{
+							oos.writeObject(c);
+							oos.flush();	
+						}
+						else
+						{
+							sendMessageToClients(c);
+						}
+
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+					}
+					
+					
 					spaces[x][y].setIcon(new ImageIcon(resizedImage));
 					backendBoard.placeTower(backendBoard.getSpace(x,y));
+					progressTimer.stop();
 				}
 				
 			}
 		});
 		progressTimer.start();
+	}
+	
+	public void placeTowerImmediately(int x, int y)
+	{
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
+		
+		BufferedImage img = b.getTowerImages();
+		
+		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
 
-
+		
+		spaces[x][y].setIcon(new ImageIcon(resizedImage));
+		backendBoard.placeTower(backendBoard.getSpace(x,y));
 	}
 	
 	public void restartLevelTimer()
@@ -1124,7 +1102,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTower(x, y, false);
+									placeTowerImmediately(x, y);
 								}
 								else if(command.equals("RotateTower"))
 								{
@@ -1267,7 +1245,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTower(x, y, false);
+									//placeTower(x, y, false);
+									placeTowerImmediately(x, y);
 								}
 								else if(command.equals("RotateTower"))
 								{
@@ -1287,7 +1266,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 											BufferedImage image = ((BasicTower) t).getTowerImages();
 											Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
 											spaces[x][y].setIcon(new ImageIcon(icon));
+											
 										}
+										
 									}								
 
 								}
