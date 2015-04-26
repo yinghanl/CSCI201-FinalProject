@@ -286,7 +286,7 @@ JPanel toReturn = new JPanel();
 		ImageIcon goldIcon = new ImageIcon(temp);
 		
 		JLabel goldIconLabel = new JLabel(goldIcon);
-		teamGold = new JLabel("" + goldEarned);
+		teamGold = new JLabel("Gold: " + goldEarned);
 		goldPanel.add(goldIconLabel);
 		goldPanel.add(teamGold);
 		goldPanel.setBorder(resourceBorder);
@@ -305,7 +305,7 @@ JPanel toReturn = new JPanel();
 		Image temp2 = image2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
 		ImageIcon lifeIcon = new ImageIcon(temp2);
 		JLabel lifeIconLabel = new JLabel(lifeIcon);
-		lives = new JLabel("" + livesInt);
+		lives = new JLabel("Lives: " + livesInt);
 		lifePanel.add(lifeIconLabel);
 		lifePanel.add(lives);
 		lifePanel.setBorder(resourceBorder);
