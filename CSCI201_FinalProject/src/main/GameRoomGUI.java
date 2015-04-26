@@ -46,6 +46,7 @@ public class GameRoomGUI extends JFrame {
 	//private JPanel listof_usersPanel;
 	private JPanel centerPanel;
 	private JPanel centerTopPanel;
+	private JPanel topRightPanel;
 	private JTextArea chatbox;
 	private JTextField typefield;
 	private JButton sendButton;
@@ -155,7 +156,7 @@ public class GameRoomGUI extends JFrame {
 	
 	public void createButton(){
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(2,2));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		startGameButton = new JButton("Start Game");
 		readyButton = new JButton("Ready Up");
 		sendButton = new JButton("Send");
@@ -230,8 +231,11 @@ public class GameRoomGUI extends JFrame {
 		});
 		buttonPanel.add(typefield);
 		buttonPanel.add(sendButton);
-		buttonPanel.add(startGameButton);
-		buttonPanel.add(readyButton);
+//		topRightPanel.add(new JLabel(""));
+//		topRightPanel.add(new JLabel(""));
+		topRightPanel.add(startGameButton);
+		topRightPanel.add(readyButton);
+		
 		add(buttonPanel, BorderLayout.SOUTH);
 		startGameButton.setEnabled(false);
 		if(isHost){
@@ -274,20 +278,24 @@ public class GameRoomGUI extends JFrame {
 	}//end of creating the chatbox
 	
 	public void createStatusPanel(){
-		JPanel jp = new JPanel();
+		topRightPanel = new JPanel();
 		userLabels = new JLabel[2][2];
-		jp.setLayout(new GridLayout(5,5));
+		topRightPanel.setLayout(new GridLayout(5,5));
 		JLabel jl;
 		Border border = LineBorder.createBlackLineBorder();
+		jl = new JLabel("   Map:  Default");
+		topRightPanel.add(jl);
+		jl = new JLabel("   Level: Easy");
+		topRightPanel.add(jl);
 		jl = new JLabel("  User Name");
 		jl.setBorder(border);
-		jp.add(jl);
+		topRightPanel.add(jl);
 		jl = new JLabel("  Status");
 		jl.setBorder(border);
-		jp.add(jl);
+		topRightPanel.add(jl);
 		jl = new JLabel("   "+user.getUsername());
 		jl.setBorder(border);
-		jp.add(jl);
+		topRightPanel.add(jl);
 		userLabels[0][0] = jl;
 		if(isHost){
 			jl = new JLabel("   Ready");
@@ -296,14 +304,14 @@ public class GameRoomGUI extends JFrame {
 			jl = new JLabel("   Not Ready");
 		}
 		jl.setBorder(border);
-		jp.add(jl);
+		topRightPanel.add(jl);
 		userLabels[0][1] = jl;
 		
 		for(int i=1; i<2; i++){
 			if(i <= users_in_room-1){
 				jl = new JLabel("   "+usersConnected[i-1].getUsername());
 				jl.setBorder(border);
-				jp.add(jl);
+				topRightPanel.add(jl);
 				userLabels[i][0] = jl;
 				if(usersConnected[i-1].getReadyStatus()){
 					jl = new JLabel("   Ready");
@@ -312,21 +320,21 @@ public class GameRoomGUI extends JFrame {
 					jl = new JLabel("   Not Ready");
 				}
 				jl.setBorder(border);
-				jp.add(jl);
+				topRightPanel.add(jl);
 				userLabels[i][1] = jl;
 			}
 			else{
 				jl = new JLabel("   -------");
 				jl.setBorder(border);
-				jp.add(jl);
+				topRightPanel.add(jl);
 				userLabels[i][0] = jl;
 				jl = new JLabel("   ---------");
 				jl.setBorder(border);
-				jp.add(jl);
+				topRightPanel.add(jl);
 				userLabels[i][1] = jl;
 			}//end of else	
 		}//end of for
-		centerTopPanel.add(jp);
+		centerTopPanel.add(topRightPanel);
 	}//end of creating the panel that holds a table of user
 	
 	public void updateuserLabels(){
