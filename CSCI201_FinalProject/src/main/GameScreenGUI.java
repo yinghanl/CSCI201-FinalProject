@@ -91,10 +91,22 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ImageIcon explosionImage;
 	private ImageIcon mineralImage;
 	
+	private boolean cooldown = false;
+	
 	private int timer = 1000;
+	private Timer cooldownTimer;
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
+		cooldownTimer = new Timer(500, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) {
+				cooldown = false;
+				cooldownTimer.stop();
+			}
+		}
+		);
+		
 		
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
@@ -525,12 +537,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					
 				}
 				
-				else if(key == ke.VK_SPACE)
-				{
+				else if(key == ke.VK_SPACE && cooldown == false)
+				{	
 					if(currentPlayer.playerOperatingTower() != null)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
 						t.shoot();
+						
+						cooldown = true;
+						
+						cooldownTimer.start();
 						
 						Command c = new Command(currentPlayer, "Shoot", t.getX(), t.getY());
 						
@@ -586,7 +602,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}
 				else if(key == ke.VK_1)
-				{					
+				{
+					System.out.println("Hello");
 					
 					if(progressBar.getString().startsWith("Building Tower"))
 					{
@@ -893,6 +910,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			return;
 		}
 		if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+		{
+			return;
+		}
+		if(backendBoard.getSpace(x, y) instanceof MineableSpace)
 		{
 			return;
 		}
