@@ -2,17 +2,18 @@ package main;
 
 public class Creep extends Moveable{
 	
-	private int health;
+	private int health, speed;
 	private PathSpace currentPathLocation;
 	private boolean offGrid;
 	
-	public Creep(PathSpace p){
+	public Creep(PathSpace p, int h, int s){
 		super(p); //may cause error
 		currentPathLocation = p;
 		currentPathLocation.setCreep(this);
 		//currentPathLocation.setOccupant(this);
-		health = 10;
+		health = h;
 		offGrid = false;
+		speed = s;
 		
 	}
 	
@@ -35,7 +36,7 @@ public class Creep extends Moveable{
 		while(health>0){
 			
 			try {
-				sleep(1000);
+				sleep(speed);
 				previousLocation = currentPathLocation;
 				if(currentPathLocation.getNext() ==  null){
 					//decrease the team's health, have reached the end

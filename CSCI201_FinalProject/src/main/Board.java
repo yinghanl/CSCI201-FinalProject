@@ -131,6 +131,7 @@ public class Board implements Serializable {
 			creepPath.get(i).setNext(creepPath.get(i+1));
 		}
 		creepPath.get(creepPath.size()-1).setNext(null);
+		creepPath.get(creepPath.size()-2).setNext(null);
 	}
 	
 	public Space getSpace(int x, int y){

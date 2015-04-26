@@ -20,6 +20,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -83,6 +86,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		
 	private Vector<Player> players; 
 	private HashMap<Integer, Creep> creeps;
+	private Level [] levels;
 	
 	private int MAX_CREEPS = 10;
 	
@@ -91,10 +95,22 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ImageIcon explosionImage;
 	
 	private int timer = 1000;
+	private int numLevels = 4;
+	private int level = 0;
+	
+	private int numCreeps;
+	
+	private static Lock lock = new ReentrantLock();
+	private static Condition allCreepsDead = lock.newCondition();
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
-	{
+	{	
 		
+		levels = new Level[numLevels];
+		levels[0] = new Level(10, 2000, 4000, 5);
+		levels[1] = new Level(10, 1000, 2000, 10);
+		levels[2] = new Level(20, 800, 1600, 20);
+		levels[3] = new Level(30, 400, 800, 30);
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
@@ -171,6 +187,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}
 		});
 		time.start();
+		
 		
 		board.addMouseListener(new MouseAdapter()
 		{
@@ -735,11 +752,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}
 	
 	public void run(){
-		int numCreeps = 10;
+		Level l = levels[level];
+		numCreeps = l.getNumber();
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(2000);
-				Creep c = new Creep(backendBoard.getPathSpace(0));
+				Thread.sleep(l.getFrequency());
+				Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
 				creeps.put(numCreeps, c);
 				c.start();
 				//new Creep(backendBoard.getPathSpace(0)).start();
@@ -748,18 +766,22 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				e.printStackTrace();
 			}	
 		}
+		while(creeps.size()>0){
+		}
 		try {
+			//allCreepsDead.await();
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//run();
+		level++;
+		
+		run();
 	}
 	
 	public void updateBoard()
 	{
-		
 		for(int i = 0; i<MAX_CREEPS; i++){
 			if(creeps.containsKey(i)){
 				Creep c = creeps.get(i);
@@ -767,12 +789,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int y = c.getPathLocation().getY();
 				if(c.isDead()){
 					creeps.remove(i);
+//					if(creeps.size()==0){
+//						allCreepsDead.signalAll();
+//					}
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					new ExplosionThread(x, y).start();
 
 				}
 				else if(c.isOffGrid()){
 					creeps.remove(i);
+//					if(creeps.size()==0){
+//						allCreepsDead.signalAll();
+//					}
 					livesInt--;
 					lives.setText("Lives: " + livesInt);
 				}
@@ -781,7 +809,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					spaces[x][y].setIcon(creepImage);
 				
 				}
-				
 				if(c.getPrevious() !=null && !c.getPrevious().isOccupied()){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
