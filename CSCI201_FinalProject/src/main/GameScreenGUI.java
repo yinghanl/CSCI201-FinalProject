@@ -738,7 +738,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		int numCreeps = 10;
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				Creep c = new Creep(backendBoard.getPathSpace(0));
 				creeps.put(numCreeps, c);
 				c.start();
@@ -747,6 +747,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}	
+		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		//run();
 	}
@@ -763,7 +769,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					creeps.remove(i);
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					new ExplosionThread(x, y).start();
-					//spaces[x][y].setIcon(explosionImage);
 
 				}
 				else if(c.isOffGrid()){
@@ -777,7 +782,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 				}
 				
-				if(c.getPrevious() !=null){
+				if(c.getPrevious() !=null && !c.getPrevious().isOccupied()){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
 					//spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));

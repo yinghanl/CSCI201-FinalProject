@@ -127,7 +127,7 @@ public class Board implements Serializable {
 		for(int j = 20; j<32; j++){
 			creepPath.add(tempMap[8][j]);
 		}
-		for(int i = 0; i<creepPath.size()-1; i++){
+		for(int i = 0; i<creepPath.size()-2; i++){
 			creepPath.get(i).setNext(creepPath.get(i+1));
 		}
 		creepPath.get(creepPath.size()-1).setNext(null);
