@@ -4,9 +4,9 @@ public class TowerSpace extends ClickableSpace{
 	
 	private Tower tower;
 	
-	public TowerSpace(int x, int y){
+	public TowerSpace(int x, int y, String direction){
 		super(x, y);
-		tower = new BasicTower(this);
+		tower = new BasicTower(this, direction);
 	}
 	
 	public void performAction(){

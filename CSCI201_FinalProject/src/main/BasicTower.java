@@ -11,9 +11,9 @@ public class BasicTower extends Tower{
 
 	BufferedImage sprite;
 
-	public BasicTower(Space s)
+	public BasicTower(Space s, String direction)
 	{
-		super(s);
+		super(s, direction);
 		
 		try
 		{

@@ -91,7 +91,7 @@ public class GameScreenGUI extends JFrame{
 	private HashMap<Integer, Creep> creeps;
 	private Level [] levels;
 	
-	private int MAX_CREEPS;
+	private int maxCreeps;
 	
 	private ImageIcon creepImage;
 	private ImageIcon bulletImage;
@@ -212,7 +212,7 @@ public class GameScreenGUI extends JFrame{
 			ioe.printStackTrace();
 		}
 		
-		Timer time = new Timer(10, new ActionListener()
+		Timer time = new Timer(1, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
 				updateBoard();
@@ -679,7 +679,7 @@ JPanel toReturn = new JPanel();
 								{
 									return;
 								}
-								placeTower(playerx+1, playery, true);
+								placeTower(playerx+1, playery, true, currentPlayer.getPlayerDirection());
 							}
 						}
 						else if(currentPlayer.getPlayerDirection() == "NORTH")
@@ -698,7 +698,7 @@ JPanel toReturn = new JPanel();
 								{
 									return;
 								}
-								placeTower(playerx-1, playery, true);
+								placeTower(playerx-1, playery, true, currentPlayer.getPlayerDirection());
 							}
 						}
 						
@@ -718,7 +718,7 @@ JPanel toReturn = new JPanel();
 								{
 									return;
 								}
-								placeTower(playerx, playery-1, true);
+								placeTower(playerx, playery-1, true, currentPlayer.getPlayerDirection());
 							}
 						}
 						else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -737,7 +737,7 @@ JPanel toReturn = new JPanel();
 								{
 									return;
 								}
-								placeTower(playerx, playery+1, true);
+								placeTower(playerx, playery+1, true, currentPlayer.getPlayerDirection());
 							}
 						}
 					}
@@ -892,7 +892,7 @@ JPanel toReturn = new JPanel();
 		public void run(){
 			while(true){
 				l = levels[level];
-				MAX_CREEPS = l.getNumber()+1;
+				maxCreeps = l.getNumber()+1;
 				numCreeps = l.getNumber();
 				while(numCreeps>0){ //there are remaining creeps
 					System.out.println(creeps.size());
@@ -938,7 +938,7 @@ JPanel toReturn = new JPanel();
 	
 	public synchronized void updateBoard()
 	{
-		for(int i = 0; i<MAX_CREEPS; i++){
+		for(int i = 0; i<maxCreeps; i++){
 			if(creeps.containsKey(i)){
 				Creep c = creeps.get(i);
 				int x = c.getPathLocation().getX();
@@ -1054,7 +1054,7 @@ JPanel toReturn = new JPanel();
 		}
 	}
 	
-	public void placeTower(int x, int y, boolean maker)
+	public void placeTower(int x, int y, boolean maker, String direction)
 	{	
 		if(backendBoard.getSpace(x, y) instanceof PathSpace){
 			return;
@@ -1068,7 +1068,7 @@ JPanel toReturn = new JPanel();
 			return;
 		}
 		
-		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y), direction);
 		
 		BufferedImage img = b.getTowerImages();
 		
@@ -1149,7 +1149,7 @@ JPanel toReturn = new JPanel();
 					
 					
 					spaces[x][y].setIcon(new ImageIcon(resizedImage));
-					backendBoard.placeTower(backendBoard.getSpace(x,y));
+					backendBoard.placeTower(backendBoard.getSpace(x,y), direction);
 					progressTimer.stop();
 				}
 				
@@ -1158,9 +1158,9 @@ JPanel toReturn = new JPanel();
 		progressTimer.start();
 	}
 	
-	public void placeTowerImmediately(int x, int y)
+	public void placeTowerImmediately(int x, int y, String direction)
 	{
-		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y), direction);
 		
 		BufferedImage img = b.getTowerImages();
 		
@@ -1168,7 +1168,7 @@ JPanel toReturn = new JPanel();
 
 		
 		spaces[x][y].setIcon(new ImageIcon(resizedImage));
-		backendBoard.placeTower(backendBoard.getSpace(x,y));
+		backendBoard.placeTower(backendBoard.getSpace(x,y), direction);
 	}
 	
 	public void restartLevelTimer()
@@ -1314,7 +1314,7 @@ JPanel toReturn = new JPanel();
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTowerImmediately(x, y);
+									placeTowerImmediately(x, y, p.getPlayerDirection());
 									goldEarned--;
 									teamGold.setText("Gold: " + goldEarned);
 								}
@@ -1499,7 +1499,7 @@ JPanel toReturn = new JPanel();
 									int x = c.getX();
 									int y = c.getY();
 									//placeTower(x, y, false);
-									placeTowerImmediately(x, y);
+									placeTowerImmediately(x, y, p.getPlayerDirection());
 								}
 								else if(command.equals("RotateTower"))
 								{
