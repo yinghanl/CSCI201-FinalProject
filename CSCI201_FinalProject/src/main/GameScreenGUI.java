@@ -941,8 +941,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 					Command c = new Command(currentPlayer, "PlaceTower", x, y);
 					try {
-						oos.writeObject(c);
-						oos.flush();	
+						if(!isHost)
+						{
+							oos.writeObject(c);
+							oos.flush();	
+						}
+						else
+						{
+							sendMessageToClients(c);
+						}
+
 					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
@@ -956,8 +964,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}
 		});
 		progressTimer.start();
-
-
 	}
 	
 	public void placeTowerImmediately(int x, int y)
@@ -1239,7 +1245,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTower(x, y, false);
+									//placeTower(x, y, false);
+									placeTowerImmediately(x, y);
 								}
 								else if(command.equals("RotateTower"))
 								{
