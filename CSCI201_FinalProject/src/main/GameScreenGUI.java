@@ -887,7 +887,7 @@ public class GameScreenGUI extends JFrame{
 	}//end of startgame thread
 	
 	
-	public void updateBoard()
+	public synchronized void updateBoard()
 	{
 		for(int i = 0; i<MAX_CREEPS; i++){
 			if(creeps.containsKey(i)){
@@ -1129,7 +1129,7 @@ public class GameScreenGUI extends JFrame{
 	public synchronized void sendMessageToClients(Object obj) {
 		if(isHost){
 			for (ChatThread ct1 : ctVector) {
-				System.out.println("sending msg: " + obj.getClass());
+				//System.out.println("sending msg: " + obj.getClass());
 				ct1.sendMessage(obj);
 			}
 		}	
