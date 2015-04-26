@@ -103,9 +103,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private Timer cooldownTimer;
 	
 	private int numCreeps;
-	
-	private static Lock lock = new ReentrantLock();
-	private static Condition allCreepsDead = lock.newCondition();
+//	
+//	private static Lock lock = new ReentrantLock();
+//	private static Condition allCreepsDead = lock.newCondition();
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
@@ -785,6 +785,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}
 	
 	public void run(){
+		System.out.println("run");
 		Level l = levels[level];
 		numCreeps = l.getNumber();
 		while(numCreeps>0){ //there are remaining creeps
@@ -800,7 +801,15 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}	
 		}
 		while(creeps.size()>0){
+			System.out.println(creeps.size());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		
+		System.out.println("dead");
 		try {
 			//allCreepsDead.await();
 			Thread.sleep(5000);
