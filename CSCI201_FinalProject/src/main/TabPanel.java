@@ -141,7 +141,7 @@ public class TabPanel extends JPanel {
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
 				
-				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room", grc);
+				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}
 		});
@@ -152,7 +152,7 @@ public class TabPanel extends JPanel {
 				Game newGame = new Game(u);
 				grc.newGame(newGame);
 				
-				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room", grc);
+				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}	
 		});
@@ -170,7 +170,7 @@ public class TabPanel extends JPanel {
 	public void updateGames(Vector<Game> games){
 		//System.out.println("Trying to update game");
 		int numGames = games.size();
-		//System.out.println("number of games: " + numGames);
+		System.out.println("number of games: " + numGames);
 		gameListModel.setRowCount(0);
 		for (int i = 0; i < numGames; i++){
 			Game g = games.elementAt(i);

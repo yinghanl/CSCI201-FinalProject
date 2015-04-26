@@ -16,6 +16,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -76,17 +78,18 @@ public class GameRoomGUI extends JFrame {
 	private Object obj;
 	
 	private GameRoomClient grc;
+	private GameLobbyGUI glw;
 	
-	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title, GameRoomClient grc){
+	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title, GameLobbyGUI glw, GameRoomClient grc){
 		this.user = u;
 		this.isHost = isHost;
 		this.port = port;
 		this.roomTitle = title;
+		this.glw = glw;
 		this.grc = grc;
 		setTitle(title);
 		setSize(700, 500);
 		setLocation(300, 50);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		
 		
@@ -160,6 +163,8 @@ public class GameRoomGUI extends JFrame {
 		startGameButton = new JButton("Start Game");
 		readyButton = new JButton("Ready Up");
 		sendButton = new JButton("Send");
+		
+		
 		sendButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				String temp = typefield.getText();
@@ -241,6 +246,36 @@ public class GameRoomGUI extends JFrame {
 		if(isHost){
 			readyButton.setEnabled(false);
 		}
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener( new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent we)
+			{
+				if(isHost)
+				{
+					grc.deleteGame();
+					sendMessageToClients(new Integer(-3));
+					glw.setVisible(true);
+					setVisible(false);
+					
+				}
+				else
+				{
+					try
+					{
+						oos.writeObject(new Integer(3));
+						oos.flush();
+					}
+					catch(IOException ioe)
+					{
+						System.out.println("IOE in GameRoomGUI: " + ioe.getMessage());
+					}
+				}
+				
+			}
+		});
 	}//end of ceating the button
 	
 	public void createPicturePanel(){
@@ -365,6 +400,13 @@ public class GameRoomGUI extends JFrame {
 		}//end of for
 	}
 	
+	public void closeGameRoom()
+	{
+		grc.deleteGame();
+		
+	}
+	
+
 	public void removeChatThread(ChatThread ct) {
 		ctVector.remove(ct);
 	}
@@ -436,6 +478,16 @@ public class GameRoomGUI extends JFrame {
 								startGameButton.setEnabled(true);
 							}
 						}//end of if  == 2
+						else if((Integer)obj == -1)
+						{
+							usersReady = 1;
+							chatbox.append("\n" + usersConnected[1].getUsername() + " has left.");
+							usersConnected[1] = null;
+							users_in_room--;
+							userLabels[1][0].setText("   -------");
+							userLabels[1][1].setText("   -------");
+							
+						}
 						else{
 							userLabelIndex = (Integer)obj;
 						}
@@ -503,6 +555,11 @@ public class GameRoomGUI extends JFrame {
 								b.setPlayer(p);
 								new GameScreenGUI(b, p, false);
 								setVisible(false);
+							}
+							else if((Integer)obj == -3)
+							{
+								setVisible(false);
+								glw.setVisible(true);
 							}
 							else{
 								userLabelIndex = (Integer)obj;
