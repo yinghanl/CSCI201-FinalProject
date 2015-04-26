@@ -100,6 +100,7 @@ public class TabPanel extends JPanel {
 		gameListTable.setSelectionBackground(Color.RED);
 		gameListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		gameListTable.setGridColor(Color.BLUE);
+		gameListTable.setPreferredScrollableViewportSize(gameListTable.getPreferredSize());
 		
 	}
 	
