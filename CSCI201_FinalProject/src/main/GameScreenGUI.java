@@ -108,6 +108,8 @@ public class GameScreenGUI extends JFrame{
 	private int numCreeps;
 	private GameStats userStats;
 	
+	private StartGameThread startGameThread;
+	
 //	
 //	private static Lock lock = new ReentrantLock();
 //	private static Condition allCreepsDead = lock.newCondition();
@@ -880,26 +882,26 @@ JPanel toReturn = new JPanel();
 	}
 	
 	public void startGame(){
-		new StartGameThread().start();
-		System.out.println("game is started");
+		startGameThread = new StartGameThread();
+		startGameThread.start();
+		//System.out.println("game is started");
 	}
 	
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
-			System.out.println("run");
+			//System.out.println("run");
 		}
 		public void run(){
-			while(true){
+			while(livesInt>0){
 				l = levels[level];
 				maxCreeps = l.getNumber()+1;
 				numCreeps = l.getNumber();
-				while(numCreeps>0){ //there are remaining creeps
-					System.out.println(creeps.size());
+				while(numCreeps>0 && livesInt>0){ //there are remaining creeps
+					//System.out.println(creeps.size());
 					try {
 						Thread.sleep(l.getFrequency());
 						Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
-						System.out.println(c.getLocation());
 						creeps.put(numCreeps, c);
 						c.start();
 						//new Creep(backendBoard.getPathSpace(0)).start();
@@ -908,15 +910,17 @@ JPanel toReturn = new JPanel();
 						e.printStackTrace();
 					}	
 				}
-				while(creeps.size()>0){
-					System.out.println(creeps.size());
+				while(creeps.size()>0 && livesInt>0){
+					//System.out.println(creeps.size());
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("dead");
+				if(livesInt==0){
+					break;
+				}
 				try {
 					//allCreepsDead.await();
 					Thread.sleep(5000);
