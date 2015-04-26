@@ -17,12 +17,14 @@ public class GameRoomServer {
 	private ServerSocket ss;
 	private Vector<GameRoomThread> gmtVector;
 	private int gameIndex;
+	private int portIndex;
 	
 	public GameRoomServer()
 	{
 		gamesOpen = new Vector<Game>();
 		gmtVector = new Vector<GameRoomThread>();
-		
+		portIndex = 8001;
+		gameIndex = 0;
 		UpdateGameRoomThread ugrt = new UpdateGameRoomThread(this);
 		ugrt.start();
 		try
@@ -89,6 +91,7 @@ public class GameRoomServer {
 		synchronized(this)
 		{
 			gameIndex++;
+			portIndex++;
 		}
 		System.out.println("gamesOpen.size()" + gamesOpen.size());
 		return;
@@ -188,11 +191,25 @@ public class GameRoomServer {
 			
 		}
 		
+		public String createGameLobbyString(Vector<Game> gv)
+		{
+			String output = "";
+			for(int i = 0; i < gv.size(); i++)
+			{
+				Game g = gv.get(i);
+				output += g.getGameHost().getUsername();
+				output += ":::" + g.getNumJoined();
+				output += "\n";
+			}
+			return output;
+		}
+		
 		public void updateClient()
 		{
 			try
 			{
-				oos.writeObject(grs.getGameVector());
+				String output = createGameLobbyString(grs.getGameVector());
+				oos.writeObject(output);
 				oos.flush();
 				
 			}
@@ -255,7 +272,12 @@ public class GameRoomServer {
 							oos.writeObject(null);
 							oos.flush();
 						}
-		
+					}
+					else if(newObj instanceof Integer)
+					{
+						System.out.println("portIndex = " + portIndex);
+						oos.writeObject(portIndex);
+						oos.flush();
 					}
 					
 					

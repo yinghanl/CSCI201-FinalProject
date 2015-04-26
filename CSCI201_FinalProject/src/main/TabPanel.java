@@ -39,19 +39,19 @@ import main.User;
 // TabPanel is used to store the information for each difficulty
 //The table and buttons for the gamelobby are stored here
 public class TabPanel extends JPanel {
-	JTable gameListTable;
-	DefaultTableModel gameListModel;
-	Object tableData[][];
-	GameLobbyGUI gameLobbyWindow;
+	private JTable gameListTable;
+	private DefaultTableModel gameListModel;
+	private Object tableData[][];
+	private GameLobbyGUI gameLobbyWindow;
 	
-	JPanel buttonPanel;
-	JButton createButton;
-	JButton joinButton;
-	JButton returnButton;
-	AbstractUser u;
+	private JPanel buttonPanel;
+	private JButton createButton;
+	private JButton joinButton;
+	private JButton returnButton;
+	private AbstractUser u;
 	
 	private LogInGUI loginWindow;
-	
+	private int chatPort;
 	
 	
 	private GameRoomClient grc;
@@ -60,18 +60,12 @@ public class TabPanel extends JPanel {
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		this.loginWindow = loginWindow;
-		
-		grc = new GameRoomClient(this, u);
-		System.out.println("created gameroomClient");
-		grc.start();
-		System.out.println("started gameroomclientthread");
+	
 		initializeComponents();
-		System.out.println("initialized components");
 		createGUI();
-		System.out.println("createdGUI");
 		addActionListeners();
-		System.out.println("added Actionlisteners");
-
+		grc = new GameRoomClient(this, u);
+		grc.start();
 	}
 	
 	public void initializeComponents(){
@@ -140,8 +134,9 @@ public class TabPanel extends JPanel {
 			
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
-				
-				new GameRoomGUI(u, false, "localhost", 8002, host + "'s Room", gameLobbyWindow, grc);
+			
+				System.out.println("chatPort = " + chatPort);
+				new GameRoomGUI(u, false, "localhost", chatPort, host + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}
 		});
@@ -151,8 +146,8 @@ public class TabPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Game newGame = new Game(u);
 				grc.newGame(newGame);
-				
-				new GameRoomGUI(u, true, "localhost", 8002, u.getUsername() + "'s Room", gameLobbyWindow, grc);
+				System.out.println("grc.getChatPort: " + grc.getChatPort());
+				new GameRoomGUI(u, true, "localhost", grc.getChatPort(), u.getUsername() + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}	
 		});
@@ -174,7 +169,7 @@ public class TabPanel extends JPanel {
 				{
 					joinButton.setEnabled(false);
 				}
-				else if((int)gameListTable.getValueAt(gameListTable.getSelectedRow(), 1) == 2)
+				else if(((String)gameListTable.getValueAt(gameListTable.getSelectedRow(), 1)).equals("2"))
 				{
 					joinButton.setEnabled(false);
 				}
@@ -186,21 +181,27 @@ public class TabPanel extends JPanel {
 		});
 	}
 	
-	public void updateGames(Vector<Game> games){
+	public void updateGames(String [] gameString){
 		//System.out.println("Trying to update game");
-		int numGames = games.size();
+		int numGames = gameString.length;
 		int selectedRow = -1;
 		System.out.println("number of games: " + numGames);
 		if(gameListTable != null)
 		{
 			selectedRow = gameListTable.getSelectedRow();
 		}
-		
 		gameListModel.setRowCount(0);
-		for (int i = 0; i < numGames; i++){
-			Game g = games.elementAt(i);
-			gameListModel.addRow(new Object[] { g.getGameHost().getUsername(), g.getNumJoined() });
+		if(numGames != 1 || !gameString[0].equals(""))
+		{
+			for (int i = 0; i < numGames; i++)
+			{
+			System.out.println("gameString[i] = " + gameString[i]);
+			
+			String [] gameInfo = gameString[i].split(":::");
+			gameListModel.addRow(new Object[] { gameInfo[0], gameInfo[1] });
+			}
 		}
+		
 		gameListModel.fireTableDataChanged();
 		if(selectedRow != -1)
 		{
@@ -209,6 +210,11 @@ public class TabPanel extends JPanel {
 		
 		
 		
+	}
+	
+	public void setChatPort(int nextPort)
+	{
+		chatPort = nextPort;
 	}
 	
 }
