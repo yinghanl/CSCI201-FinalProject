@@ -107,8 +107,12 @@ public class GameScreenGUI extends JFrame{
 //	private static Lock lock = new ReentrantLock();
 //	private static Condition allCreepsDead = lock.newCondition();
 	
-	public GameScreenGUI(Board b, Player p, boolean isHost)
+	User currentUser;
+	
+	public GameScreenGUI(Board b, Player p, boolean isHost, User u)
 	{
+		
+		currentUser = u;
 		
 		cooldownTimer = new Timer(500, new ActionListener()
 		{
@@ -1025,6 +1029,27 @@ public class GameScreenGUI extends JFrame{
 		goldEarned--;
 		teamGold.setText("Gold: " + goldEarned);
 		
+		Command c = new Command(currentPlayer, "BuyTower");
+		
+		try
+		{
+			if(!isHost)
+			{
+				oos.writeObject(c);
+				oos.flush();	
+			}
+			else
+			{
+				sendMessageToClients(c);
+			}
+
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		
+		
 		progressTimer = new Timer(50, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) {
@@ -1214,6 +1239,8 @@ public class GameScreenGUI extends JFrame{
 									int x = c.getX();
 									int y = c.getY();
 									placeTowerImmediately(x, y);
+									goldEarned--;
+									teamGold.setText("Gold: " + goldEarned);
 								}
 								else if(command.equals("RotateTower"))
 								{
@@ -1272,9 +1299,13 @@ public class GameScreenGUI extends JFrame{
 										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
 										int valueMined = m.mine();
 										goldEarned = goldEarned + valueMined;
-										teamGold.setText("Gold:" + goldEarned);
-										
+										teamGold.setText("Gold: " + goldEarned);
 									}
+								}
+								else if(command.equals("BuyTower"))
+								{
+									goldEarned--;
+									teamGold.setText("Gold: " + goldEarned);
 								}
 							}
 						}
@@ -1452,9 +1483,15 @@ public class GameScreenGUI extends JFrame{
 										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
 										int valueMined = m.mine();
 										goldEarned = goldEarned + valueMined;
-										teamGold.setText("Gold:" + goldEarned);
+										teamGold.setText("Gold: " + goldEarned);
 										
 									}
+								}
+								else if(command.equals("BuyTower"))
+								{
+									
+									goldEarned--;
+									teamGold.setText("Gold: " + goldEarned);
 								}
 							}
 						}

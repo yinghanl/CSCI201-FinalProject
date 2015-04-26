@@ -2,22 +2,22 @@ package main;
 
 public class GameStats {
 
-	private Player p;
+	private AbstractUser au;
 	private int goldEarned;
 	private int creepsKilled;
 	private boolean gameResult;
 	
-	public GameStats(Player p)
+	public GameStats(AbstractUser au)
 	{
-		this.p = p;
+		this.au = au;
 		goldEarned = 0;
 		creepsKilled = 0;
 		gameResult = false;
 	}
 	
-	public Player getPlayer()
+	public AbstractUser getAbstractUser()
 	{
-		return p;
+		return au;
 	}
 	
 	public int getCreepsKilled()
