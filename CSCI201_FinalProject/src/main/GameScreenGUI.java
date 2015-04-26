@@ -232,7 +232,7 @@ public class GameScreenGUI extends JFrame{
 		{
 			public void actionPerformed(ActionEvent ae) {
 				
-				timerInt = creeps.size();
+				timerInt = numCreeps;
 				
 				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
 				sendMessageToClients(c);
