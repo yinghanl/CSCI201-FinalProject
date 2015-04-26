@@ -39,7 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.text.DefaultCaret;
 
-public class GameScreenGUI extends JFrame implements Runnable{
+public class GameScreenGUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	private ImagePanel board;
@@ -224,7 +224,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		
 		
 
-		
 		lvlTimer = new Timer(1000, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
@@ -826,43 +825,57 @@ public class GameScreenGUI extends JFrame implements Runnable{
 
 	}
 	
-	public void run(){
-		System.out.println("run");
-		Level l = levels[level];
-		numCreeps = l.getNumber();
-		while(numCreeps>0){ //there are remaining creeps
-			try {
-				Thread.sleep(l.getFrequency());
-				Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
-				creeps.put(numCreeps, c);
-				c.start();
-				//new Creep(backendBoard.getPathSpace(0)).start();
-				numCreeps--;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}	
-		}
-		while(creeps.size()>0){
-			System.out.println(creeps.size());
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("dead");
-		try {
-			//allCreepsDead.await();
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		level++;
-		
-		run();
+	public void startGame(){
+		new StartGameThread();
 	}
+	
+	class StartGameThread{
+		private Level l;
+		public StartGameThread(){
+			System.out.println("run");
+			l = levels[level];
+			numCreeps = l.getNumber();
+			this.run();
+		}
+		public void run(){
+			
+			if(numCreeps>0){ //there are remaining creeps
+				try {
+					Thread.sleep(l.getFrequency());
+					Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
+					creeps.put(numCreeps, c);
+					c.start();
+					//new Creep(backendBoard.getPathSpace(0)).start();
+					numCreeps--;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
+			}
+			if(creeps.size()>0){
+				System.out.println(creeps.size());
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if(creeps.size() == 0 && numCreeps == 0){
+			
+				System.out.println("dead");
+				try {
+					//allCreepsDead.await();
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				level++;
+				
+				//run();
+			}//end of if end of level 	
+		}
+	}//end of startgame thread
+	
 	
 	public void updateBoard()
 	{
@@ -1091,6 +1104,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}	
 	}
 	
+	
 	class ChatThread extends Thread {
 		//private BufferedReader br;
 		private ObjectOutputStream oos;
@@ -1133,8 +1147,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						sendMessageToClients(currentPlayer);
 						backendBoard.setPlayer((Player)obj);
 						players.add((Player)obj);
-						//System.out.println("sending player obj to all the other players");
 						sendMessageToClients(obj);
+						sendMessageToClients(new Integer(-1));
+						System.out.println("before startgame");
+						startGame();
+						System.out.println("not a blocking line");
 						
 					}
 					else if(obj instanceof Command)
@@ -1281,8 +1298,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		public synchronized void run(){
 			try {
 				obj = ois.readObject();
+				
 				while(obj != null){
-					System.out.println("ob not null in client: "+obj.getClass());
 					if(obj instanceof String){
 						chat.append(((String)obj));
 					}//end of if ob is String
@@ -1291,6 +1308,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						backendBoard.setPlayer((Player)obj);
 						players.add((Player)obj);
 						
+					}
+					else if(obj instanceof Integer){
+						if((Integer)obj == -1){
+							System.out.println("before blocking lines");
+							startGame();
+							System.out.println("not a blocking line");
+						}
 					}
 					else if(obj instanceof Command)
 					{
