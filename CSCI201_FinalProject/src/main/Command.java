@@ -9,6 +9,7 @@ public class Command implements Serializable {
 	String command;
 	int x;
 	int y;
+	GameStats stats;
 	
 	public Command(Player p, String command)
 	{
@@ -23,6 +24,12 @@ public class Command implements Serializable {
 		this.command = command;
 		this.x = x;
 		this.y = y;
+	}
+	public Command(Player p, String command, GameStats stats)
+	{
+		this.player = p;
+		this.command = command;
+		this.stats = stats;
 	}
 	public Player getPlayer()
 	{
@@ -39,5 +46,9 @@ public class Command implements Serializable {
 	public int getY()
 	{
 		return y;
+	}
+	public GameStats getStats()
+	{
+		return stats;
 	}
 }

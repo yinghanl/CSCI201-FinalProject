@@ -240,14 +240,14 @@ public class Board implements Serializable {
 		map[p.getLocation().getX()][p.getLocation().getY()].setOccupant(p);
 	}
 	
-	public void placeTower(Space s)
+	public void placeTower(Space s, String direction)
 	{
 		int x = s.getX();
 		int y = s.getY();
 		if(map[x][y] instanceof PathSpace){
 			return;
 		}
-		map[x][y] = new TowerSpace(x, y);
+		map[x][y] = new TowerSpace(x, y, direction);
 		
 		setAdjacency(map[x][y], x, y);
 		

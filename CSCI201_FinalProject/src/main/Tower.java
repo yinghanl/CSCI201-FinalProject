@@ -6,10 +6,24 @@ public class Tower {
 	protected int x;
 	protected int y;
 	
-	public Tower(Space s){
+	public Tower(Space s, String direction){
 		location = s;
-		direction = 0;
 		damage = 10;
+		
+		switch(direction){
+			case "NORTH":
+				this.direction = 0;
+				break;
+			case "SOUTH": 
+				this.direction = 1;
+				break;
+			case "WEST":
+				this.direction = 3;
+				break;
+			case "EAST":
+				this.direction = 2;
+				break;
+		}
 	}
 	
 	public void shoot(){
