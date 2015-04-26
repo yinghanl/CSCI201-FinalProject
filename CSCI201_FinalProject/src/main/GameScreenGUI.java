@@ -1079,8 +1079,12 @@ JPanel toReturn = new JPanel();
 			
 		timer = 100;
 		
+		
+		if(isHost)
+		{
 		goldEarned--;
 		teamGold.setText("Gold: " + goldEarned);
+		}
 		
 		Command c = new Command(currentPlayer, "BuyTower");
 		
