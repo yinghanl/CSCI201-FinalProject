@@ -19,6 +19,82 @@ public class Board implements Serializable {
 		this.getMap();
 		this.setAdjacencies();
 		this.setPathSpaces();
+		this.setMineable(map[1][1]);
+	}
+	
+	public void setBlank(Space s)
+	{
+		int x = s.getX();
+		int y = s.getY();
+		if(map[x][y] instanceof PathSpace){
+			return;
+		}
+		map[x][y] = new BlankSpace(x, y);
+		
+		setAdjacency(map[x][y], x, y);
+		
+		if(x>0){
+			map[x-1][y].setSouth(map[x][y]);
+		}
+		if(y>0){
+			map[x][y-1].setEast(map[x][y]);
+		}
+		if(y<31){
+			map[x][y+1].setWest(map[x][y]);
+		}
+		if(x<19){
+			map[x+1][y].setNorth(map[x][y]);
+		}
+		if(x<19 && y>0){
+			map[x+1][y-1].setNorthEast(map[x][y]);
+		}
+		if(x<19 && y<31){
+			map[x+1][y+1].setNorthWest(map[x][y]);
+		}
+		if(x>0 && y<31){
+			map[x-1][y+1].setSouthWest(map[x][y]);
+		}
+		if(x>0 && y>0){
+			map[x-1][y-1].setSouthEast(map[x][y]);
+		}
+	}
+	
+	
+	private void setMineable(Space s)
+	{
+		int x = s.getX();
+		int y = s.getY();
+		if(map[x][y] instanceof PathSpace){
+			return;
+		}
+		map[x][y] = new MineableSpace(x, y, 10, 1);
+		
+		setAdjacency(map[x][y], x, y);
+		
+		if(x>0){
+			map[x-1][y].setSouth(map[x][y]);
+		}
+		if(y>0){
+			map[x][y-1].setEast(map[x][y]);
+		}
+		if(y<31){
+			map[x][y+1].setWest(map[x][y]);
+		}
+		if(x<19){
+			map[x+1][y].setNorth(map[x][y]);
+		}
+		if(x<19 && y>0){
+			map[x+1][y-1].setNorthEast(map[x][y]);
+		}
+		if(x<19 && y<31){
+			map[x+1][y+1].setNorthWest(map[x][y]);
+		}
+		if(x>0 && y<31){
+			map[x-1][y+1].setSouthWest(map[x][y]);
+		}
+		if(x>0 && y>0){
+			map[x-1][y-1].setSouthEast(map[x][y]);
+		}
 	}
 	
 	private void getMap()
@@ -121,7 +197,7 @@ public class Board implements Serializable {
 		for(int j = 20; j<32; j++){
 			creepPath.add(tempMap[8][j]);
 		}
-		for(int i = 0; i<creepPath.size()-1; i++){
+		for(int i = 0; i<creepPath.size()-2; i++){
 			creepPath.get(i).setNext(creepPath.get(i+1));
 		}
 		creepPath.get(creepPath.size()-1).setNext(null);

@@ -30,7 +30,7 @@ public class GameLobbyGUI extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
-		setSize((int)(width*.4), (int)(height));
+		setSize((int)(width*.4), (int)(height*.4));
 		setLocation (0, 0);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		

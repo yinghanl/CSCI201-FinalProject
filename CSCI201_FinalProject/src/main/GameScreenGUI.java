@@ -89,6 +89,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ImageIcon creepImage;
 	private ImageIcon bulletImage;
 	private ImageIcon explosionImage;
+	private ImageIcon mineralImage;
 	
 	private int timer = 1000;
 	
@@ -158,6 +159,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			BufferedImage image = ImageIO.read(new File("images/bulletSprite.png"));
 			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
 			bulletImage = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Minerals.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			mineralImage = new ImageIcon(temp);
 		}
 		catch(IOException ioe)
 		{
@@ -473,6 +484,47 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						e.printStackTrace();
 					}
 				}
+				else if(key == ke.VK_2)
+				{
+					if(progressBar.getString().startsWith("Mining Space"))
+					{
+						return;
+					}
+					
+					int x = currentPlayer.getLocation().getX();
+					int y = currentPlayer.getLocation().getY();
+					
+					if(currentPlayer.getPlayerDirection().equals("NORTH"))
+					{
+						if(backendBoard.getSpace(x-1, y) instanceof MineableSpace)
+						{
+							mineSpaces(x-1, y, true);
+						}
+					}
+					if(currentPlayer.getPlayerDirection().equals("SOUTH"))
+					{
+						if(backendBoard.getSpace(x+1, y) instanceof MineableSpace)
+						{
+							mineSpaces(x+1, y, true);
+						}
+					}
+					if(currentPlayer.getPlayerDirection().equals("EAST"))
+					{
+						if(backendBoard.getSpace(x, y+1) instanceof MineableSpace)
+						{
+							mineSpaces(x, y+1, true);
+						}
+					}
+					if(currentPlayer.getPlayerDirection().equals("WEST"))
+					{
+						if(backendBoard.getSpace(x, y-1) instanceof MineableSpace)
+						{
+							mineSpaces(x, y-1, true);
+						}
+					}
+					
+				}
+				
 				else if(key == ke.VK_SPACE)
 				{
 					if(currentPlayer.playerOperatingTower() != null)
@@ -535,6 +587,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				}
 				else if(key == ke.VK_1)
 				{					
+					
+					if(progressBar.getString().startsWith("Building Tower"))
+					{
+						return;
+					}
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
@@ -650,11 +707,54 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		});
 	}
 	
+	public void mineSpaces(int x, int y, boolean miner)
+	{
+		timer = 100;
+		
+		progressTimer = new Timer(10, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) {
+				
+				if(timer > 0)
+				{
+					if(miner == true)
+					{
+						progressBar.setString("Mining Space (" + timer/10 + "s)");
+						progressBar.setStringPainted(true);
+						progressBar.setValue(progressBar.getValue() + 1);
+					}
+					timer--;
+				}
+				else
+				{
+					if(miner == true)
+					{
+						progressBar.setString("No Task");
+						progressBar.setValue(0);
+						if(backendBoard.getSpace(x,y) instanceof MineableSpace)
+						{
+							int valueMined = ((MineableSpace)(backendBoard.getSpace(x, y))).mine();
+							goldEarned = goldEarned + valueMined;
+							
+							System.out.println(valueMined);
+							
+							teamGold.setText("Gold:" + goldEarned);
+						}
+					}
+					progressTimer.stop();
+				}
+				
+			}
+		});
+		progressTimer.start();
+
+	}
+	
 	public void run(){
 		int numCreeps = 10;
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				Creep c = new Creep(backendBoard.getPathSpace(0));
 				creeps.put(numCreeps, c);
 				c.start();
@@ -663,6 +763,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}	
+		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		//run();
 	}
@@ -679,7 +785,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					creeps.remove(i);
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					new ExplosionThread(x, y).start();
-					//spaces[x][y].setIcon(explosionImage);
 
 				}
 				else if(c.isOffGrid()){
@@ -693,7 +798,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				
 				}
 				
-				if(c.getPrevious() !=null){
+				if(c.getPrevious() !=null && !c.getPrevious().isOccupied()){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
 					//spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -729,6 +834,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		{
 			for(int j = 0; j < 32; j++)
 			{
+				if(backendBoard.getSpace(i, j) instanceof MineableSpace)
+				{
+					spaces[i][j].setIcon(mineralImage);
+					MineableSpace mine = (MineableSpace)(backendBoard.getSpace(i, j));
+					if(mine.getAvailable() == 0)
+					{
+						backendBoard.setBlank(mine);
+						spaces[i][j].setIcon(null);
+					}
+					
+				}
+				
 				if(backendBoard.getSpace(i, j).isOccupied())
 				{
 					
@@ -775,6 +892,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		if(backendBoard.getSpace(x, y) instanceof PathSpace){
 			return;
 		}
+		if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+		{
+			return;
+		}
+		
 		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
 		BufferedImage img = b.getTowerImages();
