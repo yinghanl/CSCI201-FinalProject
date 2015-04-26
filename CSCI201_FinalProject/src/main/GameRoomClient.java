@@ -15,6 +15,7 @@ public class GameRoomClient extends Thread
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private Game g;
+	private int nextPort;
 	
 	public GameRoomClient(TabPanel tp, AbstractUser au)
 	{
@@ -26,13 +27,13 @@ public class GameRoomClient extends Thread
 			//System.out.println("Client Connecting");
 			ois = new ObjectInputStream(s.getInputStream());
 			oos = new ObjectOutputStream(s.getOutputStream());
+			oos.writeObject(new Integer(-1)); // get portnumber
+			oos.flush();
 			//System.out.println("opened streams");
 		}
-		
 		catch (IOException ioe)
 		{
 			System.out.println("IOE in GameRoomClient: " + ioe.getMessage());
-			ioe.printStackTrace();
 		}
 	
 	}
@@ -78,7 +79,6 @@ public class GameRoomClient extends Thread
 		catch(IOException ioe)
 		{
 			System.out.println("IOE in GameRoomClient NewGame: " + ioe.getMessage());
-			ioe.getStackTrace();
 		}
 	}
 	
@@ -97,6 +97,11 @@ public class GameRoomClient extends Thread
 		
 	}
 	
+	public int getChatPort()
+	{
+		return nextPort;
+	}
+	
 	public void run()
 	{
 		try
@@ -105,11 +110,12 @@ public class GameRoomClient extends Thread
 			while(true)
 			{
 				Object readObj = ois.readObject();
-				if(readObj instanceof Vector<?>)
+				if(readObj instanceof String)
 				{
-					Vector<Game> gamesOpen = (Vector<Game>)readObj;
-					//System.out.println("gamesOpen.size = " + gamesOpen.size());
-					tp.updateGames(gamesOpen);
+					String vectorString = (String)readObj;
+					String [] gameString = vectorString.split("\n");
+					System.out.println("gameString.size = " + gameString.length);
+					tp.updateGames(gameString);
 				}
 				else if(readObj instanceof GameRoomPacket)
 				{
@@ -119,14 +125,17 @@ public class GameRoomClient extends Thread
 					if(code == 4)
 					{
 						hostGame.joinGame(au);
+						tp.setChatPort(nextPort);
 						updateGame(hostGame);
 					}
 					else if(code == 5)
 					{
 						setGame(hostGame);
 					}
-					
-					
+				}
+				else if(readObj instanceof Integer)
+				{
+					nextPort = (Integer)readObj;
 				}
 				
 			}
