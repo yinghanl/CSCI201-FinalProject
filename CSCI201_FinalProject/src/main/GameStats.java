@@ -1,7 +1,11 @@
 package main;
 
-public class GameStats {
+import java.io.Serializable;
 
+public class GameStats implements Serializable
+{
+
+	private static final long serialVersionUID = 1L;
 	private AbstractUser au;
 	private int goldEarned;
 	private int creepsKilled;

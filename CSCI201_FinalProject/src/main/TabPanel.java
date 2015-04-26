@@ -142,7 +142,7 @@ public class TabPanel extends JPanel {
 				{
 					System.out.println("IE:" + ie.getMessage());
 				}
-				System.out.println("chatPort = " + chatPort);
+				//System.out.println("chatPort = " + chatPort);
 				new GameRoomGUI(u, false, "localhost", chatPort, host + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}
@@ -192,7 +192,7 @@ public class TabPanel extends JPanel {
 		//System.out.println("Trying to update game");
 		int numGames = gameString.length;
 		int selectedRow = -1;
-		System.out.println("number of games: " + numGames);
+		//System.out.println("number of games: " + numGames);
 		if(gameListTable != null)
 		{
 			selectedRow = gameListTable.getSelectedRow();
@@ -202,7 +202,7 @@ public class TabPanel extends JPanel {
 		{
 			for (int i = 0; i < numGames; i++)
 			{
-			System.out.println("gameString[i] = " + gameString[i]);
+			//System.out.println("gameString[i] = " + gameString[i]);
 			
 			String [] gameInfo = gameString[i].split(":::");
 			gameListModel.addRow(new Object[] { gameInfo[0], gameInfo[1] });

@@ -84,7 +84,6 @@ public class GameRoomGUI extends JFrame {
 		this.user = u;
 		this.isHost = isHost;
 		this.port = port;
-		System.out.println("port = " + port);
 		this.roomTitle = title;
 		this.glw = glw;
 		this.grc = grc;
@@ -118,7 +117,7 @@ public class GameRoomGUI extends JFrame {
 		
 		setVisible(true);
 		if(!isHost){
-			System.out.println("player is not the host");
+			//System.out.println("player is not the host");
 		}
 		new CreateConnections(port).start();
 	}//end of constructor
@@ -590,12 +589,12 @@ public class GameRoomGUI extends JFrame {
 				userLabelIndex = 0;
 				setupHost();
 				try {
-					System.out.println("Starting Chat Server");
+					//System.out.println("Starting Chat Server");
 					ss = new ServerSocket(port);
 					while (true) {
-						System.out.println("Waiting for client to connect...");
+						//System.out.println("Waiting for client to connect...");
 						Socket s = ss.accept();
-						System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+						//System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
 						ChatThread ct = new ChatThread(s);
 						ctVector.add(ct);
 						ct.start();

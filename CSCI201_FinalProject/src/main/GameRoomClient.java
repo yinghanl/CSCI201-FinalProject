@@ -54,6 +54,9 @@ public class GameRoomClient extends Thread
 	public void leaveGame()
 	{
 		g.leaveGame(au);
+		//System.out.println("non-host left game");
+		//System.out.println("players left: " + g.getNumJoined());
+		
 		sendGamePacket(new GameRoomPacket(g, 2));
 		g = null;
 	}
@@ -73,6 +76,7 @@ public class GameRoomClient extends Thread
 	{
 		try
 		{
+			//System.out.println(grp.getGame().getNumJoined());
 			oos.writeObject(grp);
 			oos.flush();
 		}
@@ -114,7 +118,7 @@ public class GameRoomClient extends Thread
 				{
 					String vectorString = (String)readObj;
 					String [] gameString = vectorString.split("\n");
-					System.out.println("gameString.size = " + gameString.length);
+					//System.out.println("gameString.size = " + gameString.length);
 					tp.updateGames(gameString);
 				}
 				else if(readObj instanceof GameRoomPacket)
