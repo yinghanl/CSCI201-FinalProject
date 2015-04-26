@@ -91,7 +91,7 @@ public class GameScreenGUI extends JFrame{
 	private HashMap<Integer, Creep> creeps;
 	private Level [] levels;
 	
-	private int MAX_CREEPS = 10;
+	private int MAX_CREEPS;
 	
 	private ImageIcon creepImage;
 	private ImageIcon bulletImage;
@@ -892,11 +892,14 @@ JPanel toReturn = new JPanel();
 		public void run(){
 			while(true){
 				l = levels[level];
+				MAX_CREEPS = l.getNumber()+1;
 				numCreeps = l.getNumber();
 				while(numCreeps>0){ //there are remaining creeps
+					System.out.println(creeps.size());
 					try {
 						Thread.sleep(l.getFrequency());
 						Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
+						System.out.println(c.getLocation());
 						creeps.put(numCreeps, c);
 						c.start();
 						//new Creep(backendBoard.getPathSpace(0)).start();
