@@ -84,6 +84,7 @@ public class GameRoomGUI extends JFrame {
 		this.user = u;
 		this.isHost = isHost;
 		this.port = port;
+		System.out.println("port = " + port);
 		this.roomTitle = title;
 		this.glw = glw;
 		this.grc = grc;
