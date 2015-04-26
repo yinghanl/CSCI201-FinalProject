@@ -84,8 +84,8 @@ public class PostGameGUI extends JFrame{
 		for(int i = 0; i < gsVector.size(); i++)
 		{
 			GameStats gs = gsVector.get(i);
-			Player tempPlayer = gs.getPlayer();
-			tableModel.addRow(new Object[]{tempPlayer.getPlayerName(), gs.getGold(), gs.getCreepsKilled()});
+			AbstractUser tempUser = gs.getAbstractUser();
+			tableModel.addRow(new Object[]{tempUser.getUsername(), gs.getGold(), gs.getCreepsKilled()});
 		}
 		statsTable = new JTable(tableModel);
 		statsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

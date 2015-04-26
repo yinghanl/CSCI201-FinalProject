@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 
 public class DataBaseUtils {
@@ -236,9 +237,48 @@ public class DataBaseUtils {
 		return deleted;
 	}
 	
-	public static void updatePlayerStats(GameStats gs)
-	{
-		
+	public static void updatePlayerStats(Vector<GameStats> gsv)
+	{ 
+		for(int i = 0; i < gsv.size(); i++)
+		{
+			GameStats gs = gsv.get(i);
+			AbstractUser tempUser = gs.getAbstractUser();
+			if(tempUser instanceof User)
+			{
+				int [] userData = ((User)tempUser).getUserData();
+				if(gs.getGameResult())
+				{
+					userData[3]++;
+				}
+				else
+				{
+					userData[4]++;
+				}
+				try {
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection conn = DriverManager.getConnection(getConnectionString());
+					Statement st = conn.createStatement();
+					PreparedStatement ps = conn.prepareStatement("UPDATE user SET gold_earned=? "
+							+ "AND creeps_killed=?, gold_earned=?, "
+							+ "games_played=?, games_won=?, games_lost=?"
+							+ "WHERE userID=?");
+					ps.setInt(1, userData[0] + gs.getGold());
+					ps.setInt(2, userData[1] + gs.getCreepsKilled());
+					ps.setInt(3, userData[2]+1);
+					ps.setInt(4, userData[3]);
+					ps.setInt(5, userData[4]);
+					ps.setInt(6, tempUser.getUserID());
+					ps.executeUpdate();
+					
+					st.close();
+					conn.close();
+				} catch (SQLException sqle) {
+					System.out.println ("SQLException: " + sqle.getMessage());
+				} catch (ClassNotFoundException cnfe) {
+					System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+				}
+			}
+		}
 	}
 	
 	private static String cArrayToString(char [] cArray)
