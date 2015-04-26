@@ -93,8 +93,12 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private ImageIcon creepImage;
 	private ImageIcon bulletImage;
 	private ImageIcon explosionImage;
+	private ImageIcon mineralImage;
+	
+	private boolean cooldown = false;
 	
 	private int timer = 1000;
+<<<<<<< HEAD
 	private int numLevels = 4;
 	private int level = 0;
 	
@@ -105,6 +109,21 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{	
+=======
+	private Timer cooldownTimer;
+	
+	public GameScreenGUI(Board b, Player p, boolean isHost)
+	{
+		cooldownTimer = new Timer(500, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) {
+				cooldown = false;
+				cooldownTimer.stop();
+			}
+		}
+		);
+		
+>>>>>>> 5d84e4904ea0c56ebe7ac1cedd6badc0906e1931
 		
 		levels = new Level[numLevels];
 		levels[0] = new Level(10, 2000, 4000, 5);
@@ -174,6 +193,16 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			BufferedImage image = ImageIO.read(new File("images/bulletSprite.png"));
 			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
 			bulletImage = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Minerals.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			mineralImage = new ImageIcon(temp);
 		}
 		catch(IOException ioe)
 		{
@@ -492,6 +521,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				}
 				else if(key == ke.VK_2)
 				{
+					if(progressBar.getString().startsWith("Mining Space"))
+					{
+						return;
+					}
+					
 					int x = currentPlayer.getLocation().getX();
 					int y = currentPlayer.getLocation().getY();
 					
@@ -506,32 +540,36 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					{
 						if(backendBoard.getSpace(x+1, y) instanceof MineableSpace)
 						{
-							System.out.println("Hello North");
+							mineSpaces(x+1, y, true);
 						}
 					}
 					if(currentPlayer.getPlayerDirection().equals("EAST"))
 					{
 						if(backendBoard.getSpace(x, y+1) instanceof MineableSpace)
 						{
-							System.out.println("Hello North");
+							mineSpaces(x, y+1, true);
 						}
 					}
 					if(currentPlayer.getPlayerDirection().equals("WEST"))
 					{
 						if(backendBoard.getSpace(x, y-1) instanceof MineableSpace)
 						{
-							System.out.println("Hello North");
+							mineSpaces(x, y-1, true);
 						}
 					}
 					
 				}
 				
-				else if(key == ke.VK_SPACE)
-				{
+				else if(key == ke.VK_SPACE && cooldown == false)
+				{	
 					if(currentPlayer.playerOperatingTower() != null)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
 						t.shoot();
+						
+						cooldown = true;
+						
+						cooldownTimer.start();
 						
 						Command c = new Command(currentPlayer, "Shoot", t.getX(), t.getY());
 						
@@ -587,7 +625,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}
 				else if(key == ke.VK_1)
-				{					
+				{
+					System.out.println("Hello");
 					
 					if(progressBar.getString().startsWith("Building Tower"))
 					{
@@ -847,7 +886,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			{
 				if(backendBoard.getSpace(i, j) instanceof MineableSpace)
 				{
-					spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+					spaces[i][j].setIcon(mineralImage);
+					MineableSpace mine = (MineableSpace)(backendBoard.getSpace(i, j));
+					if(mine.getAvailable() == 0)
+					{
+						backendBoard.setBlank(mine);
+						spaces[i][j].setIcon(null);
+					}
+					
 				}
 				
 				if(backendBoard.getSpace(i, j).isOccupied())
@@ -897,6 +943,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			return;
 		}
 		if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+		{
+			return;
+		}
+		if(backendBoard.getSpace(x, y) instanceof MineableSpace)
 		{
 			return;
 		}

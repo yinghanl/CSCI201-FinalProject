@@ -27,4 +27,9 @@ public class MineableSpace extends ClickableSpace{
 		}
 		
 	}
+	
+	public int getAvailable()
+	{
+		return coinValue;
+	}
 }
