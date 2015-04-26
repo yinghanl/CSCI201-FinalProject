@@ -181,18 +181,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					restartLevelTimer();
 				}
 				
-				try{
-					Command c = new Command(currentPlayer, "Timer", timerInt, 0);
-					if(!isHost){
-						oos.writeObject(c);
-						oos.flush();	
-					}
-					
-				}
-				catch(IOException ioe)
-				{
-					ioe.printStackTrace();
-				}
+				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
+				sendMessageToClients(c);
 				
 				levelTimer.setText("" + timerInt);
 			}
@@ -984,6 +974,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								}
 								else if(command.equals("Timer"))
 								{
+									System.out.println("got command timer in client");
 									Command c = (Command)obj;
 									int timer = c.getX();
 									
