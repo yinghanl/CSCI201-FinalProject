@@ -3,7 +3,7 @@ package main;
 public class Main {
 	static boolean connect = false;
 	public static void main(String[] args) {
-		new LogInGUI();
+	//	new LogInGUI();
 	//	new LogInGUI();
 		Board b = new Board();
 	//	User u1 = new User(1);

@@ -232,15 +232,12 @@ public class GameScreenGUI extends JFrame{
 		{
 			public void actionPerformed(ActionEvent ae) {
 				
-				timerInt--;
-				if(timerInt<0){
-					restartLevelTimer();
-				}
+				timerInt = creeps.size();
 				
 				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
 				sendMessageToClients(c);
 				
-				levelTimer.setText("" + timerInt);
+				levelTimer.setText("Creeps Remaining: " + timerInt);
 			}
 			
 			
@@ -589,48 +586,13 @@ public class GameScreenGUI extends JFrame{
 				}
 				else if(key == ke.VK_2)
 				{
-					if(progressBar.getString().startsWith("Mining Space"))
-					{
-						return;
-					}
-					
-					int x = currentPlayer.getLocation().getX();
-					int y = currentPlayer.getLocation().getY();
-					
-					if(currentPlayer.getPlayerDirection().equals("NORTH"))
-					{
-						if(backendBoard.getSpace(x-1, y) instanceof MineableSpace)
-						{
-							mineSpaces(x-1, y, true);
-						}
-					}
-					if(currentPlayer.getPlayerDirection().equals("SOUTH"))
-					{
-						if(backendBoard.getSpace(x+1, y) instanceof MineableSpace)
-						{
-							mineSpaces(x+1, y, true);
-						}
-					}
-					if(currentPlayer.getPlayerDirection().equals("EAST"))
-					{
-						if(backendBoard.getSpace(x, y+1) instanceof MineableSpace)
-						{
-							mineSpaces(x, y+1, true);
-						}
-					}
-					if(currentPlayer.getPlayerDirection().equals("WEST"))
-					{
-						if(backendBoard.getSpace(x, y-1) instanceof MineableSpace)
-						{
-							mineSpaces(x, y-1, true);
-						}
-					}
+
 					
 				}
 				
-				else if(key == ke.VK_SPACE && cooldown == false)
+				else if(key == ke.VK_SPACE)
 				{	
-					if(currentPlayer.playerOperatingTower() != null)
+					if(currentPlayer.playerOperatingTower() != null && cooldown == false)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
 						t.shoot();
@@ -655,6 +617,115 @@ public class GameScreenGUI extends JFrame{
 						catch(IOException ioe)
 						{
 							ioe.printStackTrace();
+						}
+					}
+					else if(currentPlayer.playerOperatingTower() == null)
+					{
+						if(currentPlayer.getPlayerDirection() == "SOUTH")
+						{
+							if(backendBoard.getSpace(playerx+1, playery) instanceof MineableSpace)
+							{
+								if(progressBar.getString().startsWith("Mining Space"))
+								{
+									return;
+								}
+								mineSpaces(playerx+1, playery, true);
+							}	
+							else if(playerx+1 < 20)
+							{
+								if(goldEarned < 1 || progressBar.getString().startsWith("Building Tower"))
+								{
+									return;
+								}
+								placeTower(playerx+1, playery, true);
+							}
+						}
+						else if(currentPlayer.getPlayerDirection() == "NORTH")
+						{
+							if(backendBoard.getSpace(playerx-1, playery) instanceof MineableSpace)
+							{
+								if(progressBar.getString().startsWith("Mining Space"))
+								{
+									return;
+								}
+								mineSpaces(playerx-1, playery, true);
+							}	
+							else if(playerx-1 > 0)
+							{
+								if(goldEarned < 1 || progressBar.getString().startsWith("Building Tower"))
+								{
+									return;
+								}
+								placeTower(playerx-1, playery, true);
+							}
+						}
+						
+						else if(currentPlayer.getPlayerDirection() == "WEST")
+						{
+							if(backendBoard.getSpace(playerx, playery-1) instanceof MineableSpace)
+							{
+								if(progressBar.getString().startsWith("Mining Space"))
+								{
+									return;
+								}
+								mineSpaces(playerx, playery-1, true);
+							}	
+							else if(playery-1 > 0)
+							{
+								if(goldEarned < 1 || progressBar.getString().startsWith("Building Tower"))
+								{
+									return;
+								}
+								placeTower(playerx, playery-1, true);
+							}
+						}
+						else if(currentPlayer.getPlayerDirection() == "EAST")
+						{
+							if(backendBoard.getSpace(playerx, playery+1) instanceof MineableSpace)
+							{
+								if(progressBar.getString().startsWith("Mining Space"))
+								{
+									return;
+								}
+								mineSpaces(playerx, playery+1, true);
+							}	
+							else if(playery+1 < 32)
+							{
+								if(goldEarned < 1 || progressBar.getString().startsWith("Building Tower"))
+								{
+									return;
+								}
+								placeTower(playerx, playery+1, true);
+							}
+						}
+					}
+					else
+					{
+
+						
+						int x = currentPlayer.getLocation().getX();
+						int y = currentPlayer.getLocation().getY();
+						
+						if(currentPlayer.getPlayerDirection().equals("SOUTH"))
+						{
+							if(backendBoard.getSpace(x+1, y) instanceof MineableSpace)
+							{
+								mineSpaces(x+1, y, true);
+							}
+						}
+						if(currentPlayer.getPlayerDirection().equals("EAST"))
+						{
+							if(backendBoard.getSpace(x, y+1) instanceof MineableSpace)
+							{
+								mineSpaces(x, y+1, true);
+							}
+						}
+						if(currentPlayer.getPlayerDirection().equals("WEST"))
+						{
+							if(backendBoard.getSpace(x, y-1) instanceof MineableSpace)
+							{
+								mineSpaces(x, y-1, true);
+							}
 						}
 					}
 				}
@@ -696,46 +767,7 @@ public class GameScreenGUI extends JFrame{
 						}
 					}
 				}
-				else if(key == ke.VK_1)
-				{	
-					if(goldEarned < 1)
-					{
-						return;
-					}
-					if(progressBar.getString().startsWith("Building Tower"))
-					{
-						return;
-					}
-					if(currentPlayer.getPlayerDirection() == "SOUTH")
-					{
-						if(playerx+1 < 20)
-						{
-							placeTower(playerx+1, playery, true);
-						}
-					}
-					else if(currentPlayer.getPlayerDirection() == "NORTH")
-					{
-						if(playerx-1 > 0)
-						{
-							placeTower(playerx-1, playery, true);
-						}
-					}
-					
-					else if(currentPlayer.getPlayerDirection() == "WEST")
-					{
-						if(playery-1 > 0)
-						{
-							placeTower(playerx, playery-1, true);
-						}
-					}
-					else if(currentPlayer.getPlayerDirection() == "EAST")
-					{
-						if(playery+1 < 32)
-						{
-							placeTower(playerx, playery+1, true);
-						}
-					}
-				}
+
 			}
 			
 		});
@@ -1472,7 +1504,7 @@ public class GameScreenGUI extends JFrame{
 									int timer = c.getX();
 									
 									timerInt = timer;
-									levelTimer.setText("" + timerInt);
+									levelTimer.setText("Creeps Remaining: " + timerInt);
 									
 								}
 								else if(command.equals("Mine"))
