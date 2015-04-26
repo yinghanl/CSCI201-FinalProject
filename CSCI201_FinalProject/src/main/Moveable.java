@@ -17,7 +17,7 @@ abstract class Moveable extends Thread implements Serializable{
 	
 	//max x = 20
 	//max y = 32
-	public void move(int direction) throws BoundaryException{
+	public synchronized void move(int direction) throws BoundaryException{
 		
 		previousLocation = currentLocation;
 		//currentLocation.removeOccupant();
