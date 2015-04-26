@@ -134,7 +134,14 @@ public class TabPanel extends JPanel {
 			
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
-			
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch(InterruptedException ie)
+				{
+					System.out.println("IE:" + ie.getMessage());
+				}
 				System.out.println("chatPort = " + chatPort);
 				new GameRoomGUI(u, false, "localhost", chatPort, host + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
@@ -145,8 +152,8 @@ public class TabPanel extends JPanel {
 		createButton.addActionListener(new ActionListener (){
 			public void actionPerformed(ActionEvent e) {
 				Game newGame = new Game(u);
+				newGame.setChatPort(grc.getChatPort());
 				grc.newGame(newGame);
-				System.out.println("grc.getChatPort: " + grc.getChatPort());
 				new GameRoomGUI(u, true, "localhost", grc.getChatPort(), u.getUsername() + "'s Room", gameLobbyWindow, grc);
 				gameLobbyWindow.setVisible(false);
 			}	

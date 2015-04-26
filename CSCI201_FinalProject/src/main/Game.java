@@ -16,6 +16,7 @@ public class Game implements Serializable{
 	private int playersJoined = 1;
 	private Lock userLock = new ReentrantLock();
 	private Condition userCondition = userLock.newCondition();
+	private int chatPort;
 	
 	private ArrayList<AbstractUser> usersPlaying = new ArrayList<AbstractUser>();
 	
@@ -77,5 +78,15 @@ public class Game implements Serializable{
 	public int getID()
 	{
 		return gameLobbyID;
+	}
+	
+	public void setChatPort(int port)
+	{
+		chatPort = port;
+	}
+	
+	public int getChatPort()
+	{
+		return chatPort;
 	}
 }

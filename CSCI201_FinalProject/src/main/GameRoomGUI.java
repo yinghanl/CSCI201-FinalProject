@@ -120,7 +120,7 @@ public class GameRoomGUI extends JFrame {
 		if(!isHost){
 			System.out.println("player is not the host");
 		}
-		new CreateConnections().start();
+		new CreateConnections(port).start();
 	}//end of constructor
 	
 	
@@ -446,9 +446,8 @@ public class GameRoomGUI extends JFrame {
 			try {
 				oos.writeObject(obj);
 				oos.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ioe) {
+				System.out.println("IOE in GameRoomGUI.sendMessage : " + ioe.getMessage());
 			}
 		}//end of send message
 
@@ -486,10 +485,10 @@ public class GameRoomGUI extends JFrame {
 						{
 							usersReady = 1;
 							chatbox.append("\n" + usersConnected[1].getUsername() + " has left.");
-							usersConnected[1] = null;
 							users_in_room--;
 							userLabels[1][0].setText("   -------");
 							userLabels[1][1].setText("   -------");
+							usersConnected[1] = null;
 							startGameButton.setEnabled(false);
 						}
 						else{
@@ -581,8 +580,9 @@ public class GameRoomGUI extends JFrame {
 		
 		
 	class CreateConnections extends Thread{
-		public CreateConnections(){
-			
+		int port;
+		public CreateConnections(int port){
+			this.port = port;
 		}
 		public void run(){
 			if(isHost){
@@ -590,7 +590,7 @@ public class GameRoomGUI extends JFrame {
 				setupHost();
 				try {
 					System.out.println("Starting Chat Server");
-					ss = new ServerSocket(6789);
+					ss = new ServerSocket(port);
 					while (true) {
 						System.out.println("Waiting for client to connect...");
 						Socket s = ss.accept();
@@ -600,7 +600,7 @@ public class GameRoomGUI extends JFrame {
 						ct.start();
 					}
 				} catch (IOException ioe) {
-					System.out.println("IOE: " + ioe.getMessage());
+					System.out.println("IOE in GameRoomGUI: " + ioe.getMessage());
 				} finally {
 					if (ss != null) {
 						try {
@@ -614,7 +614,7 @@ public class GameRoomGUI extends JFrame {
 			}//end of if host
 			else{
 				try {
-					s = new Socket("localhost", 6789);
+					s = new Socket("localhost", port);
 					oos = new ObjectOutputStream(s.getOutputStream());
 					ois = new ObjectInputStream(s.getInputStream());
 					new ReadObject().start();

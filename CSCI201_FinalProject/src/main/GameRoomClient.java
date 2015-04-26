@@ -125,7 +125,7 @@ public class GameRoomClient extends Thread
 					if(code == 4)
 					{
 						hostGame.joinGame(au);
-						tp.setChatPort(nextPort);
+						tp.setChatPort(hostGame.getChatPort());
 						updateGame(hostGame);
 					}
 					else if(code == 5)
