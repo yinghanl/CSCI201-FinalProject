@@ -50,6 +50,13 @@ public class GameRoomClient extends Thread
 		sendGamePacket(new GameRoomPacket(g, 2));
 	}
 	
+	public void leaveGame()
+	{
+		g.leaveGame(au);
+		sendGamePacket(new GameRoomPacket(g, 2));
+		g = null;
+	}
+	
 	public void deleteGame()
 	{
 		

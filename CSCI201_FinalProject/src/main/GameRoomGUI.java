@@ -265,8 +265,11 @@ public class GameRoomGUI extends JFrame {
 				{
 					try
 					{
-						oos.writeObject(new Integer(3));
+						grc.leaveGame();
+						oos.writeObject(new Integer(-1));
 						oos.flush();
+						glw.setVisible(true);
+						setVisible(false);
 					}
 					catch(IOException ioe)
 					{
