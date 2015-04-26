@@ -654,7 +654,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		int numCreeps = 10;
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				Creep c = new Creep(backendBoard.getPathSpace(0));
 				creeps.put(numCreeps, c);
 				c.start();
@@ -664,6 +664,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				e.printStackTrace();
 			}	
 		}
+		//run();
 	}
 	
 	public void updateBoard()
