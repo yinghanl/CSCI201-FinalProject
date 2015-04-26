@@ -870,32 +870,31 @@ public class GameScreenGUI extends JFrame{
 		private Level l;
 		public StartGameThread(){
 			System.out.println("run");
-			l = levels[level];
-			numCreeps = l.getNumber();
 		}
 		public void run(){
-			while(numCreeps>0){ //there are remaining creeps
-				try {
-					Thread.sleep(l.getFrequency());
-					Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
-					creeps.put(numCreeps, c);
-					c.start();
-					//new Creep(backendBoard.getPathSpace(0)).start();
-					numCreeps--;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}	
-			}
-			while(creeps.size()>0){
-				System.out.println(creeps.size());
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			while(true){
+				l = levels[level];
+				numCreeps = l.getNumber();
+				while(numCreeps>0){ //there are remaining creeps
+					try {
+						Thread.sleep(l.getFrequency());
+						Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
+						creeps.put(numCreeps, c);
+						c.start();
+						//new Creep(backendBoard.getPathSpace(0)).start();
+						numCreeps--;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}	
 				}
-			}
-			while(creeps.size() == 0 && numCreeps == 0){
-			
+				while(creeps.size()>0){
+					System.out.println(creeps.size());
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				System.out.println("dead");
 				try {
 					//allCreepsDead.await();
@@ -905,9 +904,13 @@ public class GameScreenGUI extends JFrame{
 					e.printStackTrace();
 				}
 				level++;
-				
-				//run();
-			}//end of if end of level 	
+				if(level == numLevels){
+					//team has beat the game
+					break;
+				}
+			}
+			
+			//end of if end of level 	
 		}
 	}//end of startgame thread
 	
