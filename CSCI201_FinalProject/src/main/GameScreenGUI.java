@@ -212,7 +212,7 @@ public class GameScreenGUI extends JFrame{
 			ioe.printStackTrace();
 		}
 		
-		Timer time = new Timer(10, new ActionListener()
+		Timer time = new Timer(1, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
 				updateBoard();
