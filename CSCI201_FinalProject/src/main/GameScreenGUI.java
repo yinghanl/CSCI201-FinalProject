@@ -951,6 +951,7 @@ JPanel toReturn = new JPanel();
 					}
 				}
 				if(livesInt==0){
+					stopCreeps();
 					break;
 				}
 				try {
@@ -963,15 +964,24 @@ JPanel toReturn = new JPanel();
 				level++;
 				if(level == numLevels){
 					//team has beat the game
-					endGame();
+					stopCreeps();
 					break;
 				}
 			}
+			endGame();
 			
 			//end of if end of level 	
 		}
 	}//end of startgame thread
 	
+	private void stopCreeps(){
+		for(int i = 0; i<maxCreeps; i++){
+			if(creeps.containsKey(i)){
+				creeps.get(i).interrupt();
+				creeps.remove(i);
+			}
+		}
+	}
 	
 	public synchronized void updateBoard()
 	{
@@ -996,10 +1006,6 @@ JPanel toReturn = new JPanel();
 //					}
 					livesInt--;
 					lives.setText("Lives: " + livesInt);
-					if(livesInt == 0)
-					{
-						endGame();
-					}
 					
 				}
 				else{
