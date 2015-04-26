@@ -103,16 +103,17 @@ public class GameScreenGUI extends JFrame{
 	private Timer cooldownTimer;
 	
 	private int numCreeps;
+	private GameStats userStats;
+	
 //	
 //	private static Lock lock = new ReentrantLock();
 //	private static Condition allCreepsDead = lock.newCondition();
+
 	
-	User currentUser;
-	
-	public GameScreenGUI(Board b, Player p, boolean isHost, User u)
+	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u)
 	{
+		userStats = new GameStats(u);
 		
-		currentUser = u;
 		
 		cooldownTimer = new Timer(500, new ActionListener()
 		{
@@ -228,7 +229,7 @@ public class GameScreenGUI extends JFrame{
 		
 		
 
-		lvlTimer = new Timer(1000, new ActionListener()
+		lvlTimer = new Timer(100, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
 				
@@ -412,8 +413,8 @@ public class GameScreenGUI extends JFrame{
 							cancelMining();
 						}
 						
-						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
+						currentPlayer.move(0);
 
 						if(currentPlayer.moveableCouldMove())
 						{
@@ -459,8 +460,8 @@ public class GameScreenGUI extends JFrame{
 							cancelMining();
 						}
 						
-						currentPlayer.move(1);
 						currentPlayer.setPlayerDirection("SOUTH");
+						currentPlayer.move(1);
 						if(currentPlayer.moveableCouldMove())
 						{
 							if(isHost){
@@ -505,8 +506,8 @@ public class GameScreenGUI extends JFrame{
 							cancelMining();
 						}
 						
-						currentPlayer.move(2);
 						currentPlayer.setPlayerDirection("EAST");
+						currentPlayer.move(2);
 						if(currentPlayer.moveableCouldMove())
 						{
 							if(isHost){
@@ -551,8 +552,8 @@ public class GameScreenGUI extends JFrame{
 							cancelMining();
 						}
 						
-						currentPlayer.move(3);
 						currentPlayer.setPlayerDirection("WEST");
+						currentPlayer.move(3);
 						if(currentPlayer.moveableCouldMove())
 						{
 							if(isHost){
@@ -1203,6 +1204,10 @@ public class GameScreenGUI extends JFrame{
 										e.printStackTrace();
 									}
 								}
+								else if(command.equals("Turn(0)"))
+								{
+									p.setPlayerDirection("NORTH");
+								}
 								else if(command.equals("Move(1)"))
 								{
 									try
@@ -1213,6 +1218,10 @@ public class GameScreenGUI extends JFrame{
 									catch (BoundaryException e) {
 										e.printStackTrace();
 									}
+								}
+								else if(command.equals("Turn(1)"))
+								{
+									p.setPlayerDirection("SOUTH");
 								}
 								else if(command.equals("Move(2)"))
 								{
@@ -1225,6 +1234,10 @@ public class GameScreenGUI extends JFrame{
 										e.printStackTrace();
 									}
 								}
+								else if(command.equals("Turn(2)"))
+								{
+									p.setPlayerDirection("EAST");
+								}
 								else if(command.equals("Move(3)"))
 								{
 									try
@@ -1235,6 +1248,10 @@ public class GameScreenGUI extends JFrame{
 									catch (BoundaryException e) {
 										e.printStackTrace();
 									}
+								}
+								else if(command.equals("Turn(3"))
+								{
+									p.setPlayerDirection("WEST");
 								}
 								else if(command.equals("PlaceTower"))
 								{
