@@ -32,6 +32,12 @@ public class Board implements Serializable {
 		this.setMineable(map[2][21]);
 		this.setMineable(map[4][20]);
 		this.setMineable(map[5][23]);
+		this.setMineable(map[8][8]);
+		this.setMineable(map[8][14]);
+		this.setMineable(map[2][7]);
+		this.setMineable(map[11][26]);
+		this.setMineable(map[15][20]);
+		
 		
 	}
 	
