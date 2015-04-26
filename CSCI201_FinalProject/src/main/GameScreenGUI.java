@@ -88,6 +88,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	
 	private ImageIcon creepImage;
 	private ImageIcon bulletImage;
+	private ImageIcon explosionImage;
 	
 	private int timer = 1000;
 	
@@ -130,6 +131,17 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		this.add(getTopPanel(), BorderLayout.NORTH);
 				
 		this.setVisible(true);
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Explosion.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			explosionImage = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		
 			
 		try
 		{
@@ -181,18 +193,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					restartLevelTimer();
 				}
 				
-				try{
-					Command c = new Command(currentPlayer, "Timer", timerInt, 0);
-					if(!isHost){
-						oos.writeObject(c);
-						oos.flush();	
-					}
-					
-				}
-				catch(IOException ioe)
-				{
-					ioe.printStackTrace();
-				}
+				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
+				sendMessageToClients(c);
 				
 				levelTimer.setText("" + timerInt);
 			}
@@ -569,6 +571,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				}
 				else if(key == ke.VK_1)
 				{					
+					
+					if(progressBar.getString().startsWith("Building Tower"))
+					{
+						return;
+					}
 					if(currentPlayer.getPlayerDirection() == "SOUTH")
 					{
 						if(playerx+1 < 20)
@@ -731,7 +738,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		int numCreeps = 10;
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				Creep c = new Creep(backendBoard.getPathSpace(0));
 				creeps.put(numCreeps, c);
 				c.start();
@@ -741,6 +748,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				e.printStackTrace();
 			}	
 		}
+		//run();
 	}
 	
 	public void updateBoard()
@@ -754,7 +762,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				if(c.isDead()){
 					creeps.remove(i);
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-					spaces[x][y].setIcon(null);
+					new ExplosionThread(x, y).start();
+					//spaces[x][y].setIcon(explosionImage);
 
 				}
 				else if(c.isOffGrid()){
@@ -855,6 +864,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		if(backendBoard.getSpace(x, y) instanceof PathSpace){
 			return;
 		}
+		if(backendBoard.getSpace(x, y) instanceof TowerSpace)
+		{
+			return;
+		}
+		
 		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
 		
 		BufferedImage img = b.getTowerImages();
@@ -1068,6 +1082,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								}
 								else if(command.equals("Timer"))
 								{
+									System.out.println("got command timer in client");
 									Command c = (Command)obj;
 									int timer = c.getX();
 									
@@ -1280,6 +1295,26 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}//end of finally
 			}//end of if host
+		}
+	}
+	
+	public class ExplosionThread extends Thread{
+		private int x, y;
+		
+		public ExplosionThread(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+		
+		public void run(){
+			spaces[x][y].setIcon(explosionImage);
+			try {
+				sleep(200);
+				spaces[x][y].setIcon(null);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 }//end of class
