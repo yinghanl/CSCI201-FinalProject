@@ -584,11 +584,6 @@ public class GameScreenGUI extends JFrame{
 						e.printStackTrace();
 					}
 				}
-				else if(key == ke.VK_2)
-				{
-
-					
-				}
 				
 				else if(key == ke.VK_SPACE)
 				{	
@@ -699,35 +694,6 @@ public class GameScreenGUI extends JFrame{
 							}
 						}
 					}
-					else
-					{
-
-						
-						int x = currentPlayer.getLocation().getX();
-						int y = currentPlayer.getLocation().getY();
-						
-						if(currentPlayer.getPlayerDirection().equals("SOUTH"))
-						{
-							if(backendBoard.getSpace(x+1, y) instanceof MineableSpace)
-							{
-								mineSpaces(x+1, y, true);
-							}
-						}
-						if(currentPlayer.getPlayerDirection().equals("EAST"))
-						{
-							if(backendBoard.getSpace(x, y+1) instanceof MineableSpace)
-							{
-								mineSpaces(x, y+1, true);
-							}
-						}
-						if(currentPlayer.getPlayerDirection().equals("WEST"))
-						{
-							if(backendBoard.getSpace(x, y-1) instanceof MineableSpace)
-							{
-								mineSpaces(x, y-1, true);
-							}
-						}
-					}
 				}
 				else if(key == ke.VK_SHIFT)
 				{
@@ -751,9 +717,10 @@ public class GameScreenGUI extends JFrame{
 							Command c = new Command(currentPlayer, "RotateTower", x, y);
 							try
 							{
-								if(isHost){
+								if(isHost)
+								{
 									sendMessageToClients(c);
-									}
+								}
 								else{
 									oos.writeObject(c);
 									oos.flush();
@@ -830,8 +797,11 @@ public class GameScreenGUI extends JFrame{
 						progressBar.setValue(0);
 						if(backendBoard.getSpace(x,y) instanceof MineableSpace)
 						{
-							int valueMined = ((MineableSpace)(backendBoard.getSpace(x, y))).mine();
-							goldEarned = goldEarned + valueMined;
+							if(isHost)
+							{
+								int valueMined = ((MineableSpace)(backendBoard.getSpace(x, y))).mine();
+								goldEarned = goldEarned + valueMined;
+							}
 							teamGold.setText("Gold:" + goldEarned);
 							
 							if(isHost)
@@ -843,6 +813,7 @@ public class GameScreenGUI extends JFrame{
 								try
 								{
 									oos.writeObject(new Command(currentPlayer, "Mine", x, y));
+									oos.flush();
 								}
 								catch (IOException ioe)
 								{
