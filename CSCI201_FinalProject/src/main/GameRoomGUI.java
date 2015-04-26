@@ -275,7 +275,7 @@ public class GameRoomGUI extends JFrame {
 	
 	public void createStatusPanel(){
 		JPanel jp = new JPanel();
-		userLabels = new JLabel[4][4];
+		userLabels = new JLabel[2][2];
 		jp.setLayout(new GridLayout(5,5));
 		JLabel jl;
 		Border border = LineBorder.createBlackLineBorder();
@@ -299,7 +299,7 @@ public class GameRoomGUI extends JFrame {
 		jp.add(jl);
 		userLabels[0][1] = jl;
 		
-		for(int i=1; i<4; i++){
+		for(int i=1; i<2; i++){
 			if(i <= users_in_room-1){
 				jl = new JLabel("   "+usersConnected[i-1].getUsername());
 				jl.setBorder(border);
@@ -330,7 +330,7 @@ public class GameRoomGUI extends JFrame {
 	}//end of creating the panel that holds a table of user
 	
 	public void updateuserLabels(){
-		for(int i=1; i<4; i++){
+		for(int i=1; i<2; i++){
 			if(i < users_in_room){
 				userLabels[i][0].setText("   "+usersConnected[i].getUsername());
 				if(usersConnected[i].getReadyStatus()){
@@ -352,7 +352,7 @@ public class GameRoomGUI extends JFrame {
 		*/
 	}//end of reopening the gameroom
 	public void reset(){
-		for(int i=1; i < 4; i++){
+		for(int i=1; i < 2; i++){
 			userLabels[i][1].setText("   Not Ready");
 		}//end of for
 	}
@@ -416,7 +416,7 @@ public class GameRoomGUI extends JFrame {
 					}//end of else if obj is a string
 					else if(obj instanceof JLabel[][]){
 						sendMessageToClients(obj);
-						for(int i=1; i < 4; i++){
+						for(int i=1; i < 2; i++){
 							userLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 							userLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
 						}//end of for
@@ -480,7 +480,7 @@ public class GameRoomGUI extends JFrame {
 							chatbox.append(((String)obj));
 						}//end of else if obj is a string
 						else if(obj instanceof JLabel[][]){
-							for(int i=0; i < 4; i++){
+							for(int i=0; i < 2; i++){
 								userLabels[i][0].setText(((JLabel[][])obj)[i][0].getText());
 								userLabels[i][1].setText(((JLabel[][])obj)[i][1].getText());
 							}
