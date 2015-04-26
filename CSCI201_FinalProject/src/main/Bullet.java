@@ -10,7 +10,7 @@ public class Bullet extends Moveable{
 		damage = val;
 	}
 	
-	public void hit(Creep c){
+	public synchronized void hit(Creep c){
 		c.hit(damage);
 	}
 	
