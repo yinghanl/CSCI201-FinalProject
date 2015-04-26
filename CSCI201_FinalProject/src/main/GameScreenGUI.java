@@ -377,7 +377,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		progressBar.setString("No Task");
 		progressBar.setValue(0);
 	}
-	
+	private void cancelMining()
+	{
+		timer = 100;
+		progressTimer.stop();
+		progressBar.setString("No Task");
+		progressBar.setValue(0);
+	}
 	
 	private synchronized void createActions()
 	{
@@ -401,11 +407,17 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						{
 							cancelBuildingTower();
 						}
+						if(progressBar.getString().startsWith("Mining Space"))
+						{
+							cancelMining();
+						}
 						
 						currentPlayer.move(0);
 						currentPlayer.setPlayerDirection("NORTH");
+
 						if(currentPlayer.moveableCouldMove())
-						{	
+						{
+							
 							if(isHost){
 								sendMessageToClients(new Command(currentPlayer, "Move(0)"));
 							}
@@ -414,8 +426,21 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								oos.flush();
 							}	
 						}
+						else
+						{
+							if(isHost)
+							{
+								sendMessageToClients(new Command(currentPlayer, "Turn(0)"));
+							}
+							else
+							{
+								oos.writeObject(new Command(currentPlayer, "Turn(0)"));
+								oos.flush();
+							}
+						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
+
 						e.printStackTrace();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -429,7 +454,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						{
 							cancelBuildingTower();
 						}
-						
+						if(progressBar.getString().startsWith("Mining Space"))
+						{
+							cancelMining();
+						}
 						
 						currentPlayer.move(1);
 						currentPlayer.setPlayerDirection("SOUTH");
@@ -442,6 +470,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								oos.writeObject(new Command(currentPlayer, "Move(1)"));
 								oos.flush();
 							}	
+						}
+						else
+						{
+							if(isHost)
+							{
+								sendMessageToClients(new Command(currentPlayer, "Turn(1)"));
+							}
+							else
+							{
+								oos.writeObject(new Command(currentPlayer, "Turn(1)"));
+								oos.flush();
+							}
 						}
 
 					}catch (BoundaryException e) {
@@ -460,7 +500,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						{
 							cancelBuildingTower();
 						}
-						
+						if(progressBar.getString().startsWith("Mining Space"))
+						{
+							cancelMining();
+						}
 						
 						currentPlayer.move(2);
 						currentPlayer.setPlayerDirection("EAST");
@@ -474,6 +517,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								oos.flush();
 							}	
 							
+						}
+						else
+						{
+							if(isHost)
+							{
+								sendMessageToClients(new Command(currentPlayer, "Turn(2)"));
+							}
+							else
+							{
+								oos.writeObject(new Command(currentPlayer, "Turn(2)"));
+								oos.flush();
+							}
 						}
 					} 
 					catch (BoundaryException e) {
@@ -491,7 +546,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						{
 							cancelBuildingTower();
 						}
-						
+						if(progressBar.getString().startsWith("Mining Space"))
+						{
+							cancelMining();
+						}
 						
 						currentPlayer.move(3);
 						currentPlayer.setPlayerDirection("WEST");
@@ -504,6 +562,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 								oos.writeObject(new Command(currentPlayer, "Move(3)"));
 								oos.flush();
 							}	
+						}
+						else
+						{
+							if(isHost)
+							{
+								sendMessageToClients(new Command(currentPlayer, "Turn(3)"));
+							}
+							else
+							{
+								oos.writeObject(new Command(currentPlayer, "Turn(3)"));
+								oos.flush();
+							}
 						}
 					} catch (BoundaryException e) {
 						// TODO Auto-generated catch block
@@ -590,7 +660,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					if(currentPlayer.playerOperatingTower() != null)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
-						t.rotate();
+						
+						if(isHost)
+						{
+							t.rotate();
+						}
 						
 						if(t instanceof BasicTower)
 						{
@@ -599,13 +673,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 							BufferedImage image = ((BasicTower) t).getTowerImages();
 							Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
 							spaces[x][y].setIcon(new ImageIcon(icon));
-							
+
 							Command c = new Command(currentPlayer, "RotateTower", x, y);
 							try
 							{
 								if(isHost){
 									sendMessageToClients(c);
-								}
+									}
 								else{
 									oos.writeObject(c);
 									oos.flush();
@@ -621,6 +695,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				}
 				else if(key == ke.VK_1)
 				{	
+					if(goldEarned < 1)
+					{
+						return;
+					}
 					if(progressBar.getString().startsWith("Building Tower"))
 					{
 						return;
@@ -719,10 +797,24 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						{
 							int valueMined = ((MineableSpace)(backendBoard.getSpace(x, y))).mine();
 							goldEarned = goldEarned + valueMined;
-							
-							System.out.println(valueMined);
-							
 							teamGold.setText("Gold:" + goldEarned);
+							
+							if(isHost)
+							{
+								sendMessageToClients(new Command(currentPlayer, "Mine", x, y));
+							}
+							else
+							{
+								try
+								{
+									oos.writeObject(new Command(currentPlayer, "Mine", x, y));
+								}
+								catch (IOException ioe)
+								{
+									ioe.printStackTrace();
+								}
+							}
+							
 						}
 					}
 					progressTimer.stop();
@@ -917,6 +1009,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 			
 		timer = 100;
+		
+		goldEarned--;
+		teamGold.setText("Gold: " + goldEarned);
 		
 		progressTimer = new Timer(50, new ActionListener()
 		{
@@ -1153,6 +1248,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									levelTimer.setText("" + timerInt);
 									
 								}
+								else if(command.equals("Mine"))
+								{
+									Command c = (Command)obj;
+									if(backendBoard.getSpace(c.getX(), c.getY()) instanceof MineableSpace)
+									{
+										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
+										int valueMined = m.mine();
+										goldEarned = goldEarned + valueMined;
+										teamGold.setText("Gold:" + goldEarned);
+										
+									}
+								}
 							}
 						}
 						sendMessageToClients(obj);
@@ -1207,6 +1314,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 										e.printStackTrace();
 									}
 								}
+								else if(command.equals("Turn(0)"))
+								{
+									p.setPlayerDirection("NORTH");
+								}
 								else if(command.equals("Move(1)"))
 								{
 									try
@@ -1217,6 +1328,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									catch (BoundaryException e) {
 										e.printStackTrace();
 									}
+								}
+								else if(command.equals("Turn(1)"))
+								{
+									p.setPlayerDirection("SOUTH");
 								}
 								else if(command.equals("Move(2)"))
 								{
@@ -1229,6 +1344,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 										e.printStackTrace();
 									}
 								}
+								else if(command.equals("Turn(2)"))
+								{
+									p.setPlayerDirection("EAST");
+								}
 								else if(command.equals("Move(3)"))
 								{
 									try
@@ -1239,6 +1358,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									catch (BoundaryException e) {
 										e.printStackTrace();
 									}
+								}
+								else if(command.equals("Turn(3)"))
+								{
+									p.setPlayerDirection("WEST");
 								}
 								else if(command.equals("PlaceTower"))
 								{
@@ -1297,6 +1420,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									timerInt = timer;
 									levelTimer.setText("" + timerInt);
 									
+								}
+								else if(command.equals("Mine"))
+								{
+									Command c = (Command)obj;
+									if(backendBoard.getSpace(c.getX(), c.getY()) instanceof MineableSpace)
+									{
+										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
+										int valueMined = m.mine();
+										goldEarned = goldEarned + valueMined;
+										teamGold.setText("Gold:" + goldEarned);
+										
+									}
 								}
 							}
 						}
