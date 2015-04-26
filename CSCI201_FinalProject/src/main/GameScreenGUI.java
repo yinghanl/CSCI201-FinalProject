@@ -232,15 +232,12 @@ public class GameScreenGUI extends JFrame{
 		{
 			public void actionPerformed(ActionEvent ae) {
 				
-				timerInt--;
-				if(timerInt<0){
-					restartLevelTimer();
-				}
+				timerInt = creeps.size();
 				
 				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
 				sendMessageToClients(c);
 				
-				levelTimer.setText("" + timerInt);
+				levelTimer.setText("Creeps Remaining: " + timerInt);
 			}
 			
 			
@@ -1507,7 +1504,7 @@ public class GameScreenGUI extends JFrame{
 									int timer = c.getX();
 									
 									timerInt = timer;
-									levelTimer.setText("" + timerInt);
+									levelTimer.setText("Creeps Remaining: " + timerInt);
 									
 								}
 								else if(command.equals("Mine"))
