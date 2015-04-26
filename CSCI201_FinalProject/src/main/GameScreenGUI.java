@@ -106,7 +106,8 @@ public class GameScreenGUI extends JFrame{
 	private Timer cooldownTimer;
 	
 	private int numCreeps;
-	private GameStats userStats;
+	private GameStats currentUserStats;
+	private Vector<GameStats> gameStatsVector;
 	
 	private StartGameThread startGameThread;
 	
@@ -117,7 +118,8 @@ public class GameScreenGUI extends JFrame{
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u)
 	{
-		userStats = new GameStats(u);
+		currentUserStats = new GameStats(u);
+		gameStatsVector = new Vector<GameStats>();
 		
 		
 		cooldownTimer = new Timer(500, new ActionListener()
@@ -853,6 +855,7 @@ JPanel toReturn = new JPanel();
 							}
 							teamGold.setText("Gold:" + goldEarned);
 							
+							
 							if(isHost)
 							{
 								sendMessageToClients(new Command(currentPlayer, "Mine", x, y));
@@ -869,7 +872,7 @@ JPanel toReturn = new JPanel();
 									ioe.printStackTrace();
 								}
 							}
-							
+							currentUserStats.updateGold(currentUserStats.getGold() + 1);
 						}
 					}
 					progressTimer.stop();
@@ -886,7 +889,36 @@ JPanel toReturn = new JPanel();
 		startGameThread.start();
 		//System.out.println("game is started");
 	}
+	public void endGame()
+	{
+		this.synchronizeGameStatsVector();
+		gameStatsVector.add(currentUserStats);
+		new PostGameGUI(gameStatsVector);
+		this.dispose();
+	}
 	
+	private void synchronizeGameStatsVector() {
+		Command c = new Command(currentPlayer, "SynchronizeVector");
+		
+		try
+		{
+			if(isHost)
+			{
+				sendMessageToClients(c);
+			}
+			else
+			{
+				oos.writeObject(c);
+				oos.flush();
+			}
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		
+	}
+
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
@@ -931,6 +963,7 @@ JPanel toReturn = new JPanel();
 				level++;
 				if(level == numLevels){
 					//team has beat the game
+					endGame();
 					break;
 				}
 			}
@@ -963,6 +996,11 @@ JPanel toReturn = new JPanel();
 //					}
 					livesInt--;
 					lives.setText("Lives: " + livesInt);
+					if(livesInt == 0)
+					{
+						endGame();
+					}
+					
 				}
 				else{
 					//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED))
@@ -1387,6 +1425,11 @@ JPanel toReturn = new JPanel();
 									goldEarned--;
 									teamGold.setText("Gold: " + goldEarned);
 								}
+								else if(command.equals("SynchronizeStats"))
+								{
+									Command c = (Command)(obj);
+									gameStatsVector.addElement(c.getStats());
+								}
 							}
 						}
 						sendMessageToClients(obj);
@@ -1572,6 +1615,11 @@ JPanel toReturn = new JPanel();
 									
 									goldEarned--;
 									teamGold.setText("Gold: " + goldEarned);
+								}
+								else if(command.equals("SynchronizeStats"))
+								{
+									Command c = (Command)(obj);
+									gameStatsVector.addElement(c.getStats());
 								}
 							}
 						}
