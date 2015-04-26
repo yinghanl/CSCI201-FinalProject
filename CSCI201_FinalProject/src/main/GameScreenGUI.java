@@ -2,6 +2,8 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -37,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 import javax.swing.text.DefaultCaret;
 
 public class GameScreenGUI extends JFrame{
@@ -258,31 +261,71 @@ public class GameScreenGUI extends JFrame{
 	
 	private JPanel getTopPanel()
 	{
-		JPanel toReturn = new JPanel();
+JPanel toReturn = new JPanel();
 		
 		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.X_AXIS));
 		
+		Border resourceBorder = BorderFactory.createEtchedBorder();
+		
 		levelTimer = new JLabel("" + timerInt);
+		//Gold section
+		JPanel goldPanel = new JPanel();
+		goldPanel.setLayout(new FlowLayout());
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(new File("images/GoldIcon.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Image temp = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		ImageIcon goldIcon = new ImageIcon(temp);
 		
-		teamGold = new JLabel("Gold: " + goldEarned);
+		JLabel goldIconLabel = new JLabel(goldIcon);
+		teamGold = new JLabel("" + goldEarned);
+		goldPanel.add(goldIconLabel);
+		goldPanel.add(teamGold);
+		goldPanel.setBorder(resourceBorder);
+		goldPanel.setPreferredSize(new Dimension(0,35));
+		//end of gold
+		//Lives section
+		JPanel lifePanel = new JPanel();
+		lifePanel.setLayout(new FlowLayout());
+		BufferedImage image2 = null;
+		try{
+			image2 = ImageIO.read(new File("images/LifeIcon.png"));
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 		
-		lives = new JLabel("Lives: " + livesInt);
+		Image temp2 = image2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		ImageIcon lifeIcon = new ImageIcon(temp2);
+		JLabel lifeIconLabel = new JLabel(lifeIcon);
+		lives = new JLabel("" + livesInt);
+		lifePanel.add(lifeIconLabel);
+		lifePanel.add(lives);
+		lifePanel.setBorder(resourceBorder);
+		lifePanel.setPreferredSize(new Dimension(0,35));
+		//End of Lives 
 		
-		toReturn.add(lives);
+		toReturn.add(lifePanel);
+		toReturn.add(goldPanel);
 		toReturn.add(Box.createGlue());
-		toReturn.add(Box.createGlue());
+		//toReturn.add(Box.createGlue());
 
 		
 		toReturn.add(levelTimer);
 		
 		toReturn.add(Box.createGlue());
-		
+		/*
 		toReturn.add(Box.createGlue());
 		
-		toReturn.add(teamGold);
+		toReturn.add(goldPanel);
 		
 		toReturn.add(Box.createGlue());
-		
+		*/
+		Border outerBorder = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),BorderFactory.createLoweredBevelBorder());
+		toReturn.setBorder(outerBorder);
 		return toReturn;
 	}
 	
