@@ -1166,7 +1166,7 @@ JPanel toReturn = new JPanel();
 	
 	public void restartLevelTimer()
 	{
-		timerInt = 60;
+		timerInt = levels[level].getNumber();
 	}
 	
 	public void removeChatThread(ChatThread ct) {

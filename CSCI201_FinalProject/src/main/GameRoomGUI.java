@@ -132,6 +132,7 @@ public class GameRoomGUI extends JFrame {
 	}
 	
 	public void usersConnected(AbstractUser u){
+		System.out.println("users_in_room" + users_in_room);
 		usersConnected[users_in_room] = u;
 		users_in_room++;
 		chatbox.append("\n" + u.getUsername()+" connected!");
@@ -455,8 +456,8 @@ public class GameRoomGUI extends JFrame {
 			try {
 				obj = ois.readObject();
 				while(obj != null){
-					if(obj instanceof User){
-						usersConnected((User)obj);
+					if(obj instanceof AbstractUser){
+						usersConnected((AbstractUser)obj);
 						updateuserLabels();
 						while(!updated){}
 						sendMessageToClients(userLabels);
