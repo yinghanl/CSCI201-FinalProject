@@ -1091,6 +1091,10 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}	
 	}
 	
+	public void startGame(){
+		run();
+	}
+	
 	class ChatThread extends Thread {
 		//private BufferedReader br;
 		private ObjectOutputStream oos;
@@ -1133,8 +1137,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						sendMessageToClients(currentPlayer);
 						backendBoard.setPlayer((Player)obj);
 						players.add((Player)obj);
-						//System.out.println("sending player obj to all the other players");
 						sendMessageToClients(obj);
+						sendMessageToClients(new Integer(-1));
+						startGame();
 						
 					}
 					else if(obj instanceof Command)
@@ -1281,8 +1286,8 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		public synchronized void run(){
 			try {
 				obj = ois.readObject();
+				
 				while(obj != null){
-					System.out.println("ob not null in client: "+obj.getClass());
 					if(obj instanceof String){
 						chat.append(((String)obj));
 					}//end of if ob is String
@@ -1291,6 +1296,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						backendBoard.setPlayer((Player)obj);
 						players.add((Player)obj);
 						
+					}
+					else if(obj instanceof Integer){
+						if((Integer)obj == -1){
+							startGame();
+						}
 					}
 					else if(obj instanceof Command)
 					{
