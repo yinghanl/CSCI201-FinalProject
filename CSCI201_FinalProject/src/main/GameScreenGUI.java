@@ -98,19 +98,14 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private boolean cooldown = false;
 	
 	private int timer = 1000;
-<<<<<<< HEAD
 	private int numLevels = 4;
 	private int level = 0;
+	private Timer cooldownTimer;
 	
 	private int numCreeps;
 	
 	private static Lock lock = new ReentrantLock();
 	private static Condition allCreepsDead = lock.newCondition();
-	
-	public GameScreenGUI(Board b, Player p, boolean isHost)
-	{	
-=======
-	private Timer cooldownTimer;
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
@@ -123,7 +118,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		}
 		);
 		
->>>>>>> 5d84e4904ea0c56ebe7ac1cedd6badc0906e1931
 		
 		levels = new Level[numLevels];
 		levels[0] = new Level(10, 2000, 4000, 5);
