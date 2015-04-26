@@ -489,7 +489,7 @@ public class GameRoomGUI extends JFrame {
 							users_in_room--;
 							userLabels[1][0].setText("   -------");
 							userLabels[1][1].setText("   -------");
-							
+							startGameButton.setEnabled(false);
 						}
 						else{
 							userLabelIndex = (Integer)obj;

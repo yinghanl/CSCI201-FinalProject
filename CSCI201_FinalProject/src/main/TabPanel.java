@@ -27,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -76,6 +78,7 @@ public class TabPanel extends JPanel {
 		buttonPanel = new JPanel();
 		createButton = new JButton("Create Game");
 		joinButton = new JButton("Join Game");
+		joinButton.setEnabled(false);
 		if(u instanceof User) returnButton = new JButton("Logout");
 		else returnButton = new JButton("Return to Login Window");
 		
@@ -134,10 +137,7 @@ public class TabPanel extends JPanel {
 		
 		joinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
-				if (gameListTable.getSelectedRow()==-1){ return;} //if no row is selected
-				if ( (int) gameListModel.getValueAt(gameListTable.getSelectedRow(), 1) >= 2  ) return;//if there are already 2 players
-				
+			
 				String host = (String)gameListModel.getValueAt(gameListTable.getSelectedRow(), 0);
 				grc.joinHostGame(host);
 				
@@ -164,20 +164,50 @@ public class TabPanel extends JPanel {
 			}
 		});
 
-
+		
+		gameListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+				if(lsm.isSelectionEmpty())
+				{
+					joinButton.setEnabled(false);
+				}
+				else if((int)gameListTable.getValueAt(gameListTable.getSelectedRow(), 1) == 2)
+				{
+					joinButton.setEnabled(false);
+				}
+				else
+				{
+					joinButton.setEnabled(true);
+				}
+			}
+		});
 	}
 	
 	public void updateGames(Vector<Game> games){
 		//System.out.println("Trying to update game");
 		int numGames = games.size();
+		int selectedRow = -1;
 		System.out.println("number of games: " + numGames);
+		if(gameListTable != null)
+		{
+			selectedRow = gameListTable.getSelectedRow();
+		}
+		
 		gameListModel.setRowCount(0);
 		for (int i = 0; i < numGames; i++){
 			Game g = games.elementAt(i);
 			gameListModel.addRow(new Object[] { g.getGameHost().getUsername(), g.getNumJoined() });
 		}
-		
 		gameListModel.fireTableDataChanged();
+		if(selectedRow != -1)
+		{
+			gameListTable.setRowSelectionInterval(selectedRow, selectedRow);
+		}
+		
+		
 		
 	}
 	
