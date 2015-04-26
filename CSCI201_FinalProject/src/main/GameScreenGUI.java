@@ -634,8 +634,11 @@ JPanel toReturn = new JPanel();
 					if(currentPlayer.playerOperatingTower() != null && cooldown == false)
 					{
 						Tower t = currentPlayer.playerOperatingTower();
-						t.shoot();
 						
+						if(isHost)
+						{
+							t.shoot();
+						}
 						cooldown = true;
 						
 						cooldownTimer.start();
