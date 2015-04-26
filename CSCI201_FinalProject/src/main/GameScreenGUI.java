@@ -20,6 +20,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -83,6 +86,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		
 	private Vector<Player> players; 
 	private HashMap<Integer, Creep> creeps;
+	private Level [] levels;
 	
 	private int MAX_CREEPS = 10;
 	
@@ -94,10 +98,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	private boolean cooldown = false;
 	
 	private int timer = 1000;
+	private int numLevels = 4;
+	private int level = 0;
 	private Timer cooldownTimer;
+	
+	private int numCreeps;
+//	
+//	private static Lock lock = new ReentrantLock();
+//	private static Condition allCreepsDead = lock.newCondition();
 	
 	public GameScreenGUI(Board b, Player p, boolean isHost)
 	{
+		
 		cooldownTimer = new Timer(500, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) {
@@ -108,6 +120,11 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		);
 		
 		
+		levels = new Level[numLevels];
+		levels[0] = new Level(10, 2000, 4000, 5);
+		levels[1] = new Level(10, 1000, 2000, 10);
+		levels[2] = new Level(20, 800, 1600, 20);
+		levels[3] = new Level(30, 400, 800, 30);
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
@@ -194,6 +211,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 			}
 		});
 		time.start();
+		
 		
 		board.addMouseListener(new MouseAdapter()
 		{
@@ -602,9 +620,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					}
 				}
 				else if(key == ke.VK_1)
-				{
-					System.out.println("Hello");
-					
+				{	
 					if(progressBar.getString().startsWith("Building Tower"))
 					{
 						return;
@@ -614,18 +630,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playerx+1 < 20)
 						{
 							placeTower(playerx+1, playery, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx+1, playery);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "NORTH")
@@ -633,19 +637,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playerx-1 > 0)
 						{
 							placeTower(playerx-1, playery, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx-1, playery);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							
 						}
 					}
 					
@@ -654,18 +645,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playery-1 > 0)
 						{
 							placeTower(playerx, playery-1, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery-1);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 					else if(currentPlayer.getPlayerDirection() == "EAST")
@@ -673,18 +652,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						if(playery+1 < 32)
 						{
 							placeTower(playerx, playery+1, true);
-							Command c = new Command(currentPlayer, "PlaceTower", playerx, playery+1);
-							try {
-								if(isHost){
-									sendMessageToClients(c);
-								}
-								else{
-									oos.writeObject(c);
-									oos.flush();
-								}	
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
 					}
 				}
@@ -768,11 +735,13 @@ public class GameScreenGUI extends JFrame implements Runnable{
 	}
 	
 	public void run(){
-		int numCreeps = 10;
+		System.out.println("run");
+		Level l = levels[level];
+		numCreeps = l.getNumber();
 		while(numCreeps>0){ //there are remaining creeps
 			try {
-				Thread.sleep(2000);
-				Creep c = new Creep(backendBoard.getPathSpace(0));
+				Thread.sleep(l.getFrequency());
+				Creep c = new Creep(backendBoard.getPathSpace(0), l.getHealth(), l.getSpeed());
 				creeps.put(numCreeps, c);
 				c.start();
 				//new Creep(backendBoard.getPathSpace(0)).start();
@@ -781,18 +750,30 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				e.printStackTrace();
 			}	
 		}
+		while(creeps.size()>0){
+			System.out.println(creeps.size());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("dead");
 		try {
+			//allCreepsDead.await();
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//run();
+		level++;
+		
+		run();
 	}
 	
 	public void updateBoard()
 	{
-		
 		for(int i = 0; i<MAX_CREEPS; i++){
 			if(creeps.containsKey(i)){
 				Creep c = creeps.get(i);
@@ -800,12 +781,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 				int y = c.getPathLocation().getY();
 				if(c.isDead()){
 					creeps.remove(i);
+//					if(creeps.size()==0){
+//						allCreepsDead.signalAll();
+//					}
 					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					new ExplosionThread(x, y).start();
 
 				}
 				else if(c.isOffGrid()){
 					creeps.remove(i);
+//					if(creeps.size()==0){
+//						allCreepsDead.signalAll();
+//					}
 					livesInt--;
 					lives.setText("Lives: " + livesInt);
 				}
@@ -814,7 +801,6 @@ public class GameScreenGUI extends JFrame implements Runnable{
 					spaces[x][y].setIcon(creepImage);
 				
 				}
-				
 				if(c.getPrevious() !=null && !c.getPrevious().isOccupied()){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
@@ -953,9 +939,18 @@ public class GameScreenGUI extends JFrame implements Runnable{
 						progressBar.setString("No Task");
 						progressBar.setValue(0);
 					}
-					progressTimer.stop();
+					Command c = new Command(currentPlayer, "PlaceTower", x, y);
+					try {
+						oos.writeObject(c);
+						oos.flush();	
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+					}
+					
+					
 					spaces[x][y].setIcon(new ImageIcon(resizedImage));
 					backendBoard.placeTower(backendBoard.getSpace(x,y));
+					progressTimer.stop();
 				}
 				
 			}
@@ -963,6 +958,19 @@ public class GameScreenGUI extends JFrame implements Runnable{
 		progressTimer.start();
 
 
+	}
+	
+	public void placeTowerImmediately(int x, int y)
+	{
+		BasicTower b = new BasicTower(backendBoard.getSpace(x, y));
+		
+		BufferedImage img = b.getTowerImages();
+		
+		Image resizedImage = img.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
+
+		
+		spaces[x][y].setIcon(new ImageIcon(resizedImage));
+		backendBoard.placeTower(backendBoard.getSpace(x,y));
 	}
 	
 	public void restartLevelTimer()
@@ -1088,7 +1096,7 @@ public class GameScreenGUI extends JFrame implements Runnable{
 									Command c = (Command)obj;
 									int x = c.getX();
 									int y = c.getY();
-									placeTower(x, y, false);
+									placeTowerImmediately(x, y);
 								}
 								else if(command.equals("RotateTower"))
 								{
@@ -1251,7 +1259,9 @@ public class GameScreenGUI extends JFrame implements Runnable{
 											BufferedImage image = ((BasicTower) t).getTowerImages();
 											Image icon = image.getScaledInstance(spaces[x][y].getWidth(), spaces[x][y].getHeight(), Image.SCALE_SMOOTH);
 											spaces[x][y].setIcon(new ImageIcon(icon));
+											
 										}
+										
 									}								
 
 								}

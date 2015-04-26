@@ -19,6 +19,10 @@ public class Board implements Serializable {
 		this.getMap();
 		this.setAdjacencies();
 		this.setPathSpaces();
+	}
+
+	public void setMineableSpaces()
+	{
 		this.setMineable(map[1][1]);
 	}
 	
@@ -201,6 +205,7 @@ public class Board implements Serializable {
 			creepPath.get(i).setNext(creepPath.get(i+1));
 		}
 		creepPath.get(creepPath.size()-1).setNext(null);
+		creepPath.get(creepPath.size()-2).setNext(null);
 	}
 	
 	public Space getSpace(int x, int y){
