@@ -54,7 +54,7 @@ public class GameScreenGUI extends JFrame{
 	private JPanel progressPanel;
 	private JTextArea chat;
 	private JTextField chatEdit;
-	private static JLabel[][] spaces;
+	private JLabel[][] spaces;
 	private Timer progressTimer;
 	private JProgressBar progressBar;
 	private JLabel task;	
@@ -260,7 +260,7 @@ public class GameScreenGUI extends JFrame{
 				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
 				sendMessageToClients(c);
 				
-				levelTimer.setText("Creeps Remaining: " + timerInt);
+				levelTimer.setText(timerInt + "/" + maxCreeps );
 			}
 			
 			
@@ -286,7 +286,7 @@ public class GameScreenGUI extends JFrame{
 		
 		Border resourceBorder = BorderFactory.createEtchedBorder();
 		
-		levelTimer = new JLabel("Creeps Remaining: " + timerInt);
+		levelTimer = new JLabel(creeps.size() + "/" + maxCreeps);
 		//Gold section
 		JPanel goldPanel = new JPanel();
 		goldPanel.setLayout(new FlowLayout());
@@ -326,14 +326,32 @@ public class GameScreenGUI extends JFrame{
 		lifePanel.setBorder(resourceBorder);
 		lifePanel.setPreferredSize(new Dimension(0,25));
 		//End of Lives 
+		JPanel creepPanel = new JPanel();
+		lifePanel.setLayout(new FlowLayout());
+		BufferedImage image3 = null;
+		try{
+			image3 = ImageIO.read(new File("images/Creep.png"));
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		Image temp3 = image3.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		ImageIcon creepIcon = new ImageIcon(temp3);
+		JLabel creepIconLabel = new JLabel(creepIcon);
 		
+		creepPanel.add(creepIconLabel);
+		creepPanel.add(levelTimer);
+		creepPanel.setBorder(resourceBorder);
+		creepPanel.setPreferredSize(new Dimension(0,25));
+
+
+
 		toReturn.add(lifePanel);
 		toReturn.add(goldPanel);
+		toReturn.add(creepPanel);
 		toReturn.add(Box.createGlue());
-		//toReturn.add(Box.createGlue());
 
 		
-		toReturn.add(levelTimer);
+		//toReturn.add(levelTimer);
 		
 		toReturn.add(Box.createGlue());
 		/*
@@ -904,7 +922,6 @@ public class GameScreenGUI extends JFrame{
 	public void startGame(){
 		startGameThread = new StartGameThread();
 		startGameThread.start();
-		new SoundThread().start();
 		//System.out.println("game is started");
 	}
 	public void endGame()
@@ -1432,7 +1449,7 @@ public class GameScreenGUI extends JFrame{
 									int timer = c.getX();
 									
 									timerInt = timer;
-									levelTimer.setText("" + timerInt);
+									levelTimer.setText(creeps.size() + "/" + maxCreeps);
 									
 								}
 								else if(command.equals("Mine"))
@@ -1621,7 +1638,7 @@ public class GameScreenGUI extends JFrame{
 									int timer = c.getX();
 									
 									timerInt = timer;
-									levelTimer.setText("Creeps Remaining: " + timerInt);
+									levelTimer.setText(creeps.size() + "/" + maxCreeps);
 									
 								}
 								else if(command.equals("Mine"))
@@ -1730,12 +1747,6 @@ public class GameScreenGUI extends JFrame{
 				e.printStackTrace();
 			}
 			
-		}
-	}
-	
-	public class SoundThread extends Thread{
-		public void run(){
-			SoundLibrary.playSound("daftpunk.wav");
 		}
 	}
 }//end of class
