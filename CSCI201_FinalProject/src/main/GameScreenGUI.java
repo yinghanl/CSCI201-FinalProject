@@ -940,8 +940,7 @@ public class GameScreenGUI extends JFrame{
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
-			SoundLibrary.playSound("daftpunk.wav");
-			//System.out.println("run");
+			//SoundLibrary.playSound("daftpunk.wav");
 		}
 		public void run(){
 			boolean wonGame = false;
@@ -1015,6 +1014,7 @@ public class GameScreenGUI extends JFrame{
 				
 				if(c.isDead()){
 					creeps.remove(i);
+					//c.getLocation().removeOccupant();
 					new ExplosionThread(x, y).start();
 
 				}
@@ -1053,8 +1053,6 @@ public class GameScreenGUI extends JFrame{
 			int playerx = p.getLocation().getX();
 			int playery = p.getLocation().getY();
 			
-			//spaces[playerx][playery].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-			
 			Image image = p.getIcon().getScaledInstance(spaces[playerx][playery].getWidth(), spaces[playerx][playery].getHeight(), Image.SCALE_SMOOTH);
 			
 			spaces[playerx][playery].setIcon(new ImageIcon(image));
@@ -1063,7 +1061,6 @@ public class GameScreenGUI extends JFrame{
 			{
 				int x = p.getPrevious().getX();
 				int y = p.getPrevious().getY();
-				//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				spaces[x][y].setIcon(null);
 			}
 		}
@@ -1089,13 +1086,11 @@ public class GameScreenGUI extends JFrame{
 				{
 					
 					if(backendBoard.getSpace(i, j).getMoveable() instanceof Bullet){
-						//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.GREEN));
 						spaces[i][j].setIcon(bulletImage);
 						//normal movement
-						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null ){//&& !backendBoard.getSpace(i,j).getMoveable().getPrevious().isOccupied()){
+						if(backendBoard.getSpace(i, j).getMoveable().getPrevious() != null ){
 							int x = backendBoard.getSpace(i, j).getMoveable().getPrevious().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getPrevious().getY();
-							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							if(!(backendBoard.getSpace(i, j).getMoveable().getPrevious() instanceof TowerSpace)){
 								spaces[x][y].setIcon(null);
 							}
@@ -1107,7 +1102,6 @@ public class GameScreenGUI extends JFrame{
 							int x = backendBoard.getSpace(i, j).getMoveable().getLocation().getX();
 							int y = backendBoard.getSpace(i, j).getMoveable().getLocation().getY();
 							backendBoard.getSpace(i, j).removeOccupant();
-							//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							if(!(backendBoard.getSpace(i, j) instanceof TowerSpace)){
 								spaces[x][y].setIcon(null);
 							}

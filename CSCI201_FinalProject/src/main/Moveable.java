@@ -18,9 +18,7 @@ abstract class Moveable extends Thread implements Serializable{
 	//max x = 20
 	//max y = 32
 	public synchronized void move(int direction) throws BoundaryException{
-		
 		previousLocation = currentLocation;
-		//currentLocation.removeOccupant();
 		try{
 			switch(direction){
 				//0 = up
@@ -58,7 +56,6 @@ abstract class Moveable extends Thread implements Serializable{
 			}
 			if((this instanceof Bullet && currentLocation.isOccupied() && currentLocation instanceof PathSpace)){
 				this.hit((Creep)currentLocation.getMoveable());
-				//System.out.println(((Creep)currentLocation.getMoveable()).isDead());
 				throw new BoundaryException();
 			}
 			else if(currentLocation instanceof TowerSpace || (currentLocation.isOccupied() && !(this instanceof Bullet)) || (currentLocation instanceof MineableSpace && !(this instanceof Bullet)) || (currentLocation instanceof PathSpace && !(this instanceof Bullet))){
@@ -67,18 +64,15 @@ abstract class Moveable extends Thread implements Serializable{
 			couldMove = true;
 		}
 		catch(BoundaryException be){
-			System.out.println("Boundary exception in Moveable.move()");
+			//System.out.println("Boundary exception in Moveable.move()");
 			currentLocation = previousLocation;
 			couldMove = false;
 			if(this instanceof Bullet){
-				//currentLocation.removeOccupant();
-				//previousLocation.removeOccupant();
 				throw new BoundaryException();
 			}
 		}
 		previousLocation.removeOccupant();
 		currentLocation.setOccupant(this);
-		
 		
 	}
 	
