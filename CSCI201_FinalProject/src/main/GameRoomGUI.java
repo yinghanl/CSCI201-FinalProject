@@ -133,7 +133,7 @@ public class GameRoomGUI extends JFrame {
 	}
 	
 	public void usersConnected(AbstractUser u){
-		System.out.println("users_in_room" + users_in_room);
+		//System.out.println("users_in_room" + users_in_room);
 		usersConnected[users_in_room] = u;
 		users_in_room++;
 		chatbox.append("\n" + u.getUsername()+" connected!");

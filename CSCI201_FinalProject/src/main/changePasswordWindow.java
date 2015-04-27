@@ -50,7 +50,7 @@ public class changePasswordWindow extends JFrame
 				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getPassword() ))
 				{
 					//if the name/password can't be verified
-					System.out.println("Username / Password can't be verified");
+					//System.out.println("Username / Password can't be verified");
 					JOptionPane.showMessageDialog(null, "Incorrect original password");
 				}
 				
@@ -58,7 +58,7 @@ public class changePasswordWindow extends JFrame
 				else if (! Arrays.equals(newPassField.getPassword(), confirmField.getPassword()))
 				{
 					//if the two passwords don't match
-					System.out.println("Passwords don't match");
+					//System.out.println("Passwords don't match");
 					JOptionPane.showMessageDialog(null, "New passwords do not match");
 					
 				}
@@ -68,7 +68,7 @@ public class changePasswordWindow extends JFrame
 					int userID = DataBaseUtils.getUserID(u.getUsername());
 					DataBaseUtils.changePassword(userID, newPassField.getPassword());
 					JOptionPane.showMessageDialog(null, "Password sucessfully changed!");
-					System.out.println("Password reset");
+					//System.out.println("Password reset");
 					dispose();
 					
 				}
