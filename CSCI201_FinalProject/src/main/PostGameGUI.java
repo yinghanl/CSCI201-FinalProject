@@ -27,11 +27,11 @@ public class PostGameGUI extends JFrame{
 	private JButton exitButton;
 	
 	private Vector<GameStats> gsVector;
-	private LogInGUI login;
+	private GameLobbyGUI glw;
 	
-	public PostGameGUI(Vector<GameStats> gsVector, LogInGUI login){
+	public PostGameGUI(Vector<GameStats> gsVector, GameLobbyGUI glw){
 		super("End of Game Statistics");
-		this.login = login;
+		this.glw = glw;
 		this.gsVector = gsVector;
 		instantiateComponents();
 		createGUI();
@@ -71,7 +71,7 @@ public class PostGameGUI extends JFrame{
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				login.setVisible(true);
+				glw.setVisible(true);
 				PostGameGUI.this.dispose();
 			}
 		});
@@ -79,7 +79,7 @@ public class PostGameGUI extends JFrame{
 		{
 			public void windowClosing(WindowEvent we)
 			{
-				login.setVisible(true);
+				glw.setVisible(true);
 				PostGameGUI.this.dispose();
 			}
 		});
