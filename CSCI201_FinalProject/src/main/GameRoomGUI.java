@@ -229,7 +229,7 @@ public class GameRoomGUI extends JFrame {
 //				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
 //				gs.setVisible(false);
 				b.setPlayer(p);
-				new GameScreenGUI(b, p, true, null);
+				new GameScreenGUI(b, p, true, user);
 				sendMessageToClients(new Integer(-1));
 				grc.deleteGame();
 				setVisible(false);
@@ -556,7 +556,7 @@ public class GameRoomGUI extends JFrame {
 								Board b = new Board();
 								Player p = new Player(user.getUsername(), b.getSpace(19,30));
 								b.setPlayer(p);
-								new GameScreenGUI(b, p, false, null);
+								new GameScreenGUI(b, p, false, user);
 								setVisible(false);
 							}
 							else if((Integer)obj == -3)

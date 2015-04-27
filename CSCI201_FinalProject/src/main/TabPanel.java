@@ -210,7 +210,7 @@ public class TabPanel extends JPanel {
 		}
 		
 		gameListModel.fireTableDataChanged();
-		if(selectedRow != -1)
+		if(selectedRow != -1 && selectedRow < gameListModel.getRowCount())
 		{
 			gameListTable.setRowSelectionInterval(selectedRow, selectedRow);
 		}
