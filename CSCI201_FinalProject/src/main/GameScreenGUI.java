@@ -873,7 +873,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					if(miner == true)
 					{
-						progressBar.setString("Mining Space (" + timer/10 + "s)");
+						progressBar.setString("Mining Space");
 						progressBar.setStringPainted(true);
 						progressBar.setValue(progressBar.getValue() + 1);
 					}
@@ -947,8 +947,8 @@ public class GameScreenGUI extends JFrame{
 			boolean wonGame = false;
 			while(livesInt>0){
 				l = levels[level];
-				levelLabel.setText("Level " + level);
-				maxCreeps = l.getNumber()+1;
+				levelLabel.setText("Level " + (level+1));
+				maxCreeps = l.getNumber();
 				numCreeps = l.getNumber();
 				while(numCreeps>0 && livesInt>0){ //there are remaining creeps
 					//System.out.println(creeps.size());
@@ -1007,7 +1007,7 @@ public class GameScreenGUI extends JFrame{
 	
 	public synchronized void updateBoard()
 	{
-		for(int i = 0; i<maxCreeps; i++){
+		for(int i = 0; i<=maxCreeps; i++){
 			if(creeps.containsKey(i)){
 				Creep c = creeps.get(i);
 				int x = c.getPathLocation().getX();
@@ -1190,7 +1190,7 @@ public class GameScreenGUI extends JFrame{
 				{
 					if(maker == true)
 					{
-						progressBar.setString("Building Tower (" + timer/10 + "s)");
+						progressBar.setString("Building Tower");
 						progressBar.setStringPainted(true);
 						progressBar.setValue(progressBar.getValue() + 1);
 					}
