@@ -4,18 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -28,14 +29,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.metal.OceanTheme;
-
-import main.DataBaseUtils;
-import main.GameLobbyGUI;
-import main.User;
-import main.LogInGUI.UserLoginActionListener;
 
 public class LogInGUI extends JFrame
 {
@@ -51,6 +44,8 @@ public class LogInGUI extends JFrame
 	JPanel backgroundPanel;
 	
 	LogInGUI self;
+	
+	Clip themeSong;
 	
 	public LogInGUI()
 	{
@@ -76,6 +71,27 @@ public class LogInGUI extends JFrame
 		instantiateComponents();
 		createGUI();
 		addActionListeners();
+		
+		try
+		{
+			AudioInputStream themeAudioIn = AudioSystem.getAudioInputStream(new File("Sounds/maplestorytheme.wav").getAbsoluteFile());
+			themeSong = AudioSystem.getClip();
+			themeSong.open(themeAudioIn);
+			themeSong.loop(Clip.LOOP_CONTINUOUSLY);
+			themeSong.start();
+		}
+		catch(UnsupportedAudioFileException uae)
+		{
+			System.out.println(uae.getMessage());
+		}
+		catch (LineUnavailableException lue)
+		{
+			System.out.println(lue.getMessage());
+		}
+		catch(IOException ioe)
+		{
+			System.out.println(ioe.getMessage());
+		}
 		
 		setVisible(true);
 	}
@@ -133,6 +149,7 @@ public class LogInGUI extends JFrame
 			//creates guest user and logs in
 			public void actionPerformed(ActionEvent ae)
 			{
+				themeSong.stop();
 				Guest newGuest = DataBaseUtils.createGuest();
 				passwordJPF.setText("");
 				usernameJTF.setText("");
@@ -152,12 +169,14 @@ public class LogInGUI extends JFrame
 				char [] password = passwordJPF.getPassword();
 				if(!DataBaseUtils.verifyUser(username, password))
 				{
+					themeSong.stop();
 					int userID = DataBaseUtils.createNewUser(username, password);
 					User newUser = DataBaseUtils.createUser(userID);
 					passwordJPF.setText("");
 					usernameJTF.setText("");
 					new GameLobbyGUI(newUser,self);
 					setVisible(false);
+					
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Username already exists, try again!");
@@ -228,6 +247,8 @@ public class LogInGUI extends JFrame
 			User newUser;
 			if(DataBaseUtils.verifyUser(username, password))
 			{
+				themeSong.stop();
+
 				int userID = DataBaseUtils.getUserID(username);
 				newUser = DataBaseUtils.createUser(userID);
 				

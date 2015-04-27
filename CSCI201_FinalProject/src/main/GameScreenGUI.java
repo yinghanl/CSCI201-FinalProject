@@ -23,11 +23,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,8 +45,6 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
-
-import main.BgProgessPanel;
 
 public class GameScreenGUI extends JFrame{
 
@@ -111,6 +111,8 @@ public class GameScreenGUI extends JFrame{
 	private Vector<JFrame> pf;
 	private StartGameThread startGameThread;
 
+	Clip backgroundMusic;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u, Vector<JFrame> pf)
 	{
 		currentUserStats = new GameStats(u);
@@ -840,7 +842,7 @@ public class GameScreenGUI extends JFrame{
 					String toAppend = "\n"+currentPlayer.getPlayerName() + ": " + chatEdit.getText() + "\n";
 					message = toAppend;
 					chatEdit.setText("");
-					System.out.println("enter was hit, sending message: " + message);
+					//System.out.println("enter was hit, sending message: " + message);
 					if(isHost){
 						chat.append(message);
 						sendMessageToClients(message);
@@ -930,6 +932,7 @@ public class GameScreenGUI extends JFrame{
 	}
 	public void endGame(boolean wonGame)
 	{
+		backgroundMusic.stop();
 		currentUserStats.updateGameResult(wonGame);
 		gameStatsVector.add(currentUserStats);
 		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
@@ -940,7 +943,28 @@ public class GameScreenGUI extends JFrame{
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
-			//SoundLibrary.playSound("daftpunk.wav");
+			
+
+			try
+			{
+				AudioInputStream musicAudioIn = AudioSystem.getAudioInputStream(new File("Sounds/daftpunk.wav").getAbsoluteFile());
+				backgroundMusic = AudioSystem.getClip();
+				backgroundMusic.open(musicAudioIn);
+		        backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+		        backgroundMusic.start();
+			}
+			catch(UnsupportedAudioFileException uae)
+			{
+				System.out.println(uae.getMessage());
+			}
+			catch (LineUnavailableException lue)
+			{
+				System.out.println(lue.getMessage());
+			}
+			catch(IOException ioe)
+			{
+				System.out.println(ioe.getMessage());
+			}
 		}
 		public void run(){
 			boolean wonGame = false;
@@ -1287,7 +1311,7 @@ public class GameScreenGUI extends JFrame{
 				while(obj != null){
 					if(obj instanceof String){				
 						chat.append(((String)obj));
-						System.out.println("sending chat message to other clients: "+(String)obj);
+						//System.out.println("sending chat message to other clients: "+(String)obj);
 						sendMessageToClients(obj);
 					}//end of if ob is String
 					else if(obj instanceof Player)
@@ -1297,9 +1321,9 @@ public class GameScreenGUI extends JFrame{
 						players.add((Player)obj);
 						sendMessageToClients(obj);
 						sendMessageToClients(new Integer(-1));
-						System.out.println("before startgame");
+						//System.out.println("before startgame");
 						startGame();
-						System.out.println("not a blocking line");
+						//System.out.println("not a blocking line");
 						
 					}
 					else if(obj instanceof Command)
@@ -1423,7 +1447,7 @@ public class GameScreenGUI extends JFrame{
 								}
 								else if(command.equals("Timer"))
 								{
-									System.out.println("got command timer in client");
+									//System.out.println("got command timer in client");
 									Command c = (Command)obj;
 									int timer = c.getX();
 									
@@ -1492,9 +1516,9 @@ public class GameScreenGUI extends JFrame{
 					}
 					else if(obj instanceof Integer){
 						if((Integer)obj == -1){
-							System.out.println("before blocking lines");
+							//System.out.println("before blocking lines");
 							startGame();
-							System.out.println("not a blocking line");
+							//System.out.println("not a blocking line");
 						}
 					}
 					else if(obj instanceof Command)
@@ -1699,12 +1723,12 @@ public class GameScreenGUI extends JFrame{
 		public void run(){
 			if(isHost){
 				try {
-					System.out.println("Starting Chat Server");
+					//System.out.println("Starting Chat Server");
 					ss = new ServerSocket(8970);
 					while (true) {
-						System.out.println("Waiting for client to connect...");
+						//System.out.println("Waiting for client to connect...");
 						Socket s = ss.accept();
-						System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+						//System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
 						ChatThread ct = new ChatThread(s);
 						ctVector.add(ct);
 						ct.start();

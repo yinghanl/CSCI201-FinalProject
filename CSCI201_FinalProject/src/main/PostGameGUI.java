@@ -94,9 +94,9 @@ public class PostGameGUI extends JFrame{
 		{
 			GameStats gs = gsVector.get(i);
 			AbstractUser tempUser = gs.getAbstractUser();
-			System.out.println(tempUser.getUsername());
-			System.out.println(gs.getGold());
-			System.out.println(gs.getCreepsKilled());
+//			System.out.println(tempUser.getUsername());
+//			System.out.println(gs.getGold());
+//			System.out.println(gs.getCreepsKilled());
 			tableModel.addRow(new Object[]{tempUser.getUsername(), gs.getGold(), gs.getCreepsKilled()});
 		}
 		statsTable = new JTable(tableModel);
