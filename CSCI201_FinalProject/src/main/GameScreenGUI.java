@@ -907,7 +907,7 @@ public class GameScreenGUI extends JFrame{
 									ioe.printStackTrace();
 								}
 							}
-							currentUserStats.updateGold(currentUserStats.getGold() + 1);
+							currentUserStats.updateGold(1);
 						}
 					}
 					progressTimer.stop();
@@ -926,33 +926,11 @@ public class GameScreenGUI extends JFrame{
 	}
 	public void endGame()
 	{
-		this.synchronizeGameStatsVector();
 		gameStatsVector.add(currentUserStats);
-		new PostGameGUI(gameStatsVector);
-		this.dispose();
+		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
+		sendMessageToClients(c);
 	}
 	
-	private void synchronizeGameStatsVector() {
-		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
-		
-		try
-		{
-			if(isHost)
-			{
-				sendMessageToClients(c);
-			}
-			else
-			{
-				oos.writeObject(c);
-				oos.flush();
-			}
-		}
-		catch(IOException ioe)
-		{
-			ioe.printStackTrace();
-		}
-		
-	}
 
 	class StartGameThread extends Thread{
 		private Level l;
@@ -1468,10 +1446,12 @@ public class GameScreenGUI extends JFrame{
 									goldEarned--;
 									teamGold.setText("" + goldEarned);
 								}
-								else if(command.equals("SynchronizeVector"))
+								else if(command.equals("AddVector"))
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
+									new PostGameGUI(gameStatsVector);
+									GameScreenGUI.this.dispose();
 								}
 							}
 						}
@@ -1663,6 +1643,11 @@ public class GameScreenGUI extends JFrame{
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
+									gameStatsVector.addElement(currentUserStats);
+									Command newC = new Command(currentPlayer, "AddVector", currentUserStats);
+									oos.writeObject(newC);
+									new PostGameGUI(gameStatsVector);
+									GameScreenGUI.this.dispose();
 								}
 							}
 						}
