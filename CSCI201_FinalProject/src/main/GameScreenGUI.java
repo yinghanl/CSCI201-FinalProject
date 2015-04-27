@@ -72,9 +72,6 @@ public class GameScreenGUI extends JFrame{
 	
 	private Board backendBoard;
 	
-	private int nextIndex = 0;
-	private int previousIndex = 0;
-	
 	private Player currentPlayer;
 	private boolean isHost;
 	
@@ -88,8 +85,6 @@ public class GameScreenGUI extends JFrame{
 	private Object obj;
 	
 	private boolean isConnected = false;
-
-	private Tower currentTower;
 		
 	private Vector<Player> players; 
 	private HashMap<Integer, Creep> creeps;
@@ -97,7 +92,7 @@ public class GameScreenGUI extends JFrame{
 	
 	private int maxCreeps;
 	
-	private ImageIcon creepImage;
+	private ImageIcon creepImage1, creepImage2, creepImage3;
 	private ImageIcon bulletImage;
 	private ImageIcon explosionImage;
 	private ImageIcon mineralImage;
@@ -114,12 +109,7 @@ public class GameScreenGUI extends JFrame{
 	private Vector<GameStats> gameStatsVector;
 	
 	private StartGameThread startGameThread;
-	
-//	
-//	private static Lock lock = new ReentrantLock();
-//	private static Condition allCreepsDead = lock.newCondition();
 
-	
 	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u)
 	{
 		currentUserStats = new GameStats(u);
@@ -137,10 +127,10 @@ public class GameScreenGUI extends JFrame{
 		
 		
 		levels = new Level[numLevels];
-		levels[0] = new Level(10, 2000, 4000, 5);
-		levels[1] = new Level(10, 1000, 2000, 10);
-		levels[2] = new Level(20, 800, 1600, 20);
-		levels[3] = new Level(30, 400, 800, 30);
+		levels[0] = new Level(1, 2000, 4000, 5);
+		levels[1] = new Level(1, 1000, 2000, 10);
+		levels[2] = new Level(2, 800, 1600, 20);
+		levels[3] = new Level(3, 400, 800, 30);
 		players = new Vector<Player>();
 		creeps = new HashMap<Integer, Creep>();
 		
@@ -193,7 +183,27 @@ public class GameScreenGUI extends JFrame{
 		{
 			BufferedImage image = ImageIO.read(new File("images/Creep.png"));
 			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
-			creepImage = new ImageIcon(temp);
+			creepImage1 = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Creep2.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			creepImage2 = new ImageIcon(temp);
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		try
+		{
+			BufferedImage image = ImageIO.read(new File("images/Creep3.png"));
+			Image temp = image.getScaledInstance(spaces[0][0].getWidth(), spaces[0][0].getHeight(), 0);
+			creepImage3 = new ImageIcon(temp);
 		}
 		catch(IOException ioe)
 		{
@@ -904,7 +914,7 @@ public class GameScreenGUI extends JFrame{
 	}
 	
 	private void synchronizeGameStatsVector() {
-		Command c = new Command(currentPlayer, "SynchronizeVector");
+		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
 		
 		try
 		{
@@ -998,31 +1008,31 @@ public class GameScreenGUI extends JFrame{
 				int y = c.getPathLocation().getY();
 				if(c.isDead()){
 					creeps.remove(i);
-//					if(creeps.size()==0){
-//						allCreepsDead.signalAll();
-//					}
-					spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					new ExplosionThread(x, y).start();
 
 				}
 				else if(c.isOffGrid()){
 					creeps.remove(i);
-//					if(creeps.size()==0){
-//						allCreepsDead.signalAll();
-//					}
 					livesInt--;
 					lives.setText("Lives: " + livesInt);
 					
 				}
 				else{
-					//spaces[x][y].setBorder(BorderFactory.createLineBorder(Color.RED))
-					spaces[x][y].setIcon(creepImage);
+					if(c.getHealth() >2){
+						spaces[x][y].setIcon(creepImage1);
+					}
+					else if(c.getHealth() == 2){
+						spaces[x][y].setIcon(creepImage2);
+					}
+					else{
+						spaces[x][y].setIcon(creepImage3);
+					}
+					
 				
 				}
 				if(c.getPrevious() !=null && !c.getPrevious().isOccupied()){
 					int p = c.getPrevious().getX();
 					int q = c.getPrevious().getY();
-					//spaces[p][q].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					spaces[p][q].setIcon(null);
 				}
 			}
@@ -1437,7 +1447,7 @@ public class GameScreenGUI extends JFrame{
 									goldEarned--;
 									teamGold.setText("Gold: " + goldEarned);
 								}
-								else if(command.equals("SynchronizeStats"))
+								else if(command.equals("SynchronizeVector"))
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
@@ -1628,7 +1638,7 @@ public class GameScreenGUI extends JFrame{
 									goldEarned--;
 									teamGold.setText("Gold: " + goldEarned);
 								}
-								else if(command.equals("SynchronizeStats"))
+								else if(command.equals("SynchronizeVector"))
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());

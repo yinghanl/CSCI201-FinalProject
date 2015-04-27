@@ -1,5 +1,13 @@
 package main;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
 public class Creep extends Moveable{
 	
 	private int health, speed;
@@ -27,9 +35,6 @@ public class Creep extends Moveable{
 	
 	public void hit(int amt){
 		health-=amt;
-//		if(isDead()){
-//			currentPathLocation.removeCreep();
-//		}
 	}
 	
 	public void run(){
@@ -62,8 +67,11 @@ public class Creep extends Moveable{
 		return currentPathLocation;
 	}
 	
-	public void hit(Creep c){
-		
+	public void hit(Creep c){	
+	}
+	
+	public int getHealth(){
+		return health;
 	}
 
 }
