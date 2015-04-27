@@ -44,38 +44,8 @@ public class changePasswordWindow extends JFrame
 		JPanel confirmPanel = new JPanel();
 		confirmPanel.add(confirm); confirmPanel.add(confirmField);
 		
-		submit.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				//verify the user entered the correct current password
-				if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getPassword() ))
-				{
-					//if the name/password can't be verified
-					//System.out.println("Username / Password can't be verified");
-					JOptionPane.showMessageDialog(null, "Incorrect original password");
-				}
-				
-				//verify that the two new passwords are the same
-				else if (! Arrays.equals(newPassField.getPassword(), confirmField.getPassword()))
-				{
-					//if the two passwords don't match
-					//System.out.println("Passwords don't match");
-					JOptionPane.showMessageDialog(null, "New passwords do not match");
-					
-				}
-				else
-				{
-					//if the user is verified and the passwords match, set the new password
-					int userID = DataBaseUtils.getUserID(u.getUsername());
-					DataBaseUtils.changePassword(userID, newPassField.getPassword());
-					JOptionPane.showMessageDialog(null, "Password sucessfully changed!");
-					//System.out.println("Password reset");
-					dispose();
-					
-				}
-				
-			}
-			
-		});
+		confirmField.addActionListener(new ChangePasswordListener());
+		submit.addActionListener(new ChangePasswordListener());
 		
 		add(oldPanel);
 		add(Box.createGlue());
@@ -89,4 +59,36 @@ public class changePasswordWindow extends JFrame
 		
 		setVisible(true);
 	}
+class ChangePasswordListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			//verify the user entered the correct current password
+			if (!DataBaseUtils.verifyUser(u.getUsername(), oldPassField.getPassword() ))
+			{
+				//if the name/password can't be verified
+				//System.out.println("Username / Password can't be verified");
+				JOptionPane.showMessageDialog(null, "Incorrect original password");
+			}
+			
+			//verify that the two new passwords are the same
+			else if (! Arrays.equals(newPassField.getPassword(), confirmField.getPassword()))
+			{
+				//if the two passwords don't match
+				//System.out.println("Passwords don't match");
+				JOptionPane.showMessageDialog(null, "New passwords do not match");
+				
+			}
+			else
+			{
+				//if the user is verified and the passwords match, set the new password
+				int userID = DataBaseUtils.getUserID(u.getUsername());
+				DataBaseUtils.changePassword(userID, newPassField.getPassword());
+				JOptionPane.showMessageDialog(null, "Password sucessfully changed!");
+				//System.out.println("Password reset");
+				dispose();
+				
+			}
+			
+		}
+	}
+	
 }
