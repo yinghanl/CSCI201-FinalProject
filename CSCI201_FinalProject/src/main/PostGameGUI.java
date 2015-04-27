@@ -2,13 +2,25 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 public class PostGameGUI extends JFrame{
@@ -46,24 +59,44 @@ public class PostGameGUI extends JFrame{
 	
 	public void instantiateComponents()
 	{
-		exitButton = new JButton("Done");
+		exitButton = new JButton("EXIT TO GAMELOBBY");
 		topPanel = new JPanel();
 		centerPanel = new JPanel();
-		gameoutcomeLabel = new JLabel("Won!");
+		gameoutcomeLabel = new JLabel("Congratulations!");
 	}
 	
 	public void createGUI()
 	{
-		setLocation(350,200);
-		setSize(400, 200);
-		setLayout(new BorderLayout());
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-		createTable();
-		add(statsTable);
-		add(exitButton, BorderLayout.SOUTH);
-		gameoutcomeLabel.setAlignmentX(CENTER_ALIGNMENT);
-		topPanel.add(gameoutcomeLabel);
-		add(topPanel, BorderLayout.NORTH);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		setSize((int)(width * 0.8), (int)(height * 0.8));
+		setLocation(100, 100);
+		
+		JPanel bgPanel = new BGPanel("images/PostGameBackground.png");
+		bgPanel.setLayout(new BorderLayout());
+
+		gameoutcomeLabel.setHorizontalAlignment(JLabel.CENTER);
+		gameoutcomeLabel.setFont(new Font("Jokerman",Font.ITALIC,64));
+		gameoutcomeLabel.setForeground(new Color(255,215,0));
+		JPanel userPanel1 = userInfoPanel(gsVector.get(0));
+		JPanel userPanel2 = userInfoPanel(gsVector.get(1));
+		
+		
+		JPanel userPanel = new JPanel(new FlowLayout());
+		userPanel.add(userPanel1);
+		userPanel.add(userPanel2);
+		userPanel.setOpaque(false);
+		
+		bgPanel.add(gameoutcomeLabel,BorderLayout.NORTH);
+		bgPanel.add(userPanel,BorderLayout.CENTER);
+		bgPanel.add(exitButton,BorderLayout.SOUTH);
+		
+		bgPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+		
+		
+		setContentPane(bgPanel);
+		
 	}
 	
 	public void addActionListeners()
@@ -86,26 +119,65 @@ public class PostGameGUI extends JFrame{
 		
 	}
 	
-	public void createTable(){
-		Object data[][] = new Object[][]{};
-		String columnNames[] = {"Player", "Gold Earned", "Creeps Killed"};
-		tableModel = new DefaultTableModel(data, columnNames);
-		for(int i = 0; i < gsVector.size(); i++)
-		{
-			GameStats gs = gsVector.get(i);
-			AbstractUser tempUser = gs.getAbstractUser();
-//			System.out.println(tempUser.getUsername());
-//			System.out.println(gs.getGold());
-//			System.out.println(gs.getCreepsKilled());
-			tableModel.addRow(new Object[]{tempUser.getUsername(), gs.getGold(), gs.getCreepsKilled()});
+	public JPanel userInfoPanel(GameStats gs){
+		JPanel toReturn = new JPanel();
+		toReturn.setLayout(new BoxLayout(toReturn,BoxLayout.Y_AXIS));
+		AbstractUser tempUser = gs.getAbstractUser();
+		
+		JLabel nameLabel = new JLabel(tempUser.getUsername() + "'s Statistics");
+		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		nameLabel.setFont(new Font("Casteller", Font.BOLD,32));
+		nameLabel.setForeground(new Color(255,215,0));
+		nameLabel.setOpaque(false);
+		
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(new File("images/GoldIcon.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		statsTable = new JTable(tableModel);
-		statsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		statsTable.setGridColor(Color.BLUE);
-		statsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		statsTable.setSelectionBackground(Color.GRAY);
-		JScrollPane jsp = new JScrollPane(statsTable);
-		centerPanel.add(jsp);
-	}//end of creating table
+		Image temp = image.getScaledInstance(25, 25,Image.SCALE_SMOOTH);
+		ImageIcon goldIcon = new ImageIcon(temp);
+		
+		JPanel goldPanel = new JPanel();
+		goldPanel.setLayout(new FlowLayout());
+		goldPanel.setOpaque(false);
+		goldPanel.add(new JLabel(goldIcon));
+		JLabel goldPanelText = new JLabel(" Collected: " + gs.getGold());
+		goldPanelText.setForeground(Color.white);
+		goldPanelText.setFont(new Font("Casteller", Font.ITALIC,24));
+		goldPanel.add(goldPanelText);
+		
+		JPanel creepPanel = new JPanel();
+		creepPanel.setOpaque(false);
+		creepPanel.setLayout(new FlowLayout());
+		creepPanel.add(new JLabel(new ImageIcon("images/Creep.png")));
+		JLabel creepPanelText = new JLabel(" Killed: " + gs.getCreepsKilled());
+		creepPanelText.setForeground(Color.white);
+		creepPanelText.setFont(new Font("Casteller", Font.ITALIC,24));
+		creepPanel.add(creepPanelText);
+		
+		toReturn.add(nameLabel);
+		toReturn.add(goldPanel);
+		toReturn.add(creepPanel);
+		
+		toReturn.setOpaque(false);
+		toReturn.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+		
+		return toReturn;
+	}
 	
 }//end of class
+
+class BGPanel extends JPanel{
+	Image bg;
+	
+	BGPanel(String fileName){
+		bg = new ImageIcon(fileName).getImage();
+	}
+	
+	public void paintComponent(Graphics g){
+		g.drawImage(bg,0,0,getWidth(),getHeight(),this);
+	}
+}

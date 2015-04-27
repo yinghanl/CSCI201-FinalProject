@@ -16,6 +16,6 @@ public class TestPostGameGUI {
 		g2.updateGold(20);
 		gsVector.add(g1);
 		gsVector.add(g2);
-		//new PostGameGUI(gsVector);
+		new PostGameGUI(gsVector);
 	}
 }
