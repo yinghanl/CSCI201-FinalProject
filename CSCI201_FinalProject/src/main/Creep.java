@@ -55,7 +55,7 @@ public class Creep extends Moveable{
 				}
 				
 			} catch (InterruptedException ie) {
-				System.out.println("Interrupted Exception in creep.run() " + ie.getMessage());
+				//System.out.println("Interrupted Exception in creep.run() " + ie.getMessage());
 			}
 		}
 		previousLocation.removeOccupant();
