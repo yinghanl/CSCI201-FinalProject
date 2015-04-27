@@ -22,10 +22,7 @@ public class SoundLibrary {
 	private String sound;
 	static{
 		soundMap = new HashMap<String,File>();
-//		soundMap.put("cannon.wav", new File("Sounds/cannon.wav"));
-//		soundMap.put("explode.wav", new File("Sounds/explode.wav"));
-//		soundMap.put("sinking.wav", new File("Sounds/sinking.wav"));
-//		soundMap.put("splash.wav", new File("Sounds/splash.wav"));
+		soundMap.put("cannon.wav", new File("daftpunk.wav"));
 	}
 	
 //	public SoundLibrary(String sound){
