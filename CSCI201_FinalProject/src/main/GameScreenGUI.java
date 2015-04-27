@@ -233,6 +233,7 @@ public class GameScreenGUI extends JFrame{
 		Timer time = new Timer(1, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
+				Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 				updateBoard();
 			}
 		});
