@@ -924,8 +924,9 @@ public class GameScreenGUI extends JFrame{
 		startGameThread.start();
 		//System.out.println("game is started");
 	}
-	public void endGame()
+	public void endGame(boolean wonGame)
 	{
+		currentUserStats.updateGameResult(wonGame);
 		gameStatsVector.add(currentUserStats);
 		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
 		sendMessageToClients(c);
@@ -938,6 +939,7 @@ public class GameScreenGUI extends JFrame{
 			//System.out.println("run");
 		}
 		public void run(){
+			boolean wonGame = false;
 			while(livesInt>0){
 				l = levels[level];
 				maxCreeps = l.getNumber()+1;
@@ -977,11 +979,12 @@ public class GameScreenGUI extends JFrame{
 				level++;
 				if(level == numLevels){
 					//team has beat the game
+					wonGame = true;
 					stopCreeps();
 					break;
 				}
 			}
-			endGame();
+			endGame(wonGame);
 			
 			//end of if end of level 	
 		}
@@ -1643,6 +1646,7 @@ public class GameScreenGUI extends JFrame{
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
+									currentUserStats.updateGameResult(c.getStats().getGameResult());
 									Command newC = new Command(currentPlayer, "AddVector", currentUserStats);
 									oos.writeObject(newC);
 									new PostGameGUI(gameStatsVector);
