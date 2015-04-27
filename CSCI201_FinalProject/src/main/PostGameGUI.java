@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 public class PostGameGUI extends JFrame{
 	private JTable statsTable;
 	private DefaultTableModel tableModel;
-	private JLabel timeLabel;
 	private JLabel gameoutcomeLabel;
 	private JPanel centerPanel;
 	private JPanel topPanel;
@@ -47,7 +46,6 @@ public class PostGameGUI extends JFrame{
 		exitButton = new JButton("Done");
 		topPanel = new JPanel();
 		centerPanel = new JPanel();
-		timeLabel = new JLabel("14:41");
 		gameoutcomeLabel = new JLabel("Won!");
 	}
 	
@@ -60,9 +58,7 @@ public class PostGameGUI extends JFrame{
 		createTable();
 		add(statsTable);
 		add(exitButton, BorderLayout.SOUTH);
-		timeLabel.setAlignmentX(CENTER_ALIGNMENT);
 		gameoutcomeLabel.setAlignmentX(CENTER_ALIGNMENT);
-		topPanel.add(timeLabel);
 		topPanel.add(gameoutcomeLabel);
 		add(topPanel, BorderLayout.NORTH);
 	}
