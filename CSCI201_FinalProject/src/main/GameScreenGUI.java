@@ -947,11 +947,14 @@ public class GameScreenGUI extends JFrame{
 
 			try
 			{
-				AudioInputStream musicAudioIn = AudioSystem.getAudioInputStream(new File("Sounds/daftpunk.wav").getAbsoluteFile());
-				backgroundMusic = AudioSystem.getClip();
-				backgroundMusic.open(musicAudioIn);
-		        backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-		        backgroundMusic.start();
+				if(isHost)
+				{
+					AudioInputStream musicAudioIn = AudioSystem.getAudioInputStream(new File("Sounds/daftpunk.wav").getAbsoluteFile());
+					backgroundMusic = AudioSystem.getClip();
+					backgroundMusic.open(musicAudioIn);
+		        	backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+		        	backgroundMusic.start();
+				}
 			}
 			catch(UnsupportedAudioFileException uae)
 			{
