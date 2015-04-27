@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -40,7 +41,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
+
+import main.BgProgessPanel;
 
 public class GameScreenGUI extends JFrame{
 
@@ -265,7 +269,7 @@ public class GameScreenGUI extends JFrame{
 	
 	private JPanel getTopPanel()
 	{
-JPanel toReturn = new JPanel();
+		JPanel toReturn = new JPanel();
 		
 		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.X_AXIS));
 		
@@ -282,15 +286,15 @@ JPanel toReturn = new JPanel();
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Image temp = image.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		Image temp = image.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 		ImageIcon goldIcon = new ImageIcon(temp);
 		
 		JLabel goldIconLabel = new JLabel(goldIcon);
-		teamGold = new JLabel("Gold: " + goldEarned);
+		teamGold = new JLabel("" + goldEarned);
 		goldPanel.add(goldIconLabel);
 		goldPanel.add(teamGold);
 		goldPanel.setBorder(resourceBorder);
-		goldPanel.setPreferredSize(new Dimension(0,35));
+		goldPanel.setPreferredSize(new Dimension(0,25));
 		//end of gold
 		//Lives section
 		JPanel lifePanel = new JPanel();
@@ -302,14 +306,14 @@ JPanel toReturn = new JPanel();
 			e.printStackTrace();
 		}
 		
-		Image temp2 = image2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		Image temp2 = image2.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 		ImageIcon lifeIcon = new ImageIcon(temp2);
 		JLabel lifeIconLabel = new JLabel(lifeIcon);
-		lives = new JLabel("Lives: " + livesInt);
+		lives = new JLabel("" + livesInt);
 		lifePanel.add(lifeIconLabel);
 		lifePanel.add(lives);
 		lifePanel.setBorder(resourceBorder);
-		lifePanel.setPreferredSize(new Dimension(0,35));
+		lifePanel.setPreferredSize(new Dimension(0,25));
 		//End of Lives 
 		
 		toReturn.add(lifePanel);
@@ -376,12 +380,17 @@ JPanel toReturn = new JPanel();
 		DefaultCaret caret = (DefaultCaret)chat.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JScrollPane sp = new JScrollPane(chat);
+		sp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		chatEdit = new JTextField();
+		chatEdit.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		
 		chat.setEditable(false);
 		
 		toReturn.add(sp, BorderLayout.CENTER);
 		toReturn.add(chatEdit, BorderLayout.SOUTH);
+		
+		Border chatBoarder = BorderFactory.createRaisedBevelBorder();
+		toReturn.setBorder(chatBoarder);
 				
 		return toReturn;
 	}
@@ -389,32 +398,29 @@ JPanel toReturn = new JPanel();
 	
 	private JPanel getProgressPanel()
 	{
-		JPanel toReturn = new JPanel();
-		toReturn.setSize(100,50);
+		JPanel toReturn = new BgProgessPanel();
+		toReturn.setSize(825,50);
 		toReturn.setPreferredSize(toReturn.getSize());
-		toReturn.setLayout(new BoxLayout(toReturn, BoxLayout.Y_AXIS));
 		
-		JPanel topPanel = new JPanel();
-		task = new JLabel("Task in Progress");
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		topPanel.add(Box.createGlue());
-		topPanel.add(task);
-		topPanel.add(Box.createGlue());
-		
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		progressBar = new JProgressBar(0, 100);
-		progressBar.setString("No Task");
+		progressBar.setString("Task Progress Bar");
 		progressBar.setStringPainted(true);
-		progressBar.setBackground(new Color(139,69,19));
-		progressBar.setForeground(new Color(0, 100, 0));
-		bottomPanel.add(Box.createGlue());
-		bottomPanel.add(progressBar);
-		bottomPanel.add(Box.createGlue());
-		
-		toReturn.add(topPanel);
-		toReturn.add(bottomPanel);
+		progressBar.setBackground(new Color(127,255,212));
+		progressBar.setForeground(Color.WHITE);
+		progressBar.setPreferredSize(new Dimension(600,25));
+	//	progressBar.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 
+		
+		//toReturn.setLayout(new FlowLayout());
+		toReturn.add(Box.createGlue());
+		toReturn.add(progressBar);
+		toReturn.add(Box.createGlue());
+		//toReturn.add(topPanel);
+		//toReturn.add(bottomPanel);
+
+		Border bottomBorder = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),BorderFactory.createLoweredBevelBorder());
+		toReturn.setBorder(bottomBorder);
+		
 		return toReturn;
 	}
 	
@@ -422,14 +428,14 @@ JPanel toReturn = new JPanel();
 	{
 		timer = 100;
 		progressTimer.stop();
-		progressBar.setString("No Task");
+		progressBar.setString("Task Progress Bar");
 		progressBar.setValue(0);
 	}
 	private void cancelMining()
 	{
 		timer = 100;
 		progressTimer.stop();
-		progressBar.setString("No Task");
+		progressBar.setString("Task Progress Bar");
 		progressBar.setValue(0);
 	}
 	
@@ -844,7 +850,7 @@ JPanel toReturn = new JPanel();
 				{
 					if(miner == true)
 					{
-						progressBar.setString("No Task");
+						progressBar.setString("Task Progress Bar");
 						progressBar.setValue(0);
 						if(backendBoard.getSpace(x,y) instanceof MineableSpace)
 						{
@@ -1176,7 +1182,7 @@ JPanel toReturn = new JPanel();
 				{
 					if(maker == true)
 					{
-						progressBar.setString("No Task");
+						progressBar.setString("Task Progress Bar");
 						progressBar.setValue(0);
 					}
 					Command c = new Command(currentPlayer, "PlaceTower", x, y);
@@ -1713,3 +1719,27 @@ JPanel toReturn = new JPanel();
 		}
 	}
 }//end of class
+
+class BgProgessPanel extends JPanel
+{
+  Image image;
+  public BgProgessPanel()
+  {
+    try
+    {
+    image = javax.imageio.ImageIO.read(new File("images/bottomGameScreenGUI.png"));
+      //BufferedImage bImage = ImageIO.read(new File("images/bottomGameScreenGUI.png"));
+	//image = bImage.getScaledInstance(850, 510, Image.SCALE_SMOOTH);
+ 
+    }
+    catch (Exception e) { /*handled in paintComponent()*/ }
+  }
+
+  @Override
+  protected void paintComponent(Graphics g)
+  {
+    super.paintComponent(g); 
+    if (image != null)
+      g.drawImage(image, 0,0,this.getWidth(),this.getHeight(),this);
+  }
+}
