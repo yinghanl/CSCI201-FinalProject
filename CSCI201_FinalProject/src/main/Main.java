@@ -28,7 +28,7 @@ public class Main {
 		
 //	//	new LogInGUI();
 //	//	new LogInGUI();
-//		Board b = new Board();
+		Board b = new Board();
 //	//	User u1 = new User(1);
 //	//	User u2 = new User(2);
 //	//	User u3 = new User(3);
@@ -38,13 +38,13 @@ public class Main {
 ////		GameRoomGUI grg3 = new GameRoomGUI(u3, false, "localhost", 6789, "Test Game Room");
 //	//	GameRoomGUI grg4 = new GameRoomGUI(u4, false, "localhost", 6789, "Test Game Room");
 //		
-//	//	Player p1 = new Player("player 1", b.getSpace(10, 10));
-//		Player p1 = new Player("Player 2", b.getSpace(0, 0));
-//		b.setPlayer(p1);
+		//Player p1 = new Player("player 1", b.getSpace(10, 10));
+		Player p1 = new Player("Player 2", b.getSpace(0, 0));
+		b.setPlayer(p1);
 //
-//	//	new GameScreenGUI(b, p1, true, null);
-//		//new GameScreenGUI(b, p1, false, null);
-		new LogInGUI();
+		//new GameScreenGUI(b, p1, true, null, null);
+		new GameScreenGUI(b, p1, false, null, null);
+		//new LogInGUI();
 	}
 }
 

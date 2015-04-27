@@ -1154,13 +1154,11 @@ public class GameScreenGUI extends JFrame{
 			
 		timer = 100;
 		
-		
 		if(isHost)
 		{
-		goldEarned--;
-		teamGold.setText("" + goldEarned);
+			goldEarned--;
+			teamGold.setText("" + goldEarned);
 		}
-		
 		Command c = new Command(currentPlayer, "BuyTower");
 		
 		try
@@ -1387,7 +1385,7 @@ public class GameScreenGUI extends JFrame{
 									int x = c.getX();
 									int y = c.getY();
 									placeTowerImmediately(x, y, p.getPlayerDirection());
-									goldEarned--;
+									//goldEarned--;
 									teamGold.setText("" + goldEarned);
 								}
 								else if(command.equals("RotateTower"))
