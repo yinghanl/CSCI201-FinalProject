@@ -8,7 +8,7 @@ public class Tower {
 	
 	public Tower(Space s, String direction){
 		location = s;
-		damage = 10;
+		damage = 1;
 		
 		switch(direction){
 			case "NORTH":

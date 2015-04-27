@@ -1,6 +1,6 @@
 package main;
 
-public class MineableSpace extends ClickableSpace{
+public class MineableSpace extends Space{
 	private int coinValue;
 	private int mineRate;
 	
