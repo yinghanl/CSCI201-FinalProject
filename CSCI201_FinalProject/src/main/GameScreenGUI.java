@@ -904,6 +904,7 @@ public class GameScreenGUI extends JFrame{
 	public void startGame(){
 		startGameThread = new StartGameThread();
 		startGameThread.start();
+		new SoundThread().start();
 		//System.out.println("game is started");
 	}
 	public void endGame()
@@ -1729,6 +1730,12 @@ public class GameScreenGUI extends JFrame{
 				e.printStackTrace();
 			}
 			
+		}
+	}
+	
+	public class SoundThread extends Thread{
+		public void run(){
+			SoundLibrary.playSound("daftpunk.wav");
 		}
 	}
 }//end of class
