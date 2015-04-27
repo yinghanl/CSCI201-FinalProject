@@ -932,7 +932,10 @@ public class GameScreenGUI extends JFrame{
 	}
 	public void endGame(boolean wonGame)
 	{
-		backgroundMusic.stop();
+		if(isHost)
+		{
+			backgroundMusic.stop();
+		}
 		currentUserStats.updateGameResult(wonGame);
 		gameStatsVector.add(currentUserStats);
 		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
