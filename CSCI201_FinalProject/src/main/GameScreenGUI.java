@@ -63,7 +63,7 @@ public class GameScreenGUI extends JFrame{
 	private JLabel teamGold;
 	private JLabel lives;
 	
-	private int timerInt = 60;
+	private int timerInt;
 	private int goldEarned = 0;
 	private String message;
 	private int livesInt = 10;
@@ -254,7 +254,7 @@ public class GameScreenGUI extends JFrame{
 		{
 			public void actionPerformed(ActionEvent ae) {
 				
-				timerInt = numCreeps;
+				timerInt = creeps.size();
 				
 				Command c = new Command(currentPlayer, "Timer", timerInt, 0);
 				sendMessageToClients(c);
@@ -285,7 +285,7 @@ public class GameScreenGUI extends JFrame{
 		
 		Border resourceBorder = BorderFactory.createEtchedBorder();
 		
-		levelTimer = new JLabel("" + timerInt);
+		levelTimer = new JLabel("Creeps Remaining: " + timerInt);
 		//Gold section
 		JPanel goldPanel = new JPanel();
 		goldPanel.setLayout(new FlowLayout());
@@ -1019,13 +1019,13 @@ public class GameScreenGUI extends JFrame{
 				}
 				else{
 					if(c.getHealth() >2){
-						spaces[x][y].setIcon(creepImage1);
+						spaces[x][y].setIcon(creepImage3);
 					}
 					else if(c.getHealth() == 2){
 						spaces[x][y].setIcon(creepImage2);
 					}
 					else{
-						spaces[x][y].setIcon(creepImage3);
+						spaces[x][y].setIcon(creepImage1);
 					}
 					
 				
