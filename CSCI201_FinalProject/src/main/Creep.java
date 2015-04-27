@@ -32,7 +32,7 @@ public class Creep extends Moveable{
 //		}
 	}
 	
-	public void run(){
+	public synchronized void run(){
 		while(health>0){
 			
 			try {

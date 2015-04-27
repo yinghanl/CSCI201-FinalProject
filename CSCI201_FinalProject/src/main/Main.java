@@ -1,8 +1,31 @@
 package main;
 
+import java.awt.Color;
+
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
 public class Main {
 	static boolean connect = false;
 	public static void main(String[] args) {
+		UIManager.put("nimbusBase", new Color(25,25,112));
+		UIManager.put("nimbusBlueGrey", new Color(46,139,87));
+		//UIManager.put("nimbusBlueGrey", new Color(204,240,248));
+		UIManager.put("control",new Color(204,240,248));
+		//UIManager.put("control", new Color(240,255,240));
+
+		
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
 	//	new LogInGUI();
 	//	new LogInGUI();
 		Board b = new Board();

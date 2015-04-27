@@ -54,7 +54,7 @@ public class GameScreenGUI extends JFrame{
 	private JPanel progressPanel;
 	private JTextArea chat;
 	private JTextField chatEdit;
-	private JLabel[][] spaces;
+	private static JLabel[][] spaces;
 	private Timer progressTimer;
 	private JProgressBar progressBar;
 	private JLabel task;	
