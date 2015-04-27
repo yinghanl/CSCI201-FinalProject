@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -41,6 +43,7 @@ public class GameLobbyGUI extends JFrame {
 		
 		initializeComponents();
 		createGUI();
+		addActionListeners();
 		setVisible(true);
 	}
 	
@@ -62,6 +65,15 @@ public class GameLobbyGUI extends JFrame {
 		{
 			profileButton.setVisible(false);
 		}
+		
+		add(lobby);
+		
+		add(profileButton, BorderLayout.NORTH);
+		
+	}
+	
+	private void addActionListeners()
+	{
 		profileButton.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent e) {
@@ -70,10 +82,15 @@ public class GameLobbyGUI extends JFrame {
 			
 		});
 		
-		add(lobby);
-		
-		add(profileButton, BorderLayout.NORTH);
-		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener( new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent we)
+			{
+				parentFrame.setVisible(true);
+				GameLobbyGUI.this.dispose();
+			}
+		});
 	}
 	
 	

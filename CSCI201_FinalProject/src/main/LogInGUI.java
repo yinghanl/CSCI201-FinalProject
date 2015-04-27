@@ -134,6 +134,8 @@ public class LogInGUI extends JFrame
 			public void actionPerformed(ActionEvent ae)
 			{
 				Guest newGuest = DataBaseUtils.createGuest();
+				passwordJPF.setText("");
+				usernameJTF.setText("");
 				new GameLobbyGUI(newGuest,self);
 				setVisible(false);
 				
@@ -152,6 +154,8 @@ public class LogInGUI extends JFrame
 				{
 					int userID = DataBaseUtils.createNewUser(username, password);
 					User newUser = DataBaseUtils.createUser(userID);
+					passwordJPF.setText("");
+					usernameJTF.setText("");
 					new GameLobbyGUI(newUser,self);
 					setVisible(false);
 				}
@@ -226,6 +230,7 @@ public class LogInGUI extends JFrame
 			{
 				int userID = DataBaseUtils.getUserID(username);
 				newUser = DataBaseUtils.createUser(userID);
+				
 				new GameLobbyGUI(newUser,self);
 				setVisible(false);
 				usernameJTF.setText("");

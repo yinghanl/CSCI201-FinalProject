@@ -248,7 +248,6 @@ public class GameRoomGUI extends JFrame {
 			readyButton.setEnabled(false);
 		}
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener( new WindowAdapter()
 		{
