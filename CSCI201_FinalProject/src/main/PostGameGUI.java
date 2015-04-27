@@ -38,12 +38,19 @@ public class PostGameGUI extends JFrame{
 	private JPanel centerPanel;
 	private JPanel topPanel;
 	private JButton exitButton;
+	private boolean gameWon;
 	
 	private Vector<GameStats> gsVector;
 	private GameLobbyGUI glw;
 	
 	public PostGameGUI(Vector<GameStats> gsVector, GameLobbyGUI glw){
 		super("End of Game Statistics");
+		if(gsVector.get(0).getGameResult() == true){
+			gameWon = true;
+		}
+		else{
+			gameWon = false;
+		}
 		this.glw = glw;
 		this.gsVector = gsVector;
 		instantiateComponents();
@@ -62,7 +69,12 @@ public class PostGameGUI extends JFrame{
 		exitButton = new JButton("EXIT TO GAMELOBBY");
 		topPanel = new JPanel();
 		centerPanel = new JPanel();
-		gameoutcomeLabel = new JLabel("Congratulations!");
+		if(gameWon == true){
+			gameoutcomeLabel = new JLabel("Congratulations!");
+		}
+		else{	
+			gameoutcomeLabel = new JLabel("YOU LOSE!!!!!!!!");
+		}
 	}
 	
 	public void createGUI()
@@ -73,12 +85,23 @@ public class PostGameGUI extends JFrame{
 		setSize((int)(width * 0.8), (int)(height * 0.8));
 		setLocation(100, 100);
 		
-		JPanel bgPanel = new BGPanel("images/PostGameBackground.png");
+		JPanel bgPanel = null;
+		if(gameWon == true){
+			bgPanel = new BGPanel("images/PostGameBackground.png");
+		}else{
+			bgPanel = new BGPanel("images/PostGameLose.jpg");
+		}
+		
 		bgPanel.setLayout(new BorderLayout());
 
 		gameoutcomeLabel.setHorizontalAlignment(JLabel.CENTER);
 		gameoutcomeLabel.setFont(new Font("Jokerman",Font.ITALIC,64));
-		gameoutcomeLabel.setForeground(new Color(255,215,0));
+		if(gameWon){
+			gameoutcomeLabel.setForeground(new Color(255,215,0));
+		}else{ 
+			gameoutcomeLabel.setForeground(Color.RED);
+			gameoutcomeLabel.setFont(new Font("Forte",Font.ITALIC,64));
+		}
 		JPanel userPanel1 = userInfoPanel(gsVector.get(0));
 		JPanel userPanel2 = userInfoPanel(gsVector.get(1));
 		
@@ -127,7 +150,12 @@ public class PostGameGUI extends JFrame{
 		JLabel nameLabel = new JLabel(tempUser.getUsername() + "'s Statistics");
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setFont(new Font("Casteller", Font.BOLD,32));
-		nameLabel.setForeground(new Color(255,215,0));
+		if(gameWon == true){
+			nameLabel.setForeground(new Color(255,215,0));
+		}else{
+			nameLabel.setForeground(Color.RED);
+		}
+		
 		nameLabel.setOpaque(false);
 		
 		BufferedImage image = null;
@@ -145,7 +173,8 @@ public class PostGameGUI extends JFrame{
 		goldPanel.setOpaque(false);
 		goldPanel.add(new JLabel(goldIcon));
 		JLabel goldPanelText = new JLabel(" Collected: " + gs.getGold());
-		goldPanelText.setForeground(Color.white);
+		if (gameWon) goldPanelText.setForeground(Color.white);
+		else goldPanelText.setForeground(Color.black);
 		goldPanelText.setFont(new Font("Casteller", Font.ITALIC,24));
 		goldPanel.add(goldPanelText);
 		
@@ -154,7 +183,8 @@ public class PostGameGUI extends JFrame{
 		creepPanel.setLayout(new FlowLayout());
 		creepPanel.add(new JLabel(new ImageIcon("images/Creep.png")));
 		JLabel creepPanelText = new JLabel(" Killed: " + gs.getCreepsKilled());
-		creepPanelText.setForeground(Color.white);
+		if(gameWon) creepPanelText.setForeground(Color.white);
+		else creepPanelText.setForeground(Color.black);
 		creepPanelText.setFont(new Font("Casteller", Font.ITALIC,24));
 		creepPanel.add(creepPanelText);
 		
