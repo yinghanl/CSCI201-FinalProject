@@ -145,7 +145,7 @@ public class GameScreenGUI extends JFrame{
 		creeps = new HashMap<Integer, Creep>();
 		
 		this.setTitle(p.getPlayerName());
-		this.setSize(825,510);
+		this.setSize(830,530);
 		this.setLocation(0,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -341,7 +341,7 @@ public class GameScreenGUI extends JFrame{
 	{		
 		ImagePanel toReturn = new ImagePanel(new ImageIcon("TowerDefense.png").getImage());
 		
-		toReturn.setSize(600,700);
+		toReturn.setSize(700,750);
 		toReturn.setPreferredSize(toReturn.getSize());
 		
 		toReturn.setLayout(new GridLayout(20,32));
