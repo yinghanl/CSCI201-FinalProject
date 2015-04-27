@@ -1,6 +1,6 @@
 package main;
 
-public class TowerSpace extends ClickableSpace{
+public class TowerSpace extends Space{
 	
 	private Tower tower;
 	
