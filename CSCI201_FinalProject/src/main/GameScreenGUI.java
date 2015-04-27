@@ -1459,8 +1459,8 @@ public class GameScreenGUI extends JFrame{
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
-									new PostGameGUI(gameStatsVector, (LogInGUI)pf.get(0));
-									for(int j = 1; j < pf.size(); j++)
+									new PostGameGUI(gameStatsVector, (GameLobbyGUI)pf.get(1));
+									for(int j = 2; j < pf.size(); j++)
 									{
 										pf.get(i).dispose();
 									}
@@ -1659,8 +1659,8 @@ public class GameScreenGUI extends JFrame{
 									currentUserStats.updateGameResult(c.getStats().getGameResult());
 									Command newC = new Command(currentPlayer, "AddVector", currentUserStats);
 									oos.writeObject(newC);
-									new PostGameGUI(gameStatsVector, (LogInGUI)pf.get(0));
-									for(int j = 1; j < pf.size(); j++)
+									new PostGameGUI(gameStatsVector, (GameLobbyGUI)pf.get(1));
+									for(int j = 2; j < pf.size(); j++)
 									{
 										pf.get(i).dispose();
 									}
