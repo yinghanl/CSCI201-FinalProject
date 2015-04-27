@@ -940,6 +940,7 @@ public class GameScreenGUI extends JFrame{
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
+			SoundLibrary.playSound("daftpunk.wav");
 			//System.out.println("run");
 		}
 		public void run(){
