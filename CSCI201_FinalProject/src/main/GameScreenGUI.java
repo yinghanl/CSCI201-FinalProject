@@ -1643,7 +1643,6 @@ public class GameScreenGUI extends JFrame{
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
-									gameStatsVector.addElement(currentUserStats);
 									Command newC = new Command(currentPlayer, "AddVector", currentUserStats);
 									oos.writeObject(newC);
 									new PostGameGUI(gameStatsVector);
