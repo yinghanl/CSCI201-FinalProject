@@ -230,9 +230,10 @@ public class GameScreenGUI extends JFrame{
 			ioe.printStackTrace();
 		}
 		
-		Timer time = new Timer(1, new ActionListener()
+		Timer time = new Timer(10, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent ae) {
+				Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 				updateBoard();
 			}
 		});
@@ -449,12 +450,12 @@ public class GameScreenGUI extends JFrame{
 		progressBar.setValue(0);
 	}
 	
-	private synchronized void createActions()
+	private void createActions()
 	{
 	
 		board.addKeyListener(new KeyAdapter()
 		{
-			public void keyPressed(KeyEvent ke) {
+			public synchronized void keyPressed(KeyEvent ke) {
 
 				int key = ke.getKeyCode();
 				//System.out.println(key);
@@ -1006,11 +1007,13 @@ public class GameScreenGUI extends JFrame{
 				Creep c = creeps.get(i);
 				int x = c.getPathLocation().getX();
 				int y = c.getPathLocation().getY();
+				
 				if(c.isDead()){
 					creeps.remove(i);
 					new ExplosionThread(x, y).start();
 
 				}
+				
 				else if(c.isOffGrid()){
 					creeps.remove(i);
 					livesInt--;
