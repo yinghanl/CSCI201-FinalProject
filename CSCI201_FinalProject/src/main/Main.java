@@ -15,8 +15,8 @@ public class Main {
 //		GameRoomGUI grg3 = new GameRoomGUI(u3, false, "localhost", 6789, "Test Game Room");
 	//	GameRoomGUI grg4 = new GameRoomGUI(u4, false, "localhost", 6789, "Test Game Room");
 		
-//		Player p1 = new Player("player 1", b.getSpace(10, 10));
-		Player p1 = new Player("Player 2", b.getSpace(0, 0));
+		Player p1 = new Player("player 1", b.getSpace(10, 10));
+	//	Player p1 = new Player("Player 2", b.getSpace(0, 0));
 		b.setPlayer(p1);
 
 	//	new GameScreenGUI(b, p1, true, null);

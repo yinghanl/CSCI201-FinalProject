@@ -122,7 +122,7 @@ public class GameScreenGUI extends JFrame{
 		gameStatsVector = new Vector<GameStats>();
 		
 		
-		cooldownTimer = new Timer(500, new ActionListener()
+		cooldownTimer = new Timer(750, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) {
 				cooldown = false;
