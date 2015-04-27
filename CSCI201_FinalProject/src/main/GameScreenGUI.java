@@ -888,7 +888,7 @@ public class GameScreenGUI extends JFrame{
 								int valueMined = ((MineableSpace)(backendBoard.getSpace(x, y))).mine();
 								goldEarned = goldEarned + valueMined;
 							}
-							teamGold.setText("Gold:" + goldEarned);
+							teamGold.setText("" + goldEarned);
 							
 							
 							if(isHost)
@@ -1035,7 +1035,7 @@ public class GameScreenGUI extends JFrame{
 				else if(c.isOffGrid()){
 					creeps.remove(i);
 					livesInt--;
-					lives.setText("Lives: " + livesInt);
+					lives.setText("" + livesInt);
 					
 				}
 				else{
@@ -1171,7 +1171,7 @@ public class GameScreenGUI extends JFrame{
 		if(isHost)
 		{
 		goldEarned--;
-		teamGold.setText("Gold: " + goldEarned);
+		teamGold.setText("" + goldEarned);
 		}
 		
 		Command c = new Command(currentPlayer, "BuyTower");
@@ -1401,7 +1401,7 @@ public class GameScreenGUI extends JFrame{
 									int y = c.getY();
 									placeTowerImmediately(x, y, p.getPlayerDirection());
 									goldEarned--;
-									teamGold.setText("Gold: " + goldEarned);
+									teamGold.setText("" + goldEarned);
 								}
 								else if(command.equals("RotateTower"))
 								{
@@ -1460,13 +1460,13 @@ public class GameScreenGUI extends JFrame{
 										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
 										int valueMined = m.mine();
 										goldEarned = goldEarned + valueMined;
-										teamGold.setText("Gold: " + goldEarned);
+										teamGold.setText("" + goldEarned);
 									}
 								}
 								else if(command.equals("BuyTower"))
 								{
 									goldEarned--;
-									teamGold.setText("Gold: " + goldEarned);
+									teamGold.setText("" + goldEarned);
 								}
 								else if(command.equals("SynchronizeVector"))
 								{
@@ -1649,7 +1649,7 @@ public class GameScreenGUI extends JFrame{
 										MineableSpace m = (MineableSpace)(backendBoard.getSpace(c.getX(), c.getY()));
 										int valueMined = m.mine();
 										goldEarned = goldEarned + valueMined;
-										teamGold.setText("Gold: " + goldEarned);
+										teamGold.setText("" + goldEarned);
 										
 									}
 								}
@@ -1657,7 +1657,7 @@ public class GameScreenGUI extends JFrame{
 								{
 									
 									goldEarned--;
-									teamGold.setText("Gold: " + goldEarned);
+									teamGold.setText("" + goldEarned);
 								}
 								else if(command.equals("SynchronizeVector"))
 								{
