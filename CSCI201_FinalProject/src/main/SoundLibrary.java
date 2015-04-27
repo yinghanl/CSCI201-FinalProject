@@ -22,7 +22,7 @@ public class SoundLibrary {
 	private String sound;
 	static{
 		soundMap = new HashMap<String,File>();
-		soundMap.put("daftpunk.wav", new File("daftpunk.wav"));
+		soundMap.put("daftpunk.wav", new File("Sounds/daftpunk.wav"));
 	}
 	
 //	public SoundLibrary(String sound){

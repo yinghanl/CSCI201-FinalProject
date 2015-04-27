@@ -62,6 +62,7 @@ public class GameScreenGUI extends JFrame{
 	private JLabel levelTimer;
 	private JLabel teamGold;
 	private JLabel lives;
+	private JLabel levelLabel;
 	
 	private int timerInt;
 	private int goldEarned = 0;
@@ -343,13 +344,15 @@ public class GameScreenGUI extends JFrame{
 		creepPanel.add(levelTimer);
 		creepPanel.setBorder(resourceBorder);
 		creepPanel.setPreferredSize(new Dimension(0,25));
-
+		//Level Label
+		levelLabel = new JLabel("Level 1");
 
 
 		toReturn.add(lifePanel);
 		toReturn.add(goldPanel);
 		toReturn.add(creepPanel);
 		toReturn.add(Box.createGlue());
+		toReturn.add(levelLabel);
 
 		
 		//toReturn.add(levelTimer);
@@ -937,12 +940,14 @@ public class GameScreenGUI extends JFrame{
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
+			SoundLibrary.playSound("daftpunk.wav");
 			//System.out.println("run");
 		}
 		public void run(){
 			boolean wonGame = false;
 			while(livesInt>0){
 				l = levels[level];
+				levelLabel.setText("Level " + level);
 				maxCreeps = l.getNumber()+1;
 				numCreeps = l.getNumber();
 				while(numCreeps>0 && livesInt>0){ //there are remaining creeps
