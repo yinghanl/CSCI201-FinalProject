@@ -23,11 +23,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,8 +45,6 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
-
-import main.BgProgessPanel;
 
 public class GameScreenGUI extends JFrame{
 
@@ -111,6 +111,8 @@ public class GameScreenGUI extends JFrame{
 	private Vector<JFrame> pf;
 	private StartGameThread startGameThread;
 
+	Clip backgroundMusic;
+	
 	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u, Vector<JFrame> pf)
 	{
 		currentUserStats = new GameStats(u);
@@ -930,6 +932,7 @@ public class GameScreenGUI extends JFrame{
 	}
 	public void endGame(boolean wonGame)
 	{
+		backgroundMusic.stop();
 		currentUserStats.updateGameResult(wonGame);
 		gameStatsVector.add(currentUserStats);
 		Command c = new Command(currentPlayer, "SynchronizeVector", currentUserStats);
@@ -940,8 +943,30 @@ public class GameScreenGUI extends JFrame{
 	class StartGameThread extends Thread{
 		private Level l;
 		public StartGameThread(){
-			SoundLibrary.playSound("daftpunk.wav");
 			//System.out.println("run");
+			
+
+			try
+			{
+				AudioInputStream musicAudioIn = AudioSystem.getAudioInputStream(new File("Sounds/daftpunk.wav").getAbsoluteFile());
+				backgroundMusic = AudioSystem.getClip();
+				backgroundMusic.open(musicAudioIn);
+		        backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+		        backgroundMusic.start();
+			}
+			catch(UnsupportedAudioFileException uae)
+			{
+				System.out.println(uae.getMessage());
+			}
+			catch (LineUnavailableException lue)
+			{
+				System.out.println(lue.getMessage());
+			}
+			catch(IOException ioe)
+			{
+				System.out.println(ioe.getMessage());
+			}
+			
 		}
 		public void run(){
 			boolean wonGame = false;

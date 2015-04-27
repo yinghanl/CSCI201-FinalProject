@@ -26,7 +26,7 @@ public class Main {
 		    // If Nimbus is not available, you can set the GUI to another look and feel.
 		}
 		
-//	//	new LogInGUI();
+		//new LogInGUI();
 //	//	new LogInGUI();
 		Board b = new Board();
 //	//	User u1 = new User(1);
