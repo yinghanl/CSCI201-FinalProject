@@ -43,7 +43,7 @@ public class Main {
 		b.setPlayer(p1);
 
 	//	new GameScreenGUI(b, p1, true, null);
-		new GameScreenGUI(b, p1, false, null);
+		//new GameScreenGUI(b, p1, false, null);
 	//	new LogInGUI();
 	}
 }

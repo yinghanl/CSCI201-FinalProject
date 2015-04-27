@@ -107,13 +107,14 @@ public class GameScreenGUI extends JFrame{
 	private int numCreeps;
 	private GameStats currentUserStats;
 	private Vector<GameStats> gameStatsVector;
-	
+	private Vector<JFrame> pf;
 	private StartGameThread startGameThread;
 
-	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u)
+	public GameScreenGUI(Board b, Player p, boolean isHost, AbstractUser u, Vector<JFrame> pf)
 	{
 		currentUserStats = new GameStats(u);
 		gameStatsVector = new Vector<GameStats>();
+		this.pf = pf;
 		
 		
 		cooldownTimer = new Timer(750, new ActionListener()
@@ -1453,7 +1454,11 @@ public class GameScreenGUI extends JFrame{
 								{
 									Command c = (Command)(obj);
 									gameStatsVector.addElement(c.getStats());
-									new PostGameGUI(gameStatsVector);
+									new PostGameGUI(gameStatsVector, (LogInGUI)pf.get(0));
+									for(int j = 1; j < pf.size(); j++)
+									{
+										pf.get(i).dispose();
+									}
 									GameScreenGUI.this.dispose();
 								}
 							}
@@ -1649,7 +1654,11 @@ public class GameScreenGUI extends JFrame{
 									currentUserStats.updateGameResult(c.getStats().getGameResult());
 									Command newC = new Command(currentPlayer, "AddVector", currentUserStats);
 									oos.writeObject(newC);
-									new PostGameGUI(gameStatsVector);
+									new PostGameGUI(gameStatsVector, (LogInGUI)pf.get(0));
+									for(int j = 1; j < pf.size(); j++)
+									{
+										pf.get(i).dispose();
+									}
 									GameScreenGUI.this.dispose();
 								}
 							}

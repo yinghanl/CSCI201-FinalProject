@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -25,10 +27,11 @@ public class PostGameGUI extends JFrame{
 	private JButton exitButton;
 	
 	private Vector<GameStats> gsVector;
+	private LogInGUI login;
 	
-	public PostGameGUI(Vector<GameStats> gsVector){
+	public PostGameGUI(Vector<GameStats> gsVector, LogInGUI login){
 		super("End of Game Statistics");
-		
+		this.login = login;
 		this.gsVector = gsVector;
 		instantiateComponents();
 		createGUI();
@@ -65,12 +68,22 @@ public class PostGameGUI extends JFrame{
 	
 	public void addActionListeners()
 	{
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				dispose();
+				login.setVisible(true);
+				PostGameGUI.this.dispose();
 			}
 		});
+		addWindowListener( new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent we)
+			{
+				login.setVisible(true);
+				PostGameGUI.this.dispose();
+			}
+		});
+		
 	}
 	
 	public void createTable(){

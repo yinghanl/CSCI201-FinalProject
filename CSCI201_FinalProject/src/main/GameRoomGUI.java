@@ -79,13 +79,15 @@ public class GameRoomGUI extends JFrame {
 	
 	private GameRoomClient grc;
 	private GameLobbyGUI glw;
+	private Vector<JFrame> pf;
 	
-	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title, GameLobbyGUI glw, GameRoomClient grc){
+	public GameRoomGUI(AbstractUser u, boolean isHost, String IPAddress, int port, String title, Vector<JFrame> pf, GameRoomClient grc){
 		this.user = u;
 		this.isHost = isHost;
 		this.port = port;
 		this.roomTitle = title;
-		this.glw = glw;
+		this.pf = pf;
+		this.glw = (GameLobbyGUI)pf.get(1);
 		this.grc = grc;
 		setTitle(title);
 		setSize(700, 500);
@@ -119,7 +121,7 @@ public class GameRoomGUI extends JFrame {
 		if(!isHost){
 			//System.out.println("player is not the host");
 		}
-		new CreateConnections(port).start();
+		new CreateConnections(this, port).start();
 	}//end of constructor
 	
 	
@@ -229,7 +231,9 @@ public class GameRoomGUI extends JFrame {
 //				GameScreenGUI gs = new GameScreenGUI(b, user.toPlayer(), true);
 //				gs.setVisible(false);
 				b.setPlayer(p);
-				new GameScreenGUI(b, p, true, user);
+				
+				pf.add(GameRoomGUI.this);
+				new GameScreenGUI(b, p, true, user, pf);
 				sendMessageToClients(new Integer(-1));
 				grc.deleteGame();
 				setVisible(false);
@@ -422,6 +426,11 @@ public class GameRoomGUI extends JFrame {
 		}	
 	}
 	
+	public Vector<JFrame> getPreviousFrames()
+	{
+		return pf;
+	}
+	
 	class ChatThread extends Thread {
 		//private BufferedReader br;
 		private ObjectOutputStream oos;
@@ -523,7 +532,9 @@ public class GameRoomGUI extends JFrame {
 	}//end of chathread
 	
 		class ReadObject extends Thread{
-			ReadObject(){
+			GameRoomGUI grg;
+			ReadObject(GameRoomGUI grg){
+				this.grg = grg;
 			}
 			
 			public synchronized void run(){
@@ -555,7 +566,9 @@ public class GameRoomGUI extends JFrame {
 								Board b = new Board();
 								Player p = new Player(user.getUsername(), b.getSpace(19,30));
 								b.setPlayer(p);
-								new GameScreenGUI(b, p, false, user);
+								Vector<JFrame> pf = grg.getPreviousFrames();
+								pf.add(grg);
+								new GameScreenGUI(b, p, false, user, pf);
 								setVisible(false);
 							}
 							else if((Integer)obj == -3)
@@ -580,8 +593,10 @@ public class GameRoomGUI extends JFrame {
 		
 	class CreateConnections extends Thread{
 		int port;
-		public CreateConnections(int port){
+		GameRoomGUI grg;
+		public CreateConnections(GameRoomGUI grg, int port){
 			this.port = port;
+			this.grg = grg;
 		}
 		public void run(){
 			if(isHost){
@@ -616,7 +631,7 @@ public class GameRoomGUI extends JFrame {
 					s = new Socket("localhost", port);
 					oos = new ObjectOutputStream(s.getOutputStream());
 					ois = new ObjectInputStream(s.getInputStream());
-					new ReadObject().start();
+					new ReadObject(grg).start();
 					} catch (IOException ioe) {
 						System.out.println("IOE client: " + ioe.getMessage());
 					}

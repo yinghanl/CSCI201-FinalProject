@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -53,6 +54,8 @@ public class TabPanel extends JPanel {
 	private LogInGUI loginWindow;
 	private int chatPort;
 	
+	private Vector<JFrame> previousFrames;
+	
 	
 	private GameRoomClient grc;
 
@@ -60,6 +63,9 @@ public class TabPanel extends JPanel {
 		this.u = user;
 		this.gameLobbyWindow = gameLobbyWindow;
 		this.loginWindow = loginWindow;
+		previousFrames = new Vector<JFrame>();
+		previousFrames.add(loginWindow);
+		previousFrames.add(gameLobbyWindow);
 	
 		initializeComponents();
 		createGUI();
@@ -143,7 +149,7 @@ public class TabPanel extends JPanel {
 					System.out.println("IE:" + ie.getMessage());
 				}
 				//System.out.println("chatPort = " + chatPort);
-				new GameRoomGUI(u, false, "localhost", chatPort, host + "'s Room", gameLobbyWindow, grc);
+				new GameRoomGUI(u, false, "localhost", chatPort, host + "'s Room", previousFrames, grc);
 				gameLobbyWindow.setVisible(false);
 			}
 		});
@@ -154,7 +160,7 @@ public class TabPanel extends JPanel {
 				Game newGame = new Game(u);
 				newGame.setChatPort(grc.getChatPort());
 				grc.newGame(newGame);
-				new GameRoomGUI(u, true, "localhost", grc.getChatPort(), u.getUsername() + "'s Room", gameLobbyWindow, grc);
+				new GameRoomGUI(u, true, "localhost", grc.getChatPort(), u.getUsername() + "'s Room", previousFrames, grc);
 				gameLobbyWindow.setVisible(false);
 			}	
 		});
