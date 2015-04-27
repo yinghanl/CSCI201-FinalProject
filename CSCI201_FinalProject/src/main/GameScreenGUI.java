@@ -387,7 +387,7 @@ public class GameScreenGUI extends JFrame{
 			for(int j = 0; j < 32; j++)
 			{
 				spaces[i][j] = new JLabel("");
-				spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+				//spaces[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
 				spaces[i][j].setOpaque(false);
 				toReturn.add(spaces[i][j]);
 			}
