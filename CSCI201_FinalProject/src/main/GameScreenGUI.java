@@ -412,6 +412,7 @@ public class GameScreenGUI extends JFrame{
 		chat = new JTextArea();
 		chat.setLineWrap(true);
 		chat.setWrapStyleWord(true);
+		chat.setBackground(new Color(204,240,248));
 		DefaultCaret caret = (DefaultCaret)chat.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JScrollPane sp = new JScrollPane(chat);
@@ -424,7 +425,7 @@ public class GameScreenGUI extends JFrame{
 		toReturn.add(sp, BorderLayout.CENTER);
 		toReturn.add(chatEdit, BorderLayout.SOUTH);
 		
-		Border chatBoarder = BorderFactory.createRaisedBevelBorder();
+		Border chatBoarder = BorderFactory.createTitledBorder("Chatbox");
 		toReturn.setBorder(chatBoarder);
 				
 		return toReturn;
